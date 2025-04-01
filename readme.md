@@ -2,7 +2,7 @@
 
 Quick Quizzer Application made for customer.
 
-## Team members
+## Team members:
 
 - [Jami Nurmi](https://github.com/JamiNurmi)
 - [Eemeli Hurmerinta](https://github.com/DooMi42)
@@ -33,3 +33,5 @@ We create a web-based quiz platform for Haaga-Helia teachers and students.
     Backend: Java + Spring Boot
     Frontend: React
     Two separate web apps: one for teachers (dashboard) and one for students
+
+![App Logo](/quizzerApp\applogo.png "App logo")
