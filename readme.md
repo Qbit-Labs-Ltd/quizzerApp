@@ -34,4 +34,4 @@ We create a web-based quiz platform for Haaga-Helia teachers and students.
     Frontend: React
     Two separate web apps: one for teachers (dashboard) and one for students
 
-![App Logo](/quizzerApp\applogo.png "App logo")
+![App Logo](/applogo.png "App logo")
