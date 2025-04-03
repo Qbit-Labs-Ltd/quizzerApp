@@ -34,4 +34,8 @@ We create a web-based quiz platform for Haaga-Helia teachers and students.
     Frontend: React
     Two separate web apps: one for teachers (dashboard) and one for students
 
+## Sprint Backlogs:
+
+- [Sprint 1 Backlog](https://github.com/orgs/Qbit-Labs-Ltd/projects/1/views/1)
+
 ![App Logo](/applogo.png "App logo")
