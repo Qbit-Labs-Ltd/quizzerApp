@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Answer Options</title>
+</head>
+<body>
+<h1>Answers for question: <span th:text="${question.content}"></span></h1>
+
+<ul>
+    <li th:each="answer : ${answers}">
+        <span th:text="${answer.text}">Answer text</span>
+        <span th:if="${answer.correct}">✔️</span>
+    </li>
+</ul>
+
+<a th:href="@{/quizzes}">Back to quizzes</a>
+</body>
+</html>
