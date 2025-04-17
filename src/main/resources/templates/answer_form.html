@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Answer Option</title>
+</head>
+<body>
+<h1>Add Answer Option</h1>
+
+<form th:action="@{/questions/{id}/answers(id=${question.id})}" method="post">
+    <label>Text: <input type="text" name="text" /></label><br/>
+    <label>Correct:
+        <input type="checkbox" name="correct" />
+    </label><br/>
+    <button type="submit">Add Answer</button>
+</form>
+
+</body>
+</html>
