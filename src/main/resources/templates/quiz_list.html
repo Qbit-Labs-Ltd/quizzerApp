@@ -8,9 +8,10 @@
 <a href="/quizzes/new">Add new quiz</a>
 <ul>
     <li th:each="quiz : ${quizzes}">
-        <span th:text="${quiz.name}">Quiz Name</span> —
-        <span th:text="${quiz.courseCode}">Course Code</span> —
-        <span th:text="${quiz.description}">Description</span>
+        <span th:text="${quiz.name}">Quiz Name</span> –
+        <span th:text="${quiz.courseCode}">Course Code</span> –
+        <span th:text="${quiz.description}">Description</span> –
+        <a th:href="@{'/quizzes/' + ${quiz.id} + '/edit'}">Edit</a>
     </li>
 </ul>
 </body>

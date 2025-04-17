@@ -1,5 +1,6 @@
 package com.example.quizzerApp.controller;
 
+import com.example.quizzerApp.dto.QuizUpdateDTO;
 import com.example.quizzerApp.model.Quiz;
 import com.example.quizzerApp.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,4 +31,28 @@ public class QuizController {
         model.addAttribute("quizzes", quizRepository.findAll());
         return "quiz_list";
     }
+    @GetMapping("/quizzes/{id}/edit")
+    public String editQuizForm(@PathVariable Long id, Model model) {
+    Quiz quiz = quizRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Invalid quiz Id:" + id));
+
+    model.addAttribute("quiz", quiz);
+    return "quiz_edit_form";
+    }
+
+    @PostMapping("/quizzes/{id}")
+    public String updateQuiz(@PathVariable Long id, @ModelAttribute QuizUpdateDTO quizDto) {
+    Quiz quiz = quizRepository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Invalid quiz Id:" + id));
+
+    quiz.setName(quizDto.getName());
+    quiz.setDescription(quizDto.getDescription());
+    quiz.setCourseCode(quizDto.getCourseCode());
+    quiz.setPublished(quizDto.isPublished());
+
+    quizRepository.save(quiz);
+
+    return "redirect:/quizzes";
+    }
+
 }
