@@ -129,5 +129,15 @@ public class QuizController {
     return "answer_list";
     }
 
+    @GetMapping("/quizzes/{id}/questions")
+    public String listQuestionsForQuiz(@PathVariable Long id, Model model) {
+    Quiz quiz = quizRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid quiz ID: " + id));
+
+    model.addAttribute("quiz", quiz);
+    model.addAttribute("questions", questionRepository.findByQuizId(id));
+    return "question_list";
+    }
+
 
 }

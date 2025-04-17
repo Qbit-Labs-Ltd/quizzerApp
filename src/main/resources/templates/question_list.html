@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Questions</title>
+</head>
+<body>
+<h1>Questions for quiz: <span th:text="${quiz.name}">Quiz Name</span></h1>
+
+<ul>
+    <li th:each="question : ${questions}">
+        <strong th:text="${question.content}">Question content</strong>
+        (<span th:text="${question.difficulty}">Difficulty</span>) –
+        <a th:href="@{'/questions/' + ${question.id} + '/answers'}">View Answers</a> |
+        <a th:href="@{'/questions/' + ${question.id} + '/answers/new'}">Add Answer</a>
+    </li>
+</ul>
+
+<a th:href="@{'/quizzes/' + ${quiz.id} + '/questions/new'}">Add Question</a> |
+<a href="/quizzes">Back to quizzes</a>
+</body>
+</html>

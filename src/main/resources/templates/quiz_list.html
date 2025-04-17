@@ -12,6 +12,7 @@
         <span th:text="${quiz.courseCode}">Course Code</span> –
         <span th:text="${quiz.description}">Description</span> –
         <a th:href="@{'/quizzes/' + ${quiz.id} + '/edit'}">Edit</a>
+        <a th:href="@{'/quizzes/' + ${quiz.id} + '/questions'}">View Questions</a>
     </li>
 </ul>
 </body>
