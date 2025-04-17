@@ -1,7 +1,9 @@
 package com.example.quizzerApp.controller;
 
 import com.example.quizzerApp.dto.QuizUpdateDTO;
+import com.example.quizzerApp.model.Question;
 import com.example.quizzerApp.model.Quiz;
+import com.example.quizzerApp.repository.QuestionRepository;
 import com.example.quizzerApp.repository.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,9 @@ public class QuizController {
 
     @Autowired
     private QuizRepository quizRepository;
+
+    @Autowired
+    private QuestionRepository questionRepository;
 
     @GetMapping("/quizzes/new")
     public String showQuizForm(Model model) {
@@ -54,5 +59,31 @@ public class QuizController {
 
     return "redirect:/quizzes";
     }
+
+    @GetMapping("/quizzes/{id}/questions/new")
+    public String showQuestionForm(@PathVariable Long id, Model model) {
+    Quiz quiz = quizRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid quiz ID: " + id));
+
+    model.addAttribute("quiz", quiz);
+    return "question_form";
+    }
+
+
+    @PostMapping("/quizzes/{id}/questions")
+    public String addQuestionToQuiz(@PathVariable Long id, @RequestParam String content, @RequestParam String difficulty) {
+    Quiz quiz = quizRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Invalid quiz ID: " + id));
+
+    Question question = new Question();
+    question.setContent(content);
+    question.setDifficulty(difficulty);
+    question.setQuiz(quiz);
+
+    questionRepository.save(question);
+
+    return "redirect:/quizzes";
+    }
+
 
 }

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Question</title>
+</head>
+<body>
+<h1>Add a question to quiz</h1>
+<form th:action="@{/quizzes/{id}/questions(id=${quiz.id})}" method="post">
+    <label>Content: <input type="text" name="content" /></label><br/>
+    <label>Difficulty: 
+        <select name="difficulty">
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+        </select>
+    </label><br/>
+    <button type="submit">Add Question</button>
+</form>
+</body>
+</html>
