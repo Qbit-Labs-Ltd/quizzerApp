@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const AddQuestionForm = () => {
+const AddQuestionForm = ({ quiz, setQuiz }) => {
   const [questionText, setQuestionText] = useState('');
   const [answers, setAnswers] = useState(['']);
   const [correctIndex, setCorrectIndex] = useState(0);
@@ -19,7 +19,6 @@ const AddQuestionForm = () => {
     const updatedAnswers = answers.filter((_, i) => i !== index);
     setAnswers(updatedAnswers);
 
-    // Reset correctIndex if necessary
     if (correctIndex === index) {
       setCorrectIndex(0);
     } else if (correctIndex > index) {
@@ -31,59 +30,68 @@ const AddQuestionForm = () => {
     e.preventDefault();
 
     const newQuestion = {
-      questionText,
-      answers,
-      correctIndex
+      text: questionText,
+      answers: answers,
+      correctIndex: correctIndex,
     };
 
-    console.log('Submitted question:', newQuestion);
+    // Add to quiz state
+    setQuiz({
+      ...quiz,
+      questions: [...quiz.questions, newQuestion],
+    });
 
-    // TODO: Replace console.log with a backend POST request when ready
+    // Reset form
+    setQuestionText('');
+    setAnswers(['']);
+    setCorrectIndex(0);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Add a New Question</h2>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+  <input
+    type="text"
+    placeholder="Question"
+    value={questionText}
+    onChange={(e) => setQuestionText(e.target.value)}
+    required
+    style={{ padding: '0.5rem', fontSize: '1rem' }}
+  />
 
+  {answers.map((answer, index) => (
+    <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
       <input
         type="text"
-        placeholder="Question"
-        value={questionText}
-        onChange={(e) => setQuestionText(e.target.value)}
+        placeholder={`Answer ${index + 1}`}
+        value={answer}
+        onChange={(e) => handleChangeAnswer(index, e.target.value)}
         required
+        style={{ flexGrow: 1, padding: '0.4rem' }}
       />
-
-      <h3>Answers</h3>
-      {answers.map((answer, index) => (
-        <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
-          <input
-            type="text"
-            placeholder={`Answer ${index + 1}`}
-            value={answer}
-            onChange={(e) => handleChangeAnswer(index, e.target.value)}
-            required
-            style={{ marginRight: 8 }}
-          />
-          <label style={{ marginRight: 8 }}>
-            <input
-              type="radio"
-              name="correctAnswer"
-              checked={correctIndex === index}
-              onChange={() => setCorrectIndex(index)}
-            />
-            Correct
-          </label>
-          <button type="button" onClick={() => handleDeleteAnswer(index)}>🗑️</button>
-        </div>
-      ))}
-
-      <button type="button" onClick={handleAddAnswer} style={{ marginBottom: 16 }}>
-        ➕ Add Answer
+      <label>
+        <input
+          type="radio"
+          name="correctAnswer"
+          checked={correctIndex === index}
+          onChange={() => setCorrectIndex(index)}
+        />
+        Correct
+      </label>
+      <button type="button" onClick={() => handleDeleteAnswer(index)} style={{ padding: '0.3rem 0.5rem' }}>
+        🗑️
       </button>
+    </div>
+  ))}
 
-      <br />
-      <button type="submit">✅ Submit Question</button>
-    </form>
+  <div style={{ display: 'flex', gap: '1rem' }}>
+    <button type="button" onClick={handleAddAnswer} style={{ padding: '0.5rem 1rem' }}>
+      ➕ Add Answer
+    </button>
+    <button type="submit" style={{ padding: '0.5rem 1rem' }}>
+      ✅ Submit Question
+    </button>
+  </div>
+</form>
   );
 };
 

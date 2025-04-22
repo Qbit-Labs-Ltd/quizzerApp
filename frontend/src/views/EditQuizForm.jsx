@@ -16,14 +16,18 @@ const EditQuizForm = ({ existingQuiz }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        placeholder="Quiz Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <button type="submit">Update Quiz</button>
-    </form>
+  <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+  <input
+    placeholder="Quiz Title"
+    value={title}
+    onChange={(e) => setTitle(e.target.value)}
+    style={{ flexGrow: 1, padding: '0.5rem' }}
+  />
+  <button type="submit" style={{ padding: '0.5rem 1rem' }}>
+    Update Quiz
+  </button>
+</form>
+
   );
 };
 
