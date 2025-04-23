@@ -18,22 +18,44 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * REST Controller for handling Quiz-related operations.
+ * Provides endpoints for managing quizzes and their questions.
+ */
 @RestController
 @RequestMapping("/api/quizzes")
 public class QuizRestController {
 
+    /**
+     * Repository for Quiz entity operations
+     */
     @Autowired
     private QuizRepository quizRepository;
 
+    /**
+     * Repository for Question entity operations
+     */
     @Autowired
     private QuestionRepository questionRepository;
 
+    /**
+     * Retrieves all quizzes
+     * 
+     * @return List of all quizzes with their question counts
+     */
     @GetMapping
     public List<QuizDTO> getAllQuizzes() {
         List<Quiz> quizzes = quizRepository.findAll();
         return QuizDTO.fromQuizList(quizzes, quiz -> questionRepository.countByQuizId(quiz.getId()));
     }
 
+    /**
+     * Retrieves a specific quiz by its ID
+     * 
+     * @param id The ID of the quiz to retrieve
+     * @return The quiz with the specified ID
+     * @throws ResourceNotFoundException if no quiz exists with the given ID
+     */
     @GetMapping("/{id}")
     public ResponseEntity<QuizDTO> getQuiz(@PathVariable Long id) {
         Quiz quiz = quizRepository.findById(id)
@@ -42,6 +64,12 @@ public class QuizRestController {
         return ResponseEntity.ok(QuizDTO.fromQuiz(quiz, questionCount));
     }
 
+    /**
+     * Creates a new quiz
+     * 
+     * @param quiz The quiz data to save
+     * @return The created quiz
+     */
     @PostMapping
     public ResponseEntity<?> createQuiz(@Valid @RequestBody Quiz quiz) {
         try {
@@ -72,6 +100,13 @@ public class QuizRestController {
         }
     }
 
+    /**
+     * Updates an existing quiz
+     * 
+     * @param id          The ID of the quiz to update
+     * @param quizDetails The updated quiz data
+     * @return The updated quiz
+     */
     @PutMapping("/{id}")
     public ResponseEntity<QuizDTO> updateQuiz(@PathVariable Long id, @Valid @RequestBody Quiz quizDetails) {
         return quizRepository.findById(id)
@@ -87,6 +122,12 @@ public class QuizRestController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Deletes a quiz by its ID
+     * 
+     * @param id The ID of the quiz to delete
+     * @return Success message if deletion is successful
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteQuiz(@PathVariable Long id) {
         return quizRepository.findById(id)
@@ -97,6 +138,11 @@ public class QuizRestController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    /**
+     * Retrieves all published quizzes
+     * 
+     * @return List of all published quizzes with their question counts
+     */
     @GetMapping("/published")
     public List<QuizDTO> getPublishedQuizzes() {
         List<Quiz> publishedQuizzes = quizRepository.findByPublishedTrue();
@@ -104,6 +150,13 @@ public class QuizRestController {
                 quiz -> questionRepository.findByQuizId(quiz.getId()).size());
     }
 
+    /**
+     * Retrieves all questions for a specific quiz
+     * 
+     * @param id The ID of the quiz
+     * @return List of questions belonging to the specified quiz
+     * @throws ResourceNotFoundException if no quiz exists with the given ID
+     */
     @GetMapping("/{id}/questions")
     public List<Question> getQuizQuestions(@PathVariable Long id) {
         Quiz quiz = quizRepository.findById(id)
@@ -111,6 +164,14 @@ public class QuizRestController {
         return questionRepository.findByQuizId(id);
     }
 
+    /**
+     * Adds a new question to an existing quiz
+     * 
+     * @param id       The ID of the quiz to add the question to
+     * @param question The question data to save
+     * @return The created question
+     * @throws ResourceNotFoundException if no quiz exists with the given ID
+     */
     @PostMapping("/{id}/questions")
     public ResponseEntity<?> addQuestionToQuiz(@PathVariable Long id, @RequestBody Question question) {
         try {

@@ -14,16 +14,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * REST Controller for handling Question-related operations.
+ * Provides endpoints for retrieving, updating, and deleting questions.
+ */
 @RestController
 @RequestMapping("/api/questions")
 public class QuestionRestController {
 
+    /**
+     * Repository for Question entity operations
+     */
     @Autowired
     private QuestionRepository questionRepository;
 
+    /**
+     * Repository for Quiz entity operations
+     */
     @Autowired
     private QuizRepository quizRepository;
 
+    /**
+     * Retrieves a specific question by its ID
+     * 
+     * @param id The ID of the question to retrieve
+     * @return The question with the specified ID
+     * @throws ResourceNotFoundException if no question exists with the given ID
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Question> getQuestionById(@PathVariable Long id) {
         Question question = questionRepository.findById(id)
@@ -31,6 +48,14 @@ public class QuestionRestController {
         return ResponseEntity.ok(question);
     }
 
+    /**
+     * Updates an existing question
+     * 
+     * @param id              The ID of the question to update
+     * @param questionDetails The updated question data
+     * @return The updated question
+     * @throws ResourceNotFoundException if no question exists with the given ID
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateQuestion(@PathVariable Long id, @RequestBody Question questionDetails) {
         try {
@@ -85,6 +110,13 @@ public class QuestionRestController {
         }
     }
 
+    /**
+     * Deletes a question by its ID
+     * 
+     * @param id The ID of the question to delete
+     * @return Empty response with status 200 if successful
+     * @throws ResourceNotFoundException if no question exists with the given ID
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteQuestion(@PathVariable Long id) {
         Question question = questionRepository.findById(id)

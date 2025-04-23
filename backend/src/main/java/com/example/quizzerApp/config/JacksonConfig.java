@@ -7,9 +7,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+/**
+ * Configuration class for Jackson JSON serialization settings.
+ * Customizes how JSON data is serialized and deserialized.
+ */
 @Configuration
 public class JacksonConfig {
 
+    /**
+     * Creates and configures an ObjectMapper bean for JSON handling.
+     * 
+     * @return A configured ObjectMapper instance with custom settings
+     *         - Adds Java 8 time module support
+     *         - Disables timestamp format for dates
+     *         - Disables failure on empty beans
+     */
     @Bean
     @Primary
     public ObjectMapper objectMapper() {

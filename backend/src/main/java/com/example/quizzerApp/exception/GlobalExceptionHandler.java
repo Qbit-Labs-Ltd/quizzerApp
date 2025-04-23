@@ -7,9 +7,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Map;
 
+/**
+ * Global exception handler for centralizing error handling across the
+ * application.
+ * Catches and processes exceptions thrown by controllers.
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Handles all uncaught exceptions in the application.
+     * Logs the exception and returns a standardized error response.
+     * 
+     * @param ex The exception that was thrown
+     * @return A ResponseEntity with error details
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGlobalException(Exception ex) {
         // Log the exception
