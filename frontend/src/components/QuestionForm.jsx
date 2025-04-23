@@ -1,13 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/CommonStyles.css';
 
+/**
+ * Form component for creating or editing quiz questions
+ * Handles question creation, answer options, and validation
+ * 
+ * @param {Object} props - Component props
+ * @param {number} props.quizId - ID of the quiz this question belongs to
+ * @param {string} props.quizName - Name of the quiz for display purposes
+ * @param {Function} props.onSubmit - Function called when form is submitted
+ * @param {Function} props.onCancel - Function called when form is cancelled
+ * @param {Object} props.initialData - Initial question data (when editing)
+ * @param {boolean} props.isEditing - Whether we're editing an existing question
+ * @returns {JSX.Element}
+ */
 const QuestionForm = ({ quizId, quizName, onSubmit, onCancel, initialData, isEditing = false }) => {
+    // Question form state
     const [questionText, setQuestionText] = useState(initialData?.content || '');
     const [difficulty, setDifficulty] = useState(initialData?.difficulty || 'Easy');
     const [answerOptions, setAnswerOptions] = useState(initialData?.answers || []);
     const [newAnswerText, setNewAnswerText] = useState('');
     const [newAnswerCorrect, setNewAnswerCorrect] = useState(false);
 
+    /**
+     * Initialize form with initial data when provided
+     */
     useEffect(() => {
         if (initialData) {
             setQuestionText(initialData.content || '');
@@ -16,6 +33,9 @@ const QuestionForm = ({ quizId, quizName, onSubmit, onCancel, initialData, isEdi
         }
     }, [initialData]);
 
+    /**
+     * Adds a new answer option to the question
+     */
     const handleAddAnswerOption = () => {
         if (!newAnswerText.trim()) return;
 
@@ -30,10 +50,18 @@ const QuestionForm = ({ quizId, quizName, onSubmit, onCancel, initialData, isEdi
         setNewAnswerCorrect(false);
     };
 
+    /**
+     * Removes an answer option from the question
+     * @param {number} id - ID of the answer to delete
+     */
     const handleDeleteAnswerOption = (id) => {
         setAnswerOptions(answerOptions.filter(answer => answer.id !== id));
     };
 
+    /**
+     * Toggles the correctness status of an answer option
+     * @param {number} answerId - ID of the answer to toggle
+     */
     const handleCorrectAnswerChange = (answerId) => {
         // Update only the toggled answer, leaving others unchanged
         const updatedOptions = answerOptions.map(answer => {
@@ -51,6 +79,10 @@ const QuestionForm = ({ quizId, quizName, onSubmit, onCancel, initialData, isEdi
         setAnswerOptions(updatedOptions);
     };
 
+    /**
+     * Handles form submission with validation
+     * @param {Event} e - Form submit event
+     */
     const handleSubmit = (e) => {
         e.preventDefault();
 

@@ -5,23 +5,41 @@ import QuestionForm from './QuestionForm';
 import { questionApi } from '../utils/api';
 import '../styles/CommonStyles.css';
 
+/**
+ * Multi-step component for creating a new quiz and its questions
+ * Handles the complete flow from quiz creation to adding multiple questions
+ * 
+ * @param {Object} props - Component props
+ * @param {Function} props.handleCreateQuiz - Function to handle quiz creation API call
+ * @param {Function} props.showToast - Function to display toast notifications
+ * @returns {JSX.Element}
+ */
 const QuizCreator = ({ handleCreateQuiz, showToast }) => {
     const navigate = useNavigate();
-    const [step, setStep] = useState('quiz'); // 'quiz', 'questions'
-    const [newQuiz, setNewQuiz] = useState(null);
-    const [questions, setQuestions] = useState([]);
-    const [isAddingQuestion, setIsAddingQuestion] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [formError, setFormError] = useState(null);
 
-    // Use ref to track if quiz was created
+    // State management
+    const [step, setStep] = useState('quiz'); // Flow control: 'quiz', 'questions'
+    const [newQuiz, setNewQuiz] = useState(null); // Stores the created quiz data
+    const [questions, setQuestions] = useState([]); // List of questions added
+    const [isAddingQuestion, setIsAddingQuestion] = useState(false); // Controls question form display
+    const [isSubmitting, setIsSubmitting] = useState(false); // Loading state indicator
+    const [formError, setFormError] = useState(null); // Form validation errors
+
+    // Use ref to track if quiz was created to prevent duplicate creation
     const quizCreated = useRef(false);
 
+    /**
+     * Resets the form state when needed
+     */
     const resetQuizForm = () => {
         setIsSubmitting(false);
         setFormError(null);
     };
 
+    /**
+     * Handles the quiz creation step
+     * @param {Object} quizData - Data for the new quiz
+     */
     const handleQuizSubmit = async (quizData) => {
         try {
             setIsSubmitting(true);
@@ -35,10 +53,11 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
                 published: quizData.published || false
             };
 
+            // Create quiz via API
             const response = await handleCreateQuiz(quizToSubmit);
             quizCreated.current = true;
             setNewQuiz(response);
-            setStep('questions');
+            setStep('questions'); // Move to questions step
         } catch (error) {
             console.error("Failed to create quiz:", error);
             // Extract detailed error message if available
@@ -50,6 +69,10 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
         }
     };
 
+    /**
+     * Handles adding a new question to the quiz
+     * @param {Object} questionData - Data for the new question
+     */
     const handleAddQuestion = async (questionData) => {
         if (!newQuiz || !newQuiz.id) {
             showToast('Quiz not properly initialized', 'error');
@@ -69,6 +92,7 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
 
             console.log("Sending question data:", formattedQuestion);
 
+            // Create question via API
             const newQuestion = await questionApi.create(newQuiz.id, formattedQuestion);
             setQuestions([...questions, newQuestion]);
             setIsAddingQuestion(false);
@@ -79,9 +103,15 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
         }
     };
 
+    /**
+     * Handles deletion of a question
+     * @param {number} questionId - ID of the question to delete
+     */
     const handleDeleteQuestion = async (questionId) => {
         try {
+            // Optimistically update UI
             setQuestions(questions.filter(q => q.id !== questionId));
+            // Delete from backend
             await questionApi.delete(questionId);
             showToast('Question deleted successfully!');
         } catch (err) {
@@ -90,11 +120,17 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
         }
     };
 
+    /**
+     * Finishes the quiz creation process and navigates back to quizzes
+     */
     const handleFinish = () => {
         navigate('/quizzes');
         showToast('Quiz creation complete!');
     };
 
+    /**
+     * Handles cancellation based on current step
+     */
     const handleCancel = () => {
         if (step === 'quiz') {
             navigate('/quizzes');
@@ -123,6 +159,7 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
 
     // Question creation step
     if (step === 'questions') {
+        // Show question form when adding a new question
         if (isAddingQuestion) {
             return (
                 <QuestionForm
@@ -134,10 +171,12 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
             );
         }
 
+        // Show questions list view
         return (
             <div className="quiz-creator-questions">
                 <h1 className="page-title">Add Questions to "{newQuiz.name}"</h1>
 
+                {/* Show questions list or empty state */}
                 {questions.length > 0 ? (
                     <>
                         <h2 className="section-title">Added Questions:</h2>
@@ -171,6 +210,7 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
                     <p className="info-text">No questions added yet. Click "Add a question" to get started.</p>
                 )}
 
+                {/* Action buttons */}
                 <div className="button-row">
                     <button
                         className="add-question-button"

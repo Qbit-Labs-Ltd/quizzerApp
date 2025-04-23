@@ -5,22 +5,44 @@ import QuestionBlock from './QuestionBlock';
 import QuestionForm from './QuestionForm';
 import { quizApi, questionApi } from '../utils/api';
 
+/**
+ * Component that displays and manages questions for a specific quiz
+ * Provides functionality for:
+ * - Viewing questions for a selected quiz
+ * - Adding new questions
+ * - Editing existing questions
+ * - Deleting questions
+ * - Sorting questions by different criteria
+ * 
+ * @param {Object} props - Component props
+ * @param {Function} props.showToast - Function to display toast notifications
+ * @param {Function} props.showDeleteConfirmation - Function to show confirmation dialog before deletion
+ * @returns {JSX.Element}
+ */
 const QuizQuestionsView = ({ showToast, showDeleteConfirmation }) => {
+    // Extract quiz ID from URL parameters
     const { id } = useParams();
     const navigate = useNavigate();
-    const [quiz, setQuiz] = useState(null);
-    const [questions, setQuestions] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [sortBy, setSortBy] = useState('orderAdded');
-    const [showAddQuestionForm, setShowAddQuestionForm] = useState(false);
-    const [refreshQuestions, setRefreshQuestions] = useState(0);
 
+    // State management
+    const [quiz, setQuiz] = useState(null);                            // Current quiz data
+    const [questions, setQuestions] = useState([]);                    // List of questions for the quiz
+    const [loading, setLoading] = useState(true);                      // Loading state indicator
+    const [sortBy, setSortBy] = useState('orderAdded');               // Current sort method
+    const [showAddQuestionForm, setShowAddQuestionForm] = useState(false); // Controls display of question form
+    const [refreshQuestions, setRefreshQuestions] = useState(0);      // Counter to trigger question refresh
+
+    /**
+     * Fetch quiz and its questions when component mounts or dependencies change
+     */
     useEffect(() => {
         const fetchQuizAndQuestions = async () => {
             try {
                 setLoading(true);
+                // Fetch the quiz data first
                 const quizData = await quizApi.getById(id);
                 setQuiz(quizData);
+                // Then fetch all questions for this quiz
                 const questionsData = await questionApi.getByQuizId(id);
                 setQuestions(questionsData);
             } catch (err) {
@@ -32,17 +54,26 @@ const QuizQuestionsView = ({ showToast, showDeleteConfirmation }) => {
         };
 
         fetchQuizAndQuestions();
-    }, [id, navigate, showToast, refreshQuestions]);
+    }, [id, navigate, showToast, refreshQuestions]); // Re-fetch when these dependencies change
 
+    /**
+     * Handles adding a new question to the questions list
+     * @param {Object} newQuestion - The newly created question
+     */
     const handleQuestionAdded = (newQuestion) => {
         setQuestions([...questions, newQuestion]);
         showToast('Question added successfully!');
     };
 
+    /**
+     * Handles question deletion with confirmation
+     * @param {number} questionId - ID of the question to delete
+     */
     const handleDeleteQuestion = (questionId) => {
         // Optimistically remove from UI
         setQuestions(questions.filter(q => q.id !== questionId));
 
+        // Show confirmation dialog
         showDeleteConfirmation(questionId, 'question');
 
         // Set up an event to refresh questions when modal closes
@@ -55,6 +86,10 @@ const QuizQuestionsView = ({ showToast, showDeleteConfirmation }) => {
         }, 500);
     };
 
+    /**
+     * Creates a new question via API
+     * @param {Object} questionData - Data for the new question
+     */
     const handleAddQuestion = (questionData) => {
         questionApi.create(id, questionData)
             .then(newQuestion => {
@@ -68,10 +103,17 @@ const QuizQuestionsView = ({ showToast, showDeleteConfirmation }) => {
             });
     };
 
+    /**
+     * Cancels the question creation process
+     */
     const handleCancelAddQuestion = () => {
         setShowAddQuestionForm(false);
     };
 
+    /**
+     * Navigates to the question edit page
+     * @param {number} questionId - ID of the question to edit
+     */
     const handleEditQuestion = (questionId) => {
         navigate(`/questions/${questionId}/edit`, {
             state: {
@@ -81,7 +123,9 @@ const QuizQuestionsView = ({ showToast, showDeleteConfirmation }) => {
         });
     };
 
-    // Sort questions based on sortBy value
+    /**
+     * Sorts questions based on the selected sorting criteria
+     */
     const sortedQuestions = [...questions].sort((a, b) => {
         switch (sortBy) {
             case 'difficultyAsc':
@@ -100,9 +144,13 @@ const QuizQuestionsView = ({ showToast, showDeleteConfirmation }) => {
         }
     });
 
+    // Display loading indicator while fetching data
     if (loading) return <div className="loading">Loading questions...</div>;
+
+    // Display error message if quiz not found
     if (!quiz) return <div className="error-message">Quiz not found</div>;
 
+    // Show question form when adding a new question
     if (showAddQuestionForm) {
         return (
             <QuestionForm
@@ -114,11 +162,13 @@ const QuizQuestionsView = ({ showToast, showDeleteConfirmation }) => {
         );
     }
 
+    // Main view displaying questions list
     return (
         <div className="quiz-questions-view">
             <div className="quiz-questions-header">
                 <h1>Questions for {quiz.name}</h1>
 
+                {/* Question sorting control */}
                 <QuestionSorter
                     sortBy={sortBy}
                     onSortChange={setSortBy}
@@ -126,6 +176,7 @@ const QuizQuestionsView = ({ showToast, showDeleteConfirmation }) => {
                 />
             </div>
 
+            {/* Display questions or empty state */}
             {sortedQuestions.length > 0 ? (
                 sortedQuestions.map(question => (
                     <QuestionBlock
@@ -143,6 +194,7 @@ const QuizQuestionsView = ({ showToast, showDeleteConfirmation }) => {
                 </div>
             )}
 
+            {/* Action buttons */}
             <div className="button-row">
                 <button
                     className="add-question-button"

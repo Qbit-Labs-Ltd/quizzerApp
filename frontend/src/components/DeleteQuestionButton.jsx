@@ -2,14 +2,31 @@ import React, { useState } from 'react';
 import ConfirmationModal from './ConfirmationModal';
 import '../styles/CommonStyles.css';
 
+/**
+ * Button component with built-in confirmation functionality for deleting questions
+ * Displays a warning on hover and shows a confirmation modal before deletion
+ * 
+ * @param {Object} props - Component props
+ * @param {number} props.questionId - ID of the question to delete
+ * @param {Function} props.onDelete - Function to call when deletion is confirmed
+ * @param {string} props.questionContent - Text content of the question to display in confirmation
+ * @returns {JSX.Element}
+ */
 const DeleteQuestionButton = ({ questionId, onDelete, questionContent }) => {
+  // State for controlling modal visibility and hover effect
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [deleteHover, setDeleteHover] = useState(false);
-  
+
+  /**
+   * Opens the confirmation modal when delete is clicked
+   */
   const handleDeleteClick = () => {
     setShowConfirmation(true);
   };
-  
+
+  /**
+   * Executes deletion when confirmed and closes the modal
+   */
   const confirmDelete = () => {
     onDelete(questionId);
     setShowConfirmation(false);
@@ -17,7 +34,8 @@ const DeleteQuestionButton = ({ questionId, onDelete, questionContent }) => {
 
   return (
     <>
-      <button 
+      {/* Delete button with hover warning effect */}
+      <button
         className={`delete-question-btn danger ${deleteHover ? 'hover-warning' : ''}`}
         onClick={handleDeleteClick}
         onMouseEnter={() => setDeleteHover(true)}
@@ -32,7 +50,8 @@ const DeleteQuestionButton = ({ questionId, onDelete, questionContent }) => {
           </>
         )}
       </button>
-      
+
+      {/* Confirmation modal for delete action */}
       <ConfirmationModal
         isOpen={showConfirmation}
         title="Delete Question"

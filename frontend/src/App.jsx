@@ -10,14 +10,28 @@ import EditQuestionView from './components/EditQuestionView';
 import { quizApi, questionApi, answerApi } from './utils/api';
 import './styles/CommonStyles.css';
 
+/**
+ * Main application component that handles routing and global state
+ * Manages application-wide concerns such as:
+ * - Toast notifications
+ * - Confirmation modals for deletions
+ * - Quiz data fetching
+ * - CRUD operations for quizzes, questions and answers
+ */
 function App() {
+  // State for toast notifications
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+  // State for delete confirmation modal
   const [deleteModal, setDeleteModal] = useState({ show: false, itemId: null, itemType: null });
+  // State for quiz data
   const [quizzes, setQuizzes] = useState([]);
+  // Loading and error states for quiz data fetching
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch quizzes when component mounts
+  /**
+   * Fetch quizzes when component mounts
+   */
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
@@ -36,22 +50,41 @@ function App() {
     fetchQuizzes();
   }, []);
 
+  /**
+   * Shows a toast notification with the specified message and type
+   * @param {string} message - The message to display in the toast
+   * @param {string} type - The type of toast (success, error, warning)
+   */
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
   };
 
+  /**
+   * Closes the currently displayed toast notification
+   */
   const closeToast = () => {
     setToast({ ...toast, show: false });
   };
 
+  /**
+   * Shows the delete confirmation modal for the specified item
+   * @param {number} itemId - The ID of the item to be deleted
+   * @param {string} itemType - The type of item (quiz, question, answer)
+   */
   const showDeleteConfirmation = (itemId, itemType) => {
     setDeleteModal({ show: true, itemId, itemType });
   };
 
+  /**
+   * Closes the delete confirmation modal without performing the deletion
+   */
   const cancelDelete = () => {
     setDeleteModal({ show: false, itemId: null, itemType: null });
   };
 
+  /**
+   * Confirms and performs the deletion of the item currently set in the delete modal
+   */
   const confirmDelete = async () => {
     const { itemId, itemType } = deleteModal;
 
@@ -74,6 +107,11 @@ function App() {
     cancelDelete();
   };
 
+  /**
+   * Creates a new quiz with the provided data
+   * @param {Object} quizData - The data for the new quiz
+   * @returns {Promise<Object>} The newly created quiz
+   */
   const handleCreateQuiz = async (quizData) => {
     try {
       // Check if a quiz with the same name AND course code already exists
@@ -115,6 +153,12 @@ function App() {
     }
   };
 
+  /**
+   * Updates an existing quiz with the provided data
+   * @param {number} id - The ID of the quiz to update
+   * @param {Object} quizData - The updated quiz data
+   * @returns {Promise<Object>} The updated quiz
+   */
   const handleUpdateQuiz = async (id, quizData) => {
     try {
       const updatedQuiz = await quizApi.update(id, quizData);
@@ -200,7 +244,12 @@ function App() {
   );
 }
 
-// Add this wrapper component to fix navigation
+/**
+ * Wrapper component for QuizList that provides navigation capabilities
+ * Ensures navigation functions are available to the QuizList component
+ * @param {Object} props - Component props
+ * @returns {JSX.Element}
+ */
 function QuizListWrapper(props) {
   const navigate = useNavigate();
   return (
@@ -212,13 +261,21 @@ function QuizListWrapper(props) {
   );
 }
 
-// Separated EditQuizView component, still in App.jsx for now
+/**
+ * Component for editing an existing quiz
+ * Handles fetching quiz data, updating, and navigation
+ * @param {Object} props - Component props
+ * @param {Function} props.showToast - Function to show toast notifications
+ * @param {Function} props.handleUpdateQuiz - Function to handle quiz updates
+ * @returns {JSX.Element}
+ */
 function EditQuizView({ showToast, handleUpdateQuiz }) {
   const navigate = useNavigate();
   const { id } = useParams();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Fetch quiz data when component mounts
   useEffect(() => {
     const fetchQuiz = async () => {
       try {
@@ -237,6 +294,10 @@ function EditQuizView({ showToast, handleUpdateQuiz }) {
     fetchQuiz();
   }, [id, navigate, showToast]);
 
+  /**
+   * Handles quiz update submission
+   * @param {Object} quizData - The updated quiz data
+   */
   const handleUpdate = async (quizData) => {
     try {
       await handleUpdateQuiz(id, quizData);
@@ -246,6 +307,9 @@ function EditQuizView({ showToast, handleUpdateQuiz }) {
     }
   };
 
+  /**
+   * Handles cancellation of quiz editing
+   */
   const handleCancel = () => {
     navigate('/quizzes');
   };

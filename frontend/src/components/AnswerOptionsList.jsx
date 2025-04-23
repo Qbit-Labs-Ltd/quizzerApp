@@ -1,11 +1,23 @@
 import React from 'react';
 import '../styles/CommonStyles.css';
 
+/**
+ * Component for displaying a list of answer options for a question
+ * Shows answer text, correctness status, and delete buttons
+ * 
+ * @param {Object} props - Component props
+ * @param {Object} props.question - The question these answers belong to
+ * @param {Array} props.answers - Array of answer objects to display
+ * @param {Function} props.onAddAnswer - Function called when add answer is clicked
+ * @param {Function} props.onDeleteAnswer - Function called when delete answer is clicked
+ * @returns {JSX.Element}
+ */
 const AnswerOptionsList = ({ question, answers, onAddAnswer, onDeleteAnswer }) => {
     return (
         <div className="answers-container">
             <h1 className="page-title">Answer options of "{question.content}"</h1>
 
+            {/* Table for displaying answer options */}
             <table className="answer-table">
                 <thead>
                     <tr>
@@ -17,7 +29,10 @@ const AnswerOptionsList = ({ question, answers, onAddAnswer, onDeleteAnswer }) =
                 <tbody>
                     {answers.map(answer => (
                         <tr key={answer.id}>
+                            {/* Answer text */}
                             <td>{answer.text}</td>
+
+                            {/* Correctness status */}
                             <td>
                                 {answer.correct ? (
                                     <span className="correct">Correct</span>
@@ -25,6 +40,8 @@ const AnswerOptionsList = ({ question, answers, onAddAnswer, onDeleteAnswer }) =
                                     <span className="not-correct">Not correct</span>
                                 )}
                             </td>
+
+                            {/* Delete button */}
                             <td>
                                 <button
                                     className="delete-btn danger"
@@ -38,12 +55,13 @@ const AnswerOptionsList = ({ question, answers, onAddAnswer, onDeleteAnswer }) =
                 </tbody>
             </table>
 
+            {/* Action buttons */}
             <div className="button-row">
-                <button className="add-question-button" onClick={onAddAnswer}>
+                <button
+                    className="add-answer-button"
+                    onClick={onAddAnswer}
+                >
                     Add an answer option
-                </button>
-                <button className="cancel-button" onClick={() => window.history.back()}>
-                    Back to questions
                 </button>
             </div>
         </div>

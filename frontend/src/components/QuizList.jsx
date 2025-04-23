@@ -2,11 +2,25 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/CommonStyles.css';
 
+/**
+ * Component that displays a list of quizzes in a card layout
+ * Provides functionality to view, edit, and delete quizzes
+ * 
+ * @param {Object} props - Component props
+ * @param {Array} props.quizzes - Array of quiz objects to display
+ * @param {Function} props.onEdit - Function called when edit button is clicked
+ * @param {Function} props.onDelete - Function called when delete button is clicked
+ * @param {Function} props.onViewQuestions - Function called when view questions is clicked
+ * @param {boolean} props.loading - Whether quizzes are loading
+ * @returns {JSX.Element}
+ */
 const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
   const navigate = useNavigate();
 
+  // Show loading indicator when data is being fetched
   if (loading) return <div className="loading">Loading quizzes...</div>;
 
+  // Show empty state when no quizzes are available
   if (!quizzes || quizzes.length === 0) {
     return (
       <div className="empty-state">
@@ -16,10 +30,18 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
     );
   }
 
+  /**
+   * Handles edit button click
+   * @param {number} id - ID of the quiz to edit
+   */
   const handleEdit = (id) => {
     navigate(`/quizzes/${id}/edit`);
   };
 
+  /**
+   * Handles view questions button click
+   * @param {number} id - ID of the quiz to view questions for
+   */
   const handleViewQuestions = (id) => {
     navigate(`/quizzes/${id}/questions`);
   };

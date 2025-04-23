@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/CommonStyles.css';
 
+/**
+ * Form component for creating or editing quizzes
+ * Handles both new quiz creation and editing existing quizzes
+ * 
+ * @param {Object} props - Component props
+ * @param {Function} props.onSubmit - Function called when form is submitted
+ * @param {Object} props.initialData - Initial quiz data (when editing)
+ * @param {Function} props.onCancel - Function called when form is cancelled
+ * @param {boolean} props.isSubmitting - Whether form is currently submitting
+ * @param {string|null} props.error - Error message to display
+ * @param {Function} props.resetError - Function to reset error state
+ * @returns {JSX.Element}
+ */
 const QuizForm = ({
   onSubmit,
   initialData = {},
@@ -9,6 +22,7 @@ const QuizForm = ({
   error = null,
   resetError = () => { }
 }) => {
+  // Form state
   const [quiz, setQuiz] = useState({
     name: initialData.name || '',
     description: initialData.description || '',
@@ -16,7 +30,9 @@ const QuizForm = ({
     published: initialData.published || false
   });
 
-  // Reset form if there was an error
+  /**
+   * Reset form if there was an error
+   */
   useEffect(() => {
     if (error && error.includes('Duplicate course code')) {
       // Clear just the course code if that's the error
@@ -31,6 +47,10 @@ const QuizForm = ({
     }
   }, [error]);
 
+  /**
+   * Handles input field changes
+   * @param {Event} e - Input change event
+   */
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     // If user starts typing again after an error, clear the error
@@ -42,6 +62,10 @@ const QuizForm = ({
     });
   };
 
+  /**
+   * Handles form submission
+   * @param {Event} e - Form submit event
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;

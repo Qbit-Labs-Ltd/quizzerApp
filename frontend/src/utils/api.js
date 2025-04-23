@@ -1,9 +1,13 @@
 import axios from 'axios';
 import { mockQuizzes, mockQuestions } from '../../mockData';
 
-// Change this to false to use the real backend
+// Toggle between mock data (development) and real API (production)
 const isDev = false;
 
+/**
+ * Base axios instance for API requests
+ * Configured with common settings for all API calls
+ */
 const api = axios.create({
     baseURL: '/api',  // Make sure this matches your backend context path
     headers: {
@@ -11,11 +15,21 @@ const api = axios.create({
     }
 });
 
-// Generate unique IDs for mock data
+/**
+ * Generates a random ID for mock data objects
+ * @returns {number} A random integer ID
+ */
 const generateId = () => Math.floor(Math.random() * 10000);
 
-// Quiz API
+/**
+ * API utilities for quiz-related operations
+ * Provides methods for CRUD operations on quizzes
+ */
 export const quizApi = {
+    /**
+     * Retrieves all quizzes
+     * @returns {Promise<Array>} Array of quiz objects
+     */
     getAll: async () => {
         if (isDev) {
             console.log('Using mock quiz data');
@@ -25,6 +39,11 @@ export const quizApi = {
         return response.data;
     },
 
+    /**
+     * Retrieves a specific quiz by ID
+     * @param {number|string} id - Quiz ID
+     * @returns {Promise<Object>} Quiz object
+     */
     getById: async (id) => {
         if (isDev) {
             console.log(`Using mock data for quiz id: ${id}`);
@@ -36,11 +55,16 @@ export const quizApi = {
         return response.data;
     },
 
+    /**
+     * Creates a new quiz
+     * @param {Object} quizData - Quiz data to create
+     * @returns {Promise<Object>} Created quiz object
+     */
     create: async (quizData) => {
         if (isDev) {
             console.log('Creating mock quiz', quizData);
             const newQuiz = {
-                id: generateId(), // Use generateId instead of length+1
+                id: generateId(),
                 ...quizData,
                 dateAdded: new Date().toISOString(),
                 questionCount: 0
@@ -53,6 +77,12 @@ export const quizApi = {
         return response.data;
     },
 
+    /**
+     * Updates an existing quiz
+     * @param {number|string} id - Quiz ID
+     * @param {Object} quizData - Updated quiz data
+     * @returns {Promise<Object>} Updated quiz object
+     */
     update: async (id, quizData) => {
         if (isDev) {
             console.log(`Updating mock quiz id: ${id}`, quizData);
@@ -71,6 +101,11 @@ export const quizApi = {
         return response.data;
     },
 
+    /**
+     * Deletes a quiz and its associated questions
+     * @param {number|string} id - Quiz ID
+     * @returns {Promise<boolean>} Success status
+     */
     delete: async (id) => {
         if (isDev) {
             console.log(`Deleting mock quiz id: ${id}`);
@@ -93,8 +128,16 @@ export const quizApi = {
     }
 };
 
-// Question API
+/**
+ * API utilities for question-related operations
+ * Provides methods for CRUD operations on questions
+ */
 export const questionApi = {
+    /**
+     * Retrieves all questions for a specific quiz
+     * @param {number|string} quizId - Quiz ID
+     * @returns {Promise<Array>} Array of question objects
+     */
     getByQuizId: async (quizId) => {
         if (isDev) {
             console.log(`Getting mock questions for quiz id: ${quizId}`);
@@ -104,6 +147,12 @@ export const questionApi = {
         return response.data;
     },
 
+    /**
+     * Creates a new question for a quiz
+     * @param {number|string} quizId - Quiz ID
+     * @param {Object} questionData - Question data to create
+     * @returns {Promise<Object>} Created question object
+     */
     create: async (quizId, questionData) => {
         if (isDev) {
             console.log(`Creating mock question for quiz: ${quizId}`, questionData);
@@ -132,6 +181,12 @@ export const questionApi = {
         return response.data;
     },
 
+    /**
+     * Updates an existing question
+     * @param {number|string} id - Question ID
+     * @param {Object} questionData - Updated question data
+     * @returns {Promise<Object>} Updated question object
+     */
     update: async (id, questionData) => {
         if (isDev) {
             console.log(`Updating mock question with id: ${id}`, questionData);
@@ -149,6 +204,11 @@ export const questionApi = {
         return response.data;
     },
 
+    /**
+     * Deletes a question
+     * @param {number|string} id - Question ID
+     * @returns {Promise<Object>} Success response
+     */
     delete: async (id) => {
         if (isDev) {
             console.log(`Deleting mock question with id: ${id}`);
@@ -169,6 +229,11 @@ export const questionApi = {
         return response.data;
     },
 
+    /**
+     * Retrieves a specific question by ID
+     * @param {number|string} id - Question ID
+     * @returns {Promise<Object>} Question object
+     */
     getById: async (id) => {
         if (isDev) {
             console.log(`Getting mock question with id: ${id}`);
@@ -181,8 +246,16 @@ export const questionApi = {
     }
 };
 
-// Answer API
+/**
+ * API utilities for answer-related operations
+ * Currently only provides delete functionality
+ */
 export const answerApi = {
+    /**
+     * Deletes an answer
+     * @param {number|string} id - Answer ID
+     * @returns {Promise<boolean>} Success status
+     */
     delete: async (id) => {
         if (isDev) {
             console.log(`Deleting mock answer id: ${id}`);
