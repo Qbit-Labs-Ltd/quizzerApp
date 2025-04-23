@@ -1,0 +1,192 @@
+import React, { useState, useEffect } from 'react';
+import '../styles/CommonStyles.css';
+
+const QuestionForm = ({ quizId, quizName, onSubmit, onCancel, initialData, isEditing = false }) => {
+    const [questionText, setQuestionText] = useState(initialData?.content || '');
+    const [difficulty, setDifficulty] = useState(initialData?.difficulty || 'Easy');
+    const [answerOptions, setAnswerOptions] = useState(initialData?.answers || []);
+    const [newAnswerText, setNewAnswerText] = useState('');
+    const [newAnswerCorrect, setNewAnswerCorrect] = useState(false);
+
+    useEffect(() => {
+        if (initialData) {
+            setQuestionText(initialData.content || '');
+            setDifficulty(initialData.difficulty || 'Easy');
+            setAnswerOptions(initialData.answers || []);
+        }
+    }, [initialData]);
+
+    const handleAddAnswerOption = () => {
+        if (!newAnswerText.trim()) return;
+
+        const newAnswer = {
+            id: Date.now(), // Temporary ID for UI purposes
+            text: newAnswerText,
+            correct: newAnswerCorrect
+        };
+
+        setAnswerOptions([...answerOptions, newAnswer]);
+        setNewAnswerText('');
+        setNewAnswerCorrect(false);
+    };
+
+    const handleDeleteAnswerOption = (id) => {
+        setAnswerOptions(answerOptions.filter(answer => answer.id !== id));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        // Validate at least one answer is marked as correct
+        const hasCorrectAnswer = answerOptions.some(answer => answer.correct);
+
+        if (answerOptions.length < 2) {
+            alert("Please add at least two answer options.");
+            return;
+        }
+
+        if (!hasCorrectAnswer) {
+            alert("At least one answer must be marked as correct.");
+            return;
+        }
+
+        onSubmit({
+            content: questionText,
+            difficulty,
+            quizId,
+            answers: answerOptions
+        });
+    };
+
+    return (
+        <div className="question-form-container">
+            <h1 className="page-title">
+                {isEditing ? `Edit question for "${quizName}"` : `Add a question to "${quizName}"`}
+            </h1>
+
+            <form onSubmit={handleSubmit} className="question-form">
+                <div className="form-group">
+                    <label htmlFor="question-text">Question text</label>
+                    <input
+                        type="text"
+                        id="question-text"
+                        value={questionText}
+                        onChange={(e) => setQuestionText(e.target.value)}
+                        required
+                        placeholder="Enter question text"
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label>Difficulty</label>
+                    <div className="radio-group">
+                        <label className="radio-option">
+                            <input
+                                type="radio"
+                                name="difficulty"
+                                value="Easy"
+                                checked={difficulty === 'Easy'}
+                                onChange={() => setDifficulty('Easy')}
+                            />
+                            Easy
+                        </label>
+                        <label className="radio-option">
+                            <input
+                                type="radio"
+                                name="difficulty"
+                                value="Normal"
+                                checked={difficulty === 'Normal'}
+                                onChange={() => setDifficulty('Normal')}
+                            />
+                            Normal
+                        </label>
+                        <label className="radio-option">
+                            <input
+                                type="radio"
+                                name="difficulty"
+                                value="Hard"
+                                checked={difficulty === 'Hard'}
+                                onChange={() => setDifficulty('Hard')}
+                            />
+                            Hard
+                        </label>
+                    </div>
+                </div>
+
+                {/* Answer Options Section */}
+                <div className="form-group answer-options-section">
+                    <label>Answer Options</label>
+
+                    {answerOptions.length > 0 ? (
+                        <div className="added-answer-options">
+                            {answerOptions.map((answer, index) => (
+                                <div key={answer.id} className={`answer-option ${answer.correct ? 'correct-answer' : ''}`}>
+                                    <span className="answer-text">{answer.text}</span>
+                                    {answer.correct && <span className="correct-indicator">✓</span>}
+                                    <button
+                                        type="button"
+                                        className="delete-answer-btn"
+                                        onClick={() => handleDeleteAnswerOption(answer.id)}
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="info-text">No answer options added yet.</p>
+                    )}
+
+                    {/* Add new answer option form */}
+                    <div className="answer-form-group">
+                        <input
+                            type="text"
+                            value={newAnswerText}
+                            onChange={(e) => setNewAnswerText(e.target.value)}
+                            placeholder="Enter answer option"
+                            className="answer-input"
+                        />
+                        <label className="correct-answer-label">
+                            <input
+                                type="checkbox"
+                                checked={newAnswerCorrect}
+                                onChange={(e) => setNewAnswerCorrect(e.target.checked)}
+                            />
+                            Correct answer
+                        </label>
+                        <button
+                            type="button"
+                            className="add-answer-btn"
+                            onClick={handleAddAnswerOption}
+                            disabled={!newAnswerText.trim()}
+                        >
+                            Add
+                        </button>
+                    </div>
+
+                    {answerOptions.length < 2 && (
+                        <p className="hint-text">Add at least 2 answer options.</p>
+                    )}
+                    {!answerOptions.some(a => a.correct) && answerOptions.length > 0 && (
+                        <p className="warning-text">At least one answer must be correct.</p>
+                    )}
+                </div>
+
+                <div className="form-actions">
+                    <button type="button" className="cancel-button" onClick={onCancel}>
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        className="submit-button"
+                        disabled={answerOptions.length < 2 || !answerOptions.some(a => a.correct)}
+                    >
+                        {isEditing ? 'Save Changes' : 'Add'}
+                    </button>
+                </div>
+            </form>
+        </div>
+    );
+};
+
+export default QuestionForm;
