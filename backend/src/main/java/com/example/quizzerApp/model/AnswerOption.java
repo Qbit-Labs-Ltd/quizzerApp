@@ -1,5 +1,6 @@
 package com.example.quizzerApp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,12 +12,12 @@ public class AnswerOption {
 
     private String text;
 
-    private boolean correct;
+    private boolean isCorrect;
 
     @ManyToOne
     @JoinColumn(name = "question_id")
+    @JsonIgnoreProperties("answers") // Prevents circular references
     private Question question;
-
 
     public Long getId() {
         return id;
@@ -35,11 +36,11 @@ public class AnswerOption {
     }
 
     public boolean isCorrect() {
-        return correct;
+        return isCorrect;
     }
 
-    public void setCorrect(boolean correct) {
-        this.correct = correct;
+    public void setCorrect(boolean isCorrect) {
+        this.isCorrect = isCorrect;
     }
 
     public Question getQuestion() {

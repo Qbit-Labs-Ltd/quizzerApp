@@ -1,5 +1,6 @@
 package com.example.quizzerApp.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -15,7 +16,13 @@ public class Quiz {
     private String courseCode;
     private boolean published;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateAdded = LocalDateTime.now();
+
+    // Make sure dateAdded is initialized to prevent null errors
+    public Quiz() {
+        this.dateAdded = LocalDateTime.now();
+    }
 
     public Long getId() {
         return id;

@@ -426,58 +426,77 @@ button.cancel-button:hover {
     padding-bottom: 0.5rem;
 }
 
-/* Enhanced styles for answer options */
-
+/* Updated answer option layout */
 .answer-option {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    padding: 0.75rem 1rem;
-    margin-bottom: 0.5rem;
-    border-radius: 6px;
-    background-color: var(--gray-light);
-    border: 1px solid #e1e1e1;
-    transition: all 0.2s ease;
-}
-
-.answer-option:hover {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    background-color: #f8f8f8;
+    border-radius: 4px;
+    position: relative;
+    justify-content: flex-start;
+    /* Keep everything aligned to start */
+    gap: 12px;
+    /* Add consistent spacing between elements */
 }
 
 .answer-option.correct-answer {
     background-color: #e6f7e6;
-    border-color: #c3e6cb;
+    border-left: 3px solid #4caf50;
 }
 
+/* Make the text take only what it needs */
 .answer-text {
-    flex-grow: 1;
-    font-size: 1rem;
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: break-word;
+    padding-right: 0;
+    /* Remove padding that pushes things apart */
+    margin-right: 0;
+    /* Remove margin that pushes things apart */
 }
 
-.correct-indicator {
-    display: inline-flex;
+/* Keep actions together as a group */
+.answer-actions {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background-color: var(--success-green);
-    color: white;
-    margin-left: 0.75rem;
+    gap: 8px;
+    margin-left: auto;
+    /* Push actions to right but keep them together */
 }
 
-.delete-answer-btn {
-    background: none;
-    color: var(--danger-red);
-    border: none;
-    padding: 0.25rem;
-    cursor: pointer;
-    margin-left: 0.5rem;
-    opacity: 0.6;
-    transition: opacity 0.2s ease;
+/* Fix checkbox alignment */
+.correct-answer-label {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    padding: 0;
+    margin: 0;
+    user-select: none;
 }
 
-.delete-answer-btn:hover {
-    opacity: 1;
+.correct-answer-label input {
+    margin-right: 5px;
+}
+
+/* For narrow screens, improve wrapping */
+@media (max-width: 576px) {
+    .answer-option {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .answer-text {
+        margin-bottom: 8px;
+        width: 100%;
+    }
+
+    .correct-answer-label {
+        padding-left: 0;
+        margin-top: 5px;
+    }
 }
 
 /* Better styling for answer options in form */
@@ -536,12 +555,11 @@ button.cancel-button:hover {
 
 /* Fix answer form group alignment */
 .answer-form-group {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    flex-wrap: nowrap !important;
-    /* Prevent wrapping at all costs */
-    gap: 8px !important;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
     padding: 12px !important;
     width: 100% !important;
     background-color: white !important;
@@ -552,9 +570,8 @@ button.cancel-button:hover {
 
 /* Ensure the input can shrink if needed */
 .answer-form-group .answer-input {
-    flex: 1 1 auto !important;
-    min-width: 100px !important;
-    /* Minimum width to prevent extreme shrinking */
+    flex-grow: 1;
+    min-width: 200px;
     max-width: none !important;
     margin: 0 !important;
 }
@@ -586,7 +603,6 @@ button.cancel-button:hover {
 .answer-input {
     flex: 1;
     min-width: 0;
-    /* Allow input to shrink below min-content if needed */
     padding: 0.5rem;
     border: 1px solid var(--border-gray);
     border-radius: 4px;
@@ -596,10 +612,8 @@ button.cancel-button:hover {
     display: flex;
     align-items: center;
     white-space: nowrap;
-    /* Prevent label from wrapping */
     margin: 0;
     flex: 0 0 auto;
-    /* Don't grow or shrink */
     padding: 0 0.5rem;
 }
 
@@ -609,7 +623,6 @@ button.cancel-button:hover {
 
 .add-answer-btn {
     flex: 0 0 auto;
-    /* Don't grow or shrink */
     white-space: nowrap;
     padding: 0.5rem 0.75rem;
     background-color: var(--primary-blue);
@@ -623,18 +636,15 @@ button.cancel-button:hover {
 @media (max-width: 576px) {
     .answer-form-group {
         flex-wrap: wrap;
-        /* Allow wrapping on very small screens */
     }
 
     .answer-input {
         flex: 1 1 100%;
-        /* Full width on mobile */
         margin-bottom: 0.5rem;
     }
 
     .correct-answer-label {
         flex: 1;
-        /* Allow to take available space */
         margin-right: auto;
     }
 }
@@ -803,7 +813,6 @@ button.cancel-button:hover {
 
 .answer-input {
     flex: 1 1 250px;
-    /* Allow proper wrapping with min width */
     min-width: 0;
     padding: 0.5rem;
     border: 1px solid var(--border-gray);
@@ -1165,9 +1174,7 @@ a.question-link:hover {
     display: flex;
     justify-content: space-between;
     margin-top: 2rem;
-    /* Slightly reduced to balance overall spacing */
     padding: 1rem 0;
-    /* Added padding on top and bottom */
 }
 
 /* Action buttons in table */
@@ -1265,9 +1272,7 @@ a.question-link:hover {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 2rem 2rem;
-    /* Horizontal gap, vertical gap */
     row-gap: 3rem;
-    /* Increase vertical gap between rows */
     margin-bottom: 3.5rem;
     padding-bottom: 1.5rem;
 }
@@ -1282,7 +1287,6 @@ a.question-link:hover {
     flex-direction: column;
     height: 100%;
     margin-bottom: 0;
-    /* Remove this as we're using row-gap instead */
 }
 
 .quiz-card:hover {
@@ -1415,7 +1419,6 @@ a.question-link:hover {
 /* More space around page elements */
 .quizzes-container {
     padding-bottom: 3rem;
-    /* Increased from 2rem to 3rem */
 }
 
 /* Responsive adjustments */

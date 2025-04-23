@@ -23,23 +23,28 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
     };
 
     const handleQuizSubmit = async (quizData) => {
-        // Only create once
-        if (quizCreated.current || isSubmitting) {
-            return;
-        }
-
         try {
             setIsSubmitting(true);
-            setFormError(null);
+            console.log("Submitting quiz data:", quizData);
 
-            const createdQuiz = await handleCreateQuiz(quizData);
+            // Ensure all required fields are present
+            const quizToSubmit = {
+                name: quizData.name || "",
+                description: quizData.description || "",
+                courseCode: quizData.courseCode || "",
+                published: quizData.published || false
+            };
+
+            const response = await handleCreateQuiz(quizToSubmit);
             quizCreated.current = true;
-            setNewQuiz(createdQuiz);
+            setNewQuiz(response);
             setStep('questions');
-        } catch (err) {
-            console.error('Failed to create quiz:', err);
-            setFormError(err.message || 'Failed to create quiz');
-            resetQuizForm();
+        } catch (error) {
+            console.error("Failed to create quiz:", error);
+            // Extract detailed error message if available
+            const errorMessage = error.response?.data?.message || error.message || 'Failed to create quiz';
+            setFormError(errorMessage);
+            showToast(`Error: ${errorMessage}`, 'error');
         } finally {
             setIsSubmitting(false);
         }
@@ -52,7 +57,19 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
         }
 
         try {
-            const newQuestion = await questionApi.create(newQuiz.id, questionData);
+            // Format the question data properly
+            const formattedQuestion = {
+                content: questionData.content,
+                difficulty: questionData.difficulty,
+                answers: questionData.answers.map(answer => ({
+                    text: answer.text,
+                    correct: answer.correct
+                }))
+            };
+
+            console.log("Sending question data:", formattedQuestion);
+
+            const newQuestion = await questionApi.create(newQuiz.id, formattedQuestion);
             setQuestions([...questions, newQuestion]);
             setIsAddingQuestion(false);
             showToast('Question added successfully!');

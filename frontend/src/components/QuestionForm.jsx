@@ -34,6 +34,23 @@ const QuestionForm = ({ quizId, quizName, onSubmit, onCancel, initialData, isEdi
         setAnswerOptions(answerOptions.filter(answer => answer.id !== id));
     };
 
+    const handleCorrectAnswerChange = (answerId) => {
+        // Update only the toggled answer, leaving others unchanged
+        const updatedOptions = answerOptions.map(answer => {
+            if (answer.id === answerId) {
+                // Toggle the correct state of this answer
+                return {
+                    ...answer,
+                    correct: !answer.correct
+                };
+            }
+            // Leave other answers unchanged
+            return answer;
+        });
+
+        setAnswerOptions(updatedOptions);
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -41,19 +58,18 @@ const QuestionForm = ({ quizId, quizName, onSubmit, onCancel, initialData, isEdi
         const hasCorrectAnswer = answerOptions.some(answer => answer.correct);
 
         if (answerOptions.length < 2) {
-            alert("Please add at least two answer options.");
+            showToast("Please add at least two answer options.", "error");
             return;
         }
 
         if (!hasCorrectAnswer) {
-            alert("At least one answer must be marked as correct.");
+            showToast("At least one answer must be marked as correct.", "error");
             return;
         }
 
         onSubmit({
             content: questionText,
             difficulty,
-            quizId,
             answers: answerOptions
         });
     };
@@ -122,14 +138,23 @@ const QuestionForm = ({ quizId, quizName, onSubmit, onCancel, initialData, isEdi
                             {answerOptions.map((answer, index) => (
                                 <div key={answer.id} className={`answer-option ${answer.correct ? 'correct-answer' : ''}`}>
                                     <span className="answer-text">{answer.text}</span>
-                                    {answer.correct && <span className="correct-indicator">✓</span>}
-                                    <button
-                                        type="button"
-                                        className="delete-answer-btn"
-                                        onClick={() => handleDeleteAnswerOption(answer.id)}
-                                    >
-                                        ×
-                                    </button>
+                                    <div className="answer-actions">
+                                        {answer.correct && <span className="correct-indicator">✓</span>}
+                                        <label className="correct-answer-label">
+                                            <input
+                                                type="checkbox"
+                                                checked={answer.correct}
+                                                onChange={() => handleCorrectAnswerChange(answer.id)}
+                                            />
+                                        </label>
+                                        <button
+                                            type="button"
+                                            className="delete-answer-btn"
+                                            onClick={() => handleDeleteAnswerOption(answer.id)}
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
                         </div>

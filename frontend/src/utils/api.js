@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { mockQuizzes, mockQuestions } from '../../mockData';
 
-// Determine if we're in development mode
-const isDev = true; // For now, always use mock data
+// Change this to false to use the real backend
+const isDev = false;
 
 const api = axios.create({
-    baseURL: '/api',
+    baseURL: '/api',  // Make sure this matches your backend context path
     headers: {
         'Content-Type': 'application/json',
     }
