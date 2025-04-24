@@ -1,22 +1,31 @@
 package com.example.quizzerApp.controller;
 
-import com.example.quizzerApp.dto.QuizDTO;
-import com.example.quizzerApp.exception.ResourceNotFoundException;
-import com.example.quizzerApp.model.Question;
-import com.example.quizzerApp.model.Quiz;
-import com.example.quizzerApp.model.AnswerOption; // Add this import
-import com.example.quizzerApp.repository.QuestionRepository;
-import com.example.quizzerApp.repository.QuizRepository;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.quizzerApp.dto.QuizDTO;
+import com.example.quizzerApp.exception.ResourceNotFoundException;
+import com.example.quizzerApp.model.AnswerOption; // Add this import
+import com.example.quizzerApp.model.Question;
+import com.example.quizzerApp.model.Quiz;
+import com.example.quizzerApp.repository.QuestionRepository;
+import com.example.quizzerApp.repository.QuizRepository;
+
+import jakarta.validation.Valid;
 
 /**
  * REST Controller for handling Quiz-related operations.
@@ -24,6 +33,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api/quizzes")
+@CrossOrigin(origins = "*")
 public class QuizRestController {
 
     /**
