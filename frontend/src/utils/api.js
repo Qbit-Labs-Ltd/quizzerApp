@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { mockQuizzes, mockQuestions } from '../../mockData';
+import { mockQuestions, mockQuizzes } from '../../mockData';
 
 // Toggle between mock data (development) and real API (production)
 const isDev = false;
@@ -9,7 +9,7 @@ const isDev = false;
  * Configured with common settings for all API calls
  */
 const api = axios.create({
-    baseURL: '/api',  // Make sure this matches your backend context path
+    baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`,  // Updated to use environment variable
     headers: {
         'Content-Type': 'application/json',
     }
