@@ -14,13 +14,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.quizzerApp.dto.DetailedQuizDTO;
 import com.example.quizzerApp.dto.QuizDTO;
 import com.example.quizzerApp.exception.ResourceNotFoundException;
-import com.example.quizzerApp.model.AnswerOption; // Add this import
+import com.example.quizzerApp.model.AnswerOption;
 import com.example.quizzerApp.model.Question;
 import com.example.quizzerApp.model.Quiz;
+import com.example.quizzerApp.repository.CategoryRepository;
 import com.example.quizzerApp.repository.QuestionRepository;
 import com.example.quizzerApp.repository.QuizRepository;
 
@@ -47,6 +50,12 @@ public class QuizRestController {
     private QuestionRepository questionRepository;
 
     /**
+     * Repository for Category entity operations
+     */
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    /**
      * Retrieves all quizzes
      * 
      * @return List of all quizzes with their question counts
@@ -58,16 +67,25 @@ public class QuizRestController {
     }
 
     /**
-     * Retrieves a specific quiz by its ID
+     * Retrieves a specific quiz by its ID including questions and answer options
      * 
      * @param id The ID of the quiz to retrieve
-     * @return The quiz with the specified ID
+     * @return The quiz with the specified ID including questions and answer options
      * @throws ResourceNotFoundException if no quiz exists with the given ID
      */
     @GetMapping("/{id}")
-    public ResponseEntity<QuizDTO> getQuiz(@PathVariable Long id) {
+    public ResponseEntity<?> getQuiz(@PathVariable Long id,
+            @RequestParam(value = "includeQuestions", required = false, defaultValue = "false") boolean includeQuestions) {
         Quiz quiz = quizRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Quiz not found with id " + id));
+
+        // If detailed view is requested, return quiz with questions and answer options
+        if (includeQuestions) {
+            List<Question> questions = questionRepository.findByQuizId(id);
+            return ResponseEntity.ok(new DetailedQuizDTO(quiz, questions));
+        }
+
+        // Otherwise, return the standard quiz DTO
         int questionCount = questionRepository.countByQuizId(id);
         return ResponseEntity.ok(QuizDTO.fromQuiz(quiz, questionCount));
     }
@@ -91,6 +109,12 @@ public class QuizRestController {
 
             // Set the dateAdded field explicitly to now
             quiz.setDateAdded(LocalDateTime.now());
+
+            // Set the category if categoryId is provided
+            if (quiz.getCategory() != null && quiz.getCategory().getId() != null) {
+                Long categoryId = quiz.getCategory().getId();
+                categoryRepository.findById(categoryId).ifPresent(quiz::setCategory);
+            }
 
             Quiz savedQuiz = quizRepository.save(quiz);
 
@@ -123,6 +147,15 @@ public class QuizRestController {
                     quiz.setDescription(quizDetails.getDescription());
                     quiz.setCourseCode(quizDetails.getCourseCode());
                     quiz.setPublished(quizDetails.isPublished());
+
+                    // Update category if provided
+                    if (quizDetails.getCategory() != null && quizDetails.getCategory().getId() != null) {
+                        Long categoryId = quizDetails.getCategory().getId();
+                        categoryRepository.findById(categoryId).ifPresent(quiz::setCategory);
+                    } else {
+                        quiz.setCategory(null); // Remove category if not provided
+                    }
+
                     Quiz updatedQuiz = quizRepository.save(quiz);
                     int questionCount = questionRepository.findByQuizId(quiz.getId()).size();
                     return ResponseEntity.ok(new QuizDTO(updatedQuiz, questionCount));

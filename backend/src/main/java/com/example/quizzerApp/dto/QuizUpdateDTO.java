@@ -41,6 +41,11 @@ public class QuizUpdateDTO {
     private boolean published;
 
     /**
+     * The ID of the category this quiz belongs to.
+     */
+    private Long categoryId;
+
+    /**
      * Retrieves the name of the quiz.
      *
      * @return The quiz name
@@ -110,5 +115,23 @@ public class QuizUpdateDTO {
      */
     public void setPublished(boolean published) {
         this.published = published;
+    }
+
+    /**
+     * Retrieves the ID of the category.
+     *
+     * @return The category ID
+     */
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    /**
+     * Sets the ID of the category.
+     *
+     * @param categoryId The category ID to set
+     */
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 }

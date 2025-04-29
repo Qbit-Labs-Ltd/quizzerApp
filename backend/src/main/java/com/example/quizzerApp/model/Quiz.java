@@ -1,6 +1,7 @@
 package com.example.quizzerApp.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -45,6 +46,15 @@ public class Quiz {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateAdded = LocalDateTime.now();
+
+    /**
+     * The category this quiz belongs to.
+     * Many-to-one relationship with Category entity.
+     */
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    @JsonIgnoreProperties("quizzes")
+    private Category category;
 
     /**
      * Default constructor.
@@ -160,5 +170,23 @@ public class Quiz {
      */
     public void setDateAdded(LocalDateTime dateAdded) {
         this.dateAdded = dateAdded;
+    }
+
+    /**
+     * Retrieves the category that this quiz belongs to.
+     *
+     * @return The category
+     */
+    public Category getCategory() {
+        return category;
+    }
+
+    /**
+     * Sets the category that this quiz belongs to.
+     *
+     * @param category The category to set
+     */
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

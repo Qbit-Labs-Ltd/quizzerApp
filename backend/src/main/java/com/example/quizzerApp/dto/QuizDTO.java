@@ -49,6 +49,16 @@ public class QuizDTO {
     private int questionCount;
 
     /**
+     * The ID of the category this quiz belongs to.
+     */
+    private Long categoryId;
+
+    /**
+     * The name of the category this quiz belongs to.
+     */
+    private String categoryName;
+
+    /**
      * Constructs a QuizDTO from a Quiz entity and its question count.
      *
      * @param quiz          The Quiz entity to convert
@@ -62,6 +72,12 @@ public class QuizDTO {
         this.published = quiz.isPublished();
         this.dateAdded = quiz.getDateAdded();
         this.questionCount = questionCount;
+
+        // Set category information if category exists
+        if (quiz.getCategory() != null) {
+            this.categoryId = quiz.getCategory().getId();
+            this.categoryName = quiz.getCategory().getName();
+        }
     }
 
     /**
@@ -216,5 +232,41 @@ public class QuizDTO {
      */
     public void setQuestionCount(int questionCount) {
         this.questionCount = questionCount;
+    }
+
+    /**
+     * Retrieves the ID of the category.
+     *
+     * @return The category ID
+     */
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    /**
+     * Sets the ID of the category.
+     *
+     * @param categoryId The category ID to set
+     */
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    /**
+     * Retrieves the name of the category.
+     *
+     * @return The category name
+     */
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    /**
+     * Sets the name of the category.
+     *
+     * @param categoryName The category name to set
+     */
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }
