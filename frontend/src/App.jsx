@@ -7,6 +7,9 @@ import ConfirmationModal from './components/ConfirmationModal';
 import QuizCreator from './components/QuizCreator';
 import QuizQuestionsView from './components/QuizQuestionsView';
 import EditQuestionView from './components/EditQuestionView';
+import QuizPage from './views/QuizPage';
+import ResultsPage from './views/ResultsPage'; // Import ResultsPage component
+import CategoryDetailPage from './views/CategoryDetailPage';
 import { quizApi, questionApi, answerApi } from './utils/api';
 import './styles/CommonStyles.css';
 
@@ -220,6 +223,18 @@ function App() {
             <Route
               path="/questions/:id/edit"
               element={<EditQuestionView showToast={showToast} />}
+            />
+            <Route
+              path="/quiz/:id"
+              element={<QuizPage />}
+            />
+            <Route
+              path="/quiz/:id/results"
+              element={<ResultsPage />}
+            />
+            <Route
+              path="/categories/:id"
+              element={<CategoryDetailPage />}
             />
           </Routes>
         </main>
