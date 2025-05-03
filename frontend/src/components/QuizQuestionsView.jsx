@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import QuestionSorter from './QuestionSorter';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import '../styles/QuestionsView.css';
+import { questionApi, quizApi } from '../utils/api';
 import QuestionBlock from './QuestionBlock';
 import QuestionForm from './QuestionForm';
-import { quizApi, questionApi } from '../utils/api';
+import QuestionSorter from './QuestionSorter';
 
 /**
  * Component that displays and manages questions for a specific quiz

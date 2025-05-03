@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import QuizForm from './QuizForm';
-import QuestionForm from './QuestionForm';
-import { questionApi } from '../utils/api';
 import '../styles/CommonStyles.css';
+import { questionApi } from '../utils/api';
+import QuestionForm from './QuestionForm';
+import QuizForm from './QuizForm';
 
 /**
  * Multi-step component for creating a new quiz and its questions
@@ -144,8 +144,10 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
     // Quiz creation step
     if (step === 'quiz') {
         return (
-            <div>
-                <h1 className="page-title">Create New Quiz</h1>
+            <div className="quiz-creator">
+                <div className="page-title-container">
+                    <h1 className="page-title">Create New Quiz</h1>
+                </div>
                 <QuizForm
                     onSubmit={handleQuizSubmit}
                     onCancel={handleCancel}

@@ -9,7 +9,7 @@ const isDev = false;
  * Configured with common settings for all API calls
  */
 const api = axios.create({
-    baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`,  // Updated to use environment variable
+    baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`,
     headers: {
         'Content-Type': 'application/json',
     }
