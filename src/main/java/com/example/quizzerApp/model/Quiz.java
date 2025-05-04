@@ -17,6 +17,10 @@ public class Quiz {
 
     private LocalDateTime dateAdded = LocalDateTime.now();
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     public Long getId() {
         return id;
     }
@@ -63,5 +67,13 @@ public class Quiz {
 
     public void setDateAdded(LocalDateTime dateAdded) {
         this.dateAdded = dateAdded;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
