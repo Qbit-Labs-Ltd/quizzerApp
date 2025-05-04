@@ -80,7 +80,7 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
               <p className="quiz-card-description">{quiz.description || "No description"}</p>
               <div className="quiz-card-details">
                 <span className="quiz-card-course">Course: {quiz.courseCode}</span>
-                <span className="quiz-card-category">Category: {quiz.category || "None"}</span>
+                <span className="quiz-card-category">Category: {quiz.categoryName || "None"}</span>
                 <span className="quiz-card-date">Added: {new Date(quiz.dateAdded || Date.now()).toLocaleDateString()}</span>
               </div>
             </div>

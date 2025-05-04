@@ -50,7 +50,10 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
                 name: quizData.name || "",
                 description: quizData.description || "",
                 courseCode: quizData.courseCode || "",
-                published: quizData.published || false
+                published: quizData.published || false,
+                category: quizData.category
+                    ? { id: parseInt(quizData.category) }
+                    : null
             };
 
             // Create quiz via API
