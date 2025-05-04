@@ -179,6 +179,7 @@ function App() {
             <li><Link to="/">Home</Link></li>
             <li><Link to="/quizzes">Quizzes</Link></li>
             <li><Link to="/quizzes/new">Create Quiz</Link></li>
+            <li><Link to="/categories/new" ></Link>Create Category</li>
           </ul>
         </nav>
 
