@@ -209,7 +209,7 @@
 /* Add this at the end */
 .create-btn {
   padding: 8px 16px;
-  background-color: #4a90e2;
+  background-color: var(--primary-blue);
   color: white;
   border: none;
   border-radius: 4px;
@@ -218,5 +218,7 @@
 }
 
 .create-btn:hover {
-  background-color: #3a7fcf;
+  background-color: var(--primary-blue-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

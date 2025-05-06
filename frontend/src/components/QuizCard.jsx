@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/CommonStyles.css';
+import '../styles/CardStyles.css';
 
 /**
  * Presentational component that renders a single quiz in a card.
@@ -36,7 +36,7 @@ export default function QuizCard({ quiz, onEdit, onDelete, onViewQuestions }) {
         </div>
       </div>
 
-      { (onEdit || onDelete) && (
+      {(onEdit || onDelete) && (
         <div className="quiz-card-actions">
           {onViewQuestions && (
             <button className="view-questions-btn" onClick={() => onViewQuestions(quiz.id)}>View Questions</button>

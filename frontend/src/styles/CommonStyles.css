@@ -114,14 +114,14 @@ button {
 }
 
 /* Primary button (blue) */
-button:not(.danger):not(.cancel-button) {
+/* button:not(.danger):not(.cancel-button) {
     background-color: var(--primary-blue);
     color: white;
 }
 
 button:not(.danger):not(.cancel-button):hover {
     background-color: var(--primary-blue-hover);
-}
+} */
 
 /* Danger button (red) */
 button.danger,
@@ -1348,20 +1348,23 @@ a.question-link:hover {
 .quiz-card-actions {
     padding: 1.25rem 1.5rem;
     border-top: 1px solid var(--border-gray);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: grid;
 }
 
 .view-questions-btn {
-    background-color: transparent;
-    color: var(--primary-blue);
-    border: 1px solid var(--primary-blue);
-    border-radius: 4px;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
 }
 
 .view-questions-btn:hover {

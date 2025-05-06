@@ -11,7 +11,8 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  margin-bottom: 100px; /* Added margin to prevent overlapping */
+  margin-bottom: 100px;
+  /* Added margin to prevent overlapping */
 }
 
 .card:hover {
@@ -182,9 +183,11 @@
 .quiz-cards-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem; /* Keep good spacing between cards */
+  gap: 2rem;
+  /* Keep good spacing between cards */
   margin-bottom: 2rem;
-  position: relative; /* Add position context */
+  position: relative;
+  /* Add position context */
 }
 
 /* Add clearfix to ensure proper container height */
@@ -195,18 +198,23 @@
 }
 
 /* Make each grid item a container with padding for the hover effect */
-.quiz-cards-grid > div {
+.quiz-cards-grid>div {
   position: relative;
-  padding-top: 8px; /* Space for the card to move up without overlapping */
-  padding-bottom: 8px; /* Space for shadow expansion */
-  z-index: 1; /* Default z-index */
-  transition: z-index 0.01s step-end; /* Delay z-index change until after hover */
+  padding-top: 8px;
+  /* Space for the card to move up without overlapping */
+  padding-bottom: 8px;
+  /* Space for shadow expansion */
+  z-index: 1;
+  /* Default z-index */
+  transition: z-index 0.01s step-end;
+  /* Delay z-index change until after hover */
 }
 
 /* Increase z-index on hover to ensure the card appears above others */
-.quiz-cards-grid > div:hover {
+.quiz-cards-grid>div:hover {
   z-index: 10;
-  transition: z-index 0.01s step-start; /* Immediately change z-index on hover */
+  transition: z-index 0.01s step-start;
+  /* Immediately change z-index on hover */
 }
 
 .quiz-card {
@@ -219,7 +227,8 @@
   flex-direction: column;
   background-color: white;
   position: relative;
-  will-change: transform; /* Optimize for animation */
+  will-change: transform;
+  /* Optimize for animation */
 }
 
 .quiz-card:hover {
@@ -256,7 +265,8 @@
   transform: scale(1.05);
 }
 
-.published-badge, .not-published-badge {
+.published-badge,
+.not-published-badge {
   display: inline-block;
   padding: 0.35em 0.65em;
   font-size: 0.75rem;
@@ -290,7 +300,8 @@
   margin-bottom: 1.5rem;
   color: var(--text-muted);
   line-height: 1.5;
-  min-height: 3em; /* Give some minimum height for consistency */
+  min-height: 3em;
+  /* Give some minimum height for consistency */
 }
 
 .quiz-card-details {
@@ -301,7 +312,8 @@
   margin-bottom: 0.5rem;
 }
 
-.quiz-card-course, .quiz-card-questions {
+.quiz-card-course,
+.quiz-card-questions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -324,7 +336,7 @@
   padding: 1rem 1.25rem;
   background-color: #f8f9fa;
   border-top: 1px solid var(--border-gray);
-  display: flex;
+  display: grid;
   flex-direction: column;
   gap: 0.75rem;
 }
@@ -360,7 +372,8 @@
 }
 
 /* Equal width for Edit and Delete buttons */
-.edit-btn, .delete-btn {
+.edit-btn,
+.delete-btn {
   flex: 1;
   padding: 0.5rem 0;
   border-radius: 6px;
@@ -384,14 +397,16 @@
   color: white;
 }
 
-.edit-btn:hover, .delete-btn:hover {
+.edit-btn:hover,
+.delete-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   opacity: 0.9;
 }
 
 /* Badge styling improvements */
-.published-badge, .not-published-badge {
+.published-badge,
+.not-published-badge {
   display: inline-flex;
   padding: 0.35em 0.75em;
   font-size: 0.75rem;
@@ -419,7 +434,8 @@
   margin-bottom: 1.5rem;
   color: var(--text-muted);
   line-height: 1.5;
-  min-height: 3em; /* Give some minimum height for consistency */
+  min-height: 3em;
+  /* Give some minimum height for consistency */
 }
 
 .quiz-card-details {
@@ -430,7 +446,8 @@
   margin-bottom: 0.5rem;
 }
 
-.quiz-card-course, .quiz-card-questions {
+.quiz-card-course,
+.quiz-card-questions {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -453,13 +470,16 @@
 .categories-list {
   display: flex;
   flex-direction: column;
-  gap: 2rem; /* Increased gap */
+  gap: 2rem;
+  /* Increased gap */
   margin-top: 1.5rem;
-  position: relative; /* Add position context */
+  position: relative;
+  /* Add position context */
 }
 
 .category-card {
-  margin-bottom: 0; /* Remove margin to use gap instead */
+  margin-bottom: 0;
+  /* Remove margin to use gap instead */
   position: relative;
   z-index: 1;
   transition: z-index 0.01s step-end;
@@ -648,9 +668,11 @@
   0% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.05);
   }
+
   100% {
     transform: scale(1);
   }
@@ -661,6 +683,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -681,24 +704,26 @@
   .quiz-cards-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .quiz-card:hover {
     transform: translateY(-3px);
   }
-  
+
   .question-block:hover {
     transform: translateY(-3px);
   }
-  
+
   .card-action-buttons {
     flex-direction: column;
     width: 100%;
   }
-  
-  .edit-btn, .delete-btn, .view-questions-btn {
+
+  .edit-btn,
+  .delete-btn,
+  .view-questions-btn {
     width: 100%;
     max-width: 100%;
     justify-content: center;
     margin-bottom: 0.5rem;
   }
-} 
+}
