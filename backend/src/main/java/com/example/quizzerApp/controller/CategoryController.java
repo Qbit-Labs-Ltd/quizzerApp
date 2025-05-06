@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.quizzerApp.dto.CategoryDTO;
 import com.example.quizzerApp.exception.ResourceNotFoundException;
 import com.example.quizzerApp.model.Category;
 import com.example.quizzerApp.repository.CategoryRepository;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 
 @Controller
 @RequestMapping("/categories")
@@ -50,12 +52,10 @@ public class CategoryController {
         return "redirect:/categories";
     }
 
-    // @GetMapping("/{id}/edit")
-    // public String showEditForm(@PathVariable Long id, Model model) {
-    // Category category = categoryRepository.findById(id)
-    // .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
-    // model.addAttribute("category", category);
-    // return "categories/edit-category";
-    // }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryDTO> getCategory(@PathVariable Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id " + id));
+        return ResponseEntity.ok(new CategoryDTO(category));
+    }
 }
