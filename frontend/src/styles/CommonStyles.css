@@ -1166,15 +1166,15 @@ a.question-link:hover {
 }
 
 .add-quiz-link:hover {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 /* Button row at bottom of pages */
 .button-row {
     display: flex;
     justify-content: space-between;
-    margin-top: 2rem;
     padding: 1rem 0;
+
 }
 
 /* Action buttons in table */

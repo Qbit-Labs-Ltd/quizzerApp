@@ -1,9 +1,12 @@
 /* Standardized Page Title Styling */
 .page-title-container {
-  margin-top: -1rem; /* Consistent top margin for all pages */
+  margin-top: -1rem;
+  /* Consistent top margin for all pages */
   margin-bottom: 2rem;
   border-bottom: 1px solid var(--border-gray);
   padding-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
   position: relative;
 }
 
@@ -59,16 +62,16 @@ h1.page-title {
   .page-title-container {
     margin-top: 1.5rem;
   }
-  
+
   .page-title {
     font-size: 1.75rem;
   }
-  
+
   .page-title::after {
     width: 40px;
     height: 3px;
   }
-  
+
   .page-subtitle {
     font-size: 1rem;
   }
@@ -88,14 +91,16 @@ h1.page-title {
 
 /* Adjust the top position directly */
 .categories-container .page-title-container {
-  margin-top: 1.25rem !important; /* Try a smaller margin to move it up */
+  margin-top: 1.25rem !important;
+  /* Try a smaller margin to move it up */
 }
 
 /* If needed, adjust the entire container's position */
 .categories-container {
   margin-top: -3rem;
   position: relative;
-  top: -0.75rem; /* Move the entire container up slightly */
+  top: -0.75rem;
+  /* Move the entire container up slightly */
   left: -1.5rem;
 }
 
@@ -104,4 +109,4 @@ h1.page-title {
   margin: 0;
   padding: 0;
   font-size: 2.25rem;
-} 
+}

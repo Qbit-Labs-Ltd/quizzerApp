@@ -57,10 +57,17 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
     return true;
   });
 
+  const createQuiz = () => {
+    navigate('/quizzes/new');
+  };
+
   return (
     <div className="quizzes-container">
       <div className="page-title-container">
         <h1 className="page-title">Quizzes</h1>
+        <div className="button-row">
+          <button onClick={createQuiz}>Add a quiz</button>
+        </div>
       </div>
 
       <div className="quiz-cards-grid">
@@ -115,12 +122,6 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="button-row">
-        <Link to="/quizzes/new" className="add-quiz-link">
-          Add a quiz
-        </Link>
       </div>
     </div>
   );
