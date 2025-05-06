@@ -5,6 +5,20 @@
   padding: 20px;
 }
 
+/* Page title container with action button */
+.page-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.8rem;
+}
+
 /* Category list styling */
 .categories-list {
   display: flex;
@@ -19,12 +33,6 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.category-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Category header section */
@@ -35,7 +43,6 @@
   padding: 16px 20px;
   background-color: #f5f7fa;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 .category-header:hover {
@@ -54,25 +61,12 @@
   font-size: 24px;
   font-weight: bold;
   color: #4a90e2;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s;
-}
-
-.expand-icon:hover {
-  background-color: rgba(74, 144, 226, 0.1);
 }
 
 /* Category description */
 .category-description {
   padding: 15px 20px;
   color: #5c6b7a;
-  font-size: 0.95rem;
-  line-height: 1.5;
   border-bottom: 1px solid #ebeef2;
 }
 
@@ -81,23 +75,7 @@
   padding: 0 20px 20px;
 }
 
-/* Loading indicator for quizzes */
-.loading-quizzes {
-  padding: 15px 0;
-  text-align: center;
-  color: #5c6b7a;
-  font-style: italic;
-}
-
-/* Quiz list heading */
-.quiz-list-by-category h3 {
-  margin: 15px 0;
-  color: #3d4852;
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-/* Individual quiz item */
+/* Quiz item */
 .quiz-item {
   display: flex;
   justify-content: space-between;
@@ -107,7 +85,6 @@
   background-color: #f8fafc;
   margin-bottom: 12px;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 .quiz-item:hover {
@@ -122,7 +99,6 @@
 .quiz-item-details h4 {
   margin: 0 0 8px;
   color: #2d3748;
-  font-size: 1.1rem;
 }
 
 .quiz-item-details p {
@@ -146,9 +122,7 @@
   color: white;
   border: none;
   border-radius: 4px;
-  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 .take-quiz-btn:hover {
@@ -162,13 +136,16 @@
 
 /* Message when no quizzes available */
 .no-quizzes-message {
-  padding: 15px;
   text-align: center;
   color: #718096;
   font-style: italic;
-  background-color: #f8fafc;
-  border-radius: 6px;
-  margin-top: 10px;
+  padding: 15px;
+}
+
+/* Loading states */
+.loading-quizzes {
+  text-align: center;
+  padding: 15px 0;
 }
 
 /* Empty state styling */
@@ -227,4 +204,19 @@
     flex-direction: column;
     gap: 5px;
   }
+}
+
+/* Add this at the end */
+.create-btn {
+  padding: 8px 16px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.create-btn:hover {
+  background-color: #3a7fcf;
 }

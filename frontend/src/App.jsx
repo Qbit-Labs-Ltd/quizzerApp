@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, Route, BrowserRouter as Router, Routes, useNavigate, useParams, Link } from 'react-router-dom'; // Added Link import
+import { NavLink, Route, BrowserRouter as Router, Routes, useNavigate, useParams, Link, Navigate } from 'react-router-dom'; // Added Navigate import
 import ConfirmationModal from './components/ConfirmationModal';
 import EditQuestionView from './components/EditQuestionView';
 import QuizCreator from './components/QuizCreator';
@@ -192,10 +192,10 @@ function App() {
         <nav className="app-nav">
           <ul>
             <li><Link to="/">Home</Link></li>
-            <li><Link to="/quizzes">Quizzes</Link></li>
-            <li><Link to="/quizzes/new">Create Quiz</Link></li>
+            <li><Link to="/quizzes">Manage Quizzes</Link></li>
+            <li><Link to="/quizzes/published">Available Quizzes</Link></li>
             <li><Link to="/categories">Categories</Link></li>
-            <li><Link to="/categories/new">Create Category</Link></li>
+            <li><Link to="/create-quiz">Create Quiz</Link></li>
           </ul>
         </nav>
 
@@ -204,13 +204,7 @@ function App() {
           {error && <div className="error-message">{error}</div>}
 
           <Routes>
-            <Route path="/" element={
-              <div>
-                <div className="page-title-container">
-                  <h1 className="page-title">Welcome to Quiz App</h1>
-                </div>
-              </div>
-            } />
+            <Route path="/" element={<Navigate to="/categories" replace />} />
             <Route
               path="/quizzes"
               element={<QuizListWrapper
@@ -229,6 +223,13 @@ function App() {
             />
             <Route
               path="/quizzes/new"
+              element={<QuizCreator
+                handleCreateQuiz={handleCreateQuiz}
+                showToast={showToast}
+              />}
+            />
+            <Route
+              path="/create-quiz"
               element={<QuizCreator
                 handleCreateQuiz={handleCreateQuiz}
                 showToast={showToast}

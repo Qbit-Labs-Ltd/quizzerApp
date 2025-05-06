@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/CommonStyles.css';
+import '../styles/CategoryStyles.css';
 import CategoryListService from '../utils/CategoryListService';
 
 /**
@@ -94,6 +95,12 @@ const CategoryListPage = () => {
     <div className="categories-container">
       <div className="page-title-container">
         <h1 className="page-title">Quiz Categories</h1>
+        <button
+          className="btn btn-primary create-btn"
+          onClick={() => navigate('/categories/new')}
+        >
+          Create Category
+        </button>
       </div>
 
       <div className="categories-list">

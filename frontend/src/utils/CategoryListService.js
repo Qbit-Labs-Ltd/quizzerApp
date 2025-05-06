@@ -25,13 +25,14 @@ class CategoryListService {
    */
   async getAllCategories() {
     try {
-      console.log("Fetching categories from:", this.api.defaults.baseURL + '/categories');
       const response = await this.api.get('/categories');
-      console.log("Categories fetched:", response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching categories:', error);
-      // Propagate the error instead of silently returning mock data
+      // Find and modify any code like this:
+      if (import.meta.env.DEV) {
+        return mockCategories;
+      }
       throw error;
     }
   }

@@ -2,7 +2,8 @@ import axios from 'axios';
 import { mockQuestions, mockQuizzes } from '../../mockData';
 
 // Toggle between mock data (development) and real API (production)
-const isDev = false;
+const isDev = import.meta.env.DEV; // Use Vite's built-in environment detection
+const useMockData = import.meta.env.VITE_USE_MOCK_DATA === 'true';
 
 /**
  * Base axios instance for API requests
@@ -37,7 +38,7 @@ export const quizApi = {
      * @returns {Promise<Array>} Array of quiz objects
      */
     getAll: async () => {
-        if (isDev) {
+        if (isDev && useMockData) {
             console.log('Using mock quiz data');
             return mockQuizzes;
         }
@@ -51,7 +52,7 @@ export const quizApi = {
      * @returns {Promise<Object>} Quiz object
      */
     getById: async (id) => {
-        if (isDev) {
+        if (isDev && useMockData) {
             console.log(`Using mock data for quiz id: ${id}`);
             const quiz = mockQuizzes.find(q => q.id === Number(id));
             if (!quiz) throw new Error('Quiz not found');
@@ -67,7 +68,7 @@ export const quizApi = {
      * @returns {Promise<Object>} Created quiz object
      */
     create: async (quizData) => {
-        if (isDev) {
+        if (isDev && useMockData) {
             console.log('Creating mock quiz', quizData);
             const newQuiz = {
                 id: generateId(),
@@ -90,7 +91,7 @@ export const quizApi = {
      * @returns {Promise<Object>} Updated quiz object
      */
     update: async (id, quizData) => {
-        if (isDev) {
+        if (isDev && useMockData) {
             console.log(`Updating mock quiz id: ${id}`, quizData);
             // Find and update the quiz in mockQuizzes
             const quizIndex = mockQuizzes.findIndex(q => q.id === Number(id));
@@ -113,7 +114,7 @@ export const quizApi = {
      * @returns {Promise<boolean>} Success status
      */
     delete: async (id) => {
-        if (isDev) {
+        if (isDev && useMockData) {
             console.log(`Deleting mock quiz id: ${id}`);
             const quizIndex = mockQuizzes.findIndex(q => q.id === Number(id));
             if (quizIndex !== -1) {
@@ -139,7 +140,7 @@ export const quizApi = {
      * @returns {Promise<Array>} Array of result objects
      */
     getResults: async (id) => {
-        if (isDev) {
+        if (isDev && useMockData) {
             // Generate mock stats from mockQuestions
             const results = mockQuestions
                 .filter(q => q.quizId === Number(id))
@@ -172,7 +173,7 @@ export const questionApi = {
      * @returns {Promise<Array>} Array of question objects
      */
     getByQuizId: async (quizId) => {
-        if (isDev) {
+        if (isDev && useMockData) {
             console.log(`Getting mock questions for quiz id: ${quizId}`);
             return mockQuestions.filter(q => q.quizId === Number(quizId));
         }
@@ -187,7 +188,7 @@ export const questionApi = {
      * @returns {Promise<Object>} Created question object
      */
     create: async (quizId, questionData) => {
-        if (isDev) {
+        if (isDev && useMockData) {
             console.log(`Creating mock question for quiz: ${quizId}`, questionData);
             const newQuestion = {
                 id: generateId(),
@@ -221,7 +222,7 @@ export const questionApi = {
      * @returns {Promise<Object>} Updated question object
      */
     update: async (id, questionData) => {
-        if (isDev) {
+        if (isDev && useMockData) {
             console.log(`Updating mock question with id: ${id}`, questionData);
             const index = mockQuestions.findIndex(q => q.id === Number(id));
             if (index !== -1) {
@@ -243,7 +244,7 @@ export const questionApi = {
      * @returns {Promise<Object>} Success response
      */
     delete: async (id) => {
-        if (isDev) {
+        if (isDev && useMockData) {
             console.log(`Deleting mock question with id: ${id}`);
             const questionIndex = mockQuestions.findIndex(q => q.id === Number(id));
             if (questionIndex !== -1) {
@@ -268,7 +269,7 @@ export const questionApi = {
      * @returns {Promise<Object>} Question object
      */
     getById: async (id) => {
-        if (isDev) {
+        if (isDev && useMockData) {
             console.log(`Getting mock question with id: ${id}`);
             const question = mockQuestions.find(q => q.id === Number(id));
             if (!question) throw new Error('Question not found');
@@ -290,7 +291,7 @@ export const answerApi = {
      * @returns {Promise<boolean>} Success status
      */
     delete: async (id) => {
-        if (isDev) {
+        if (isDev && useMockData) {
             console.log(`Deleting mock answer id: ${id}`);
             return true;
         }
@@ -308,7 +309,7 @@ export const categoryApi = {
      * @returns {Promise<Array>} Array of category objects
      */
     getAll: async () => {
-        if (isDev) {
+        if (isDev && useMockData) {
             // Return mock data if in development mode
             return mockCategories;
         }
@@ -322,7 +323,7 @@ export const categoryApi = {
      * @returns {Promise<Object>} Category object
      */
     getById: async (id) => {
-        if (isDev) {
+        if (isDev && useMockData) {
             return mockCategories.find(c => c.id == id);
         }
         const response = await api.get(`/categories/${id}`);
@@ -336,7 +337,7 @@ export const categoryApi = {
      * @returns {Promise<Array>} Array of quiz objects
      */
     getQuizzes: async (categoryId, publishedOnly = true) => {
-        if (isDev) {
+        if (isDev && useMockData) {
             // For mock, return all quizzes (or only published)
             let list = [...mockQuizzes];
             if (publishedOnly) list = list.filter(q => q.published);
