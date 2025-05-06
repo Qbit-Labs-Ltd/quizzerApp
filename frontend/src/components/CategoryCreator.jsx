@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CategoryListService from '../utils/CategoryListService';
 import '../styles/CommonStyles.css';
-import '../styles/FormStyles.css';
+// import '../styles/FormStyles.css';
 
 /**
  * Component for creating new categories
