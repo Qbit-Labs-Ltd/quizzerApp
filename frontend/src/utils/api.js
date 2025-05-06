@@ -131,6 +131,33 @@ export const quizApi = {
         }
         await api.delete(`/quizzes/${id}`);
         return true;
+    },
+
+    /**
+     * Retrieves aggregated results for a quiz (correct vs wrong counts for each question)
+     * @param {number|string} id - Quiz ID
+     * @returns {Promise<Array>} Array of result objects
+     */
+    getResults: async (id) => {
+        if (isDev) {
+            // Generate mock stats from mockQuestions
+            const results = mockQuestions
+                .filter(q => q.quizId === Number(id))
+                .map(q => {
+                    // For demo: random correct/wrong counts between 0-20
+                    const correct = Math.floor(Math.random() * 21);
+                    const wrong = Math.floor(Math.random() * 21);
+                    return {
+                        questionId: q.id,
+                        content: q.content,
+                        correctCount: correct,
+                        wrongCount: wrong
+                    };
+                });
+            return results;
+        }
+        const response = await api.get(`/quizzes/${id}/results`);
+        return response.data;
     }
 };
 
@@ -274,39 +301,24 @@ export const answerApi = {
 
 /**
  * API utilities for category-related operations
- * Provides methods for fetching, creating, and deleting categories
  */
 export const categoryApi = {
-    getAll: async () => {
+    /**
+     * Fetches quizzes for a category, optionally only published
+     * @param {number|string} categoryId - Category ID
+     * @param {boolean} publishedOnly - Whether to only fetch published quizzes
+     * @returns {Promise<Array>} Array of quiz objects
+     */
+    getQuizzes: async (categoryId, publishedOnly = true) => {
         if (isDev) {
-            console.log('Using mock category data');
-            return mockCategories;
+            // For mock, return all quizzes (or only published)
+            let list = [...mockQuizzes];
+            if (publishedOnly) list = list.filter(q => q.published);
+            return list;
         }
-        const response = await api.get('/categories');
+        const url = `/categories/${categoryId}/quizzes${publishedOnly ? '?published=true' : ''}`;
+        const response = await api.get(url);
         return response.data;
-    },
-    create: async (categoryData) => {
-        if (isDev) {
-            console.log('Creating mock category', categoryData);
-            const newCategory = { id: generateId(), ...categoryData };
-            mockCategories.push(newCategory);
-            return newCategory;
-        }
-        const response = await api.post('/categories', categoryData);
-        return response.data;
-    },
-    delete: async (id) => {
-        if (isDev) {
-            console.log(`Deleting mock category id: ${id}`);
-            const index = mockCategories.findIndex(c => c.id === Number(id));
-            if (index !== -1) {
-                mockCategories.splice(index, 1);
-                return true;
-            }
-            throw new Error('Category not found');
-        }
-        await api.delete(`/categories/${id}`);
-        return true;
     }
 };
 

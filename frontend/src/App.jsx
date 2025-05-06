@@ -7,12 +7,10 @@ import QuizForm from './components/QuizForm';
 import QuizList from './components/QuizList';
 import QuizQuestionsView from './components/QuizQuestionsView';
 import EditQuestionView from './components/EditQuestionView';
-import CategoryList from './components/CategoryList';
-import CategoryCreator from './components/CategoryCreator';
-import { quizApi, questionApi, answerApi, categoryApi } from './utils/api';
-import Toast from './components/Toast';
-import './styles/CardStyles.css';
-import './styles/CategoryStyles.css';
+import QuizPage from './views/QuizPage';
+import ResultsPage from './views/ResultsPage'; // Import ResultsPage component
+import CategoryDetailPage from './views/CategoryDetailPage';
+import { quizApi, questionApi, answerApi } from './utils/api';
 import './styles/CommonStyles.css';
 import './styles/NavStyles.css';
 import './styles/TitleStyles.css';
@@ -259,6 +257,18 @@ function App() {
             <Route
               path="/quizzes/:id/take"
               element={<TakeQuizPage />}
+            />
+            <Route
+              path="/quiz/:id"
+              element={<QuizPage />}
+            />
+            <Route
+              path="/quiz/:id/results"
+              element={<ResultsPage />}
+            />
+            <Route
+              path="/categories/:id"
+              element={<CategoryDetailPage />}
             />
           </Routes>
         </main>
