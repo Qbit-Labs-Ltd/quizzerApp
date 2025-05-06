@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api/answers")
+@CrossOrigin(origins = { "http://localhost:5173", "https://quizzerapp-1knb.onrender.com" })
 @Tag(name = "Answer", description = "The Answer API. Contains operations for submitting and retrieving quiz answers.")
 public class AnswerRestController {
 

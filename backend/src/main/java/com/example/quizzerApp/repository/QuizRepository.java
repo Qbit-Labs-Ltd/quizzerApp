@@ -18,4 +18,21 @@ public interface QuizRepository extends JpaRepository<Quiz, Long> {
      * @return List of published quizzes
      */
     List<Quiz> findByPublishedTrue();
+
+    /**
+     * Finds all quizzes by category ID.
+     * 
+     * @param categoryId ID of the category
+     * @return List of quizzes in the specified category
+     */
+    List<Quiz> findByCategoryId(Long categoryId);
+
+    /**
+     * Finds all published quizzes by category ID.
+     * Published quizzes are available for users to take.
+     * 
+     * @param categoryId ID of the category
+     * @return List of published quizzes in the specified category
+     */
+    List<Quiz> findByCategoryIdAndPublishedTrue(Long categoryId);
 }
