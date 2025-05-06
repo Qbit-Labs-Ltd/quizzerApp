@@ -1,16 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, Route, BrowserRouter as Router, Routes, useNavigate, useParams } from 'react-router-dom';
+import ConfirmationModal from './components/ConfirmationModal';
+import EditQuestionView from './components/EditQuestionView';
+import QuizCreator from './components/QuizCreator';
 import QuizForm from './components/QuizForm';
 import QuizList from './components/QuizList';
-import Toast from './components/Toast';
-import ConfirmationModal from './components/ConfirmationModal';
-import QuizCreator from './components/QuizCreator';
 import QuizQuestionsView from './components/QuizQuestionsView';
 import EditQuestionView from './components/EditQuestionView';
 import CategoryList from './components/CategoryList';
 import CategoryCreator from './components/CategoryCreator';
 import { quizApi, questionApi, answerApi, categoryApi } from './utils/api';
+import Toast from './components/Toast';
+import './styles/CardStyles.css';
+import './styles/CategoryStyles.css';
 import './styles/CommonStyles.css';
+import './styles/NavStyles.css';
+import './styles/TitleStyles.css';
+import { answerApi, questionApi, quizApi } from './utils/api';
+import CategoryListPage from './views/CategoryListPage';
+import QuizListPage from './views/QuizListPage';
+import TakeQuizPage from './views/TakeQuizPage';
 
 /**
  * Main application component that handles routing and global state
@@ -183,6 +192,11 @@ function App() {
             <li><Link to="/quizzes/new">Create Quiz</Link></li>
             <li><Link to="/categories">Categories</Link></li>
             <li><Link to="/categories/new">Create Category</Link></li>
+            <li><NavLink to="/" end>Home</NavLink></li>
+            <li><NavLink to="/quizzes" end>Manage Quizzes</NavLink></li>
+            <li><NavLink to="/quizzes/published" end>Available Quizzes</NavLink></li>
+            <li><NavLink to="/categories" end>Categories</NavLink></li>
+            <li><NavLink to="/quizzes/new" end>Create Quiz</NavLink></li>
           </ul>
         </nav>
 
@@ -191,7 +205,13 @@ function App() {
           {error && <div className="error-message">{error}</div>}
 
           <Routes>
-            <Route path="/" element={<div>Welcome to Quiz App</div>} />
+            <Route path="/" element={
+              <div>
+                <div className="page-title-container">
+                  <h1 className="page-title">Welcome to Quiz App</h1>
+                </div>
+              </div>
+            } />
             <Route
               path="/quizzes"
               element={<QuizListWrapper
@@ -199,6 +219,14 @@ function App() {
                 onDelete={(id) => showDeleteConfirmation(id, 'quiz')}
                 loading={loading}
               />}
+            />
+            <Route
+              path="/quizzes/published"
+              element={<QuizListPage />}
+            />
+            <Route
+              path="/categories"
+              element={<CategoryListPage />}
             />
             <Route
               path="/quizzes/new"
@@ -228,6 +256,10 @@ function App() {
             {/* New routes for categories */}
             <Route path="/categories" element={<CategoryList showToast={showToast} />} />
             <Route path="/categories/new" element={<CategoryCreator showToast={showToast} />} />
+            <Route
+              path="/quizzes/:id/take"
+              element={<TakeQuizPage />}
+            />
           </Routes>
         </main>
 

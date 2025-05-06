@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/CommonStyles.css';
+import '../styles/TitleStyles.css';
 
 /**
  * Component that displays a list of quizzes in a card layout
@@ -58,11 +59,13 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
 
   return (
     <div className="quizzes-container">
-      <h1 className="page-title">Quizzes</h1>
+      <div className="page-title-container">
+        <h1 className="page-title">Quizzes</h1>
+      </div>
 
       <div className="quiz-cards-grid">
         {uniqueQuizzes.map(quiz => (
-          <div key={`quiz-${quiz.id}-${quiz.name}`} className="quiz-card">
+          <div key={`quiz-container-${quiz.id}`} className="quiz-card">
             <div className="quiz-card-header">
               <h2 className="quiz-card-title" onClick={() => handleViewQuestions(quiz.id)}>
                 {quiz.name}
@@ -82,31 +85,32 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
                 <span className="quiz-card-course">Course: {quiz.courseCode}</span>
                 <span className="quiz-card-category">Category: {quiz.categoryName || "None"}</span>
                 <span className="quiz-card-date">Added: {new Date(quiz.dateAdded || Date.now()).toLocaleDateString()}</span>
+                <span className="quiz-card-questions">Questions: {quiz.questionCount}</span>
               </div>
-            </div>
 
-            <div className="quiz-card-actions">
-              <button
-                className="view-questions-btn"
-                onClick={() => handleViewQuestions(quiz.id)}
-              >
-                View Questions
-              </button>
-              <div className="card-action-buttons">
+              <div className="quiz-card-actions">
                 <button
-                  className="edit-btn"
-                  onClick={() => handleEdit(quiz.id)}
+                  className="view-questions-btn"
+                  onClick={() => handleViewQuestions(quiz.id)}
                 >
-                  Edit
+                  View Questions
                 </button>
-                {onDelete && (
+                <div className="card-action-buttons">
                   <button
-                    className="delete-btn danger"
-                    onClick={() => onDelete(quiz.id)}
+                    className="edit-btn"
+                    onClick={() => handleEdit(quiz.id)}
                   >
-                    Delete
+                    Edit
                   </button>
-                )}
+                  {onDelete && (
+                    <button
+                      className="delete-btn"
+                      onClick={() => onDelete(quiz.id)}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

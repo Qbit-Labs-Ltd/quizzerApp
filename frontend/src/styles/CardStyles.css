@@ -1,0 +1,704 @@
+/* Enhanced Card Styling and Hover States - Fixed Version */
+
+/* Common Card Styles */
+.card {
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-bottom: 100px; /* Added margin to prevent overlapping */
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+  padding: 1.25rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid var(--border-gray);
+  position: relative;
+}
+
+.card-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: var(--primary-blue);
+  transition: width 0.3s ease;
+}
+
+.card:hover .card-header::after {
+  width: 100%;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  transition: color 0.2s ease;
+}
+
+.card:hover .card-title {
+  color: var(--primary-blue);
+}
+
+.card-content {
+  padding: 1.25rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-description {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: auto;
+}
+
+.card-footer {
+  padding: 1rem 1.25rem;
+  background-color: #f8f9fa;
+  border-top: 1px solid var(--border-gray);
+}
+
+/* Badge Styles */
+.badge {
+  display: inline-block;
+  padding: 0.35em 0.65em;
+  font-size: 0.75em;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 30px;
+  transition: all 0.2s ease;
+}
+
+.badge-primary {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.badge-success {
+  background-color: var(--success-green);
+  color: white;
+}
+
+.badge-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.badge-danger {
+  background-color: var(--danger-red);
+  color: white;
+}
+
+.card:hover .badge {
+  transform: scale(1.05);
+}
+
+/* Button Styles */
+.btn {
+  display: inline-block;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-blue-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-danger {
+  background-color: var(--danger-red);
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: var(--danger-red-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid currentColor;
+}
+
+.btn-outline-primary {
+  color: var(--primary-blue);
+  border-color: var(--primary-blue);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-blue);
+  color: white;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* Quiz Card Enhanced Styles */
+.quiz-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem; /* Keep good spacing between cards */
+  margin-bottom: 2rem;
+  position: relative; /* Add position context */
+}
+
+/* Add clearfix to ensure proper container height */
+.quiz-cards-grid::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Make each grid item a container with padding for the hover effect */
+.quiz-cards-grid > div {
+  position: relative;
+  padding-top: 8px; /* Space for the card to move up without overlapping */
+  padding-bottom: 8px; /* Space for shadow expansion */
+  z-index: 1; /* Default z-index */
+  transition: z-index 0.01s step-end; /* Delay z-index change until after hover */
+}
+
+/* Increase z-index on hover to ensure the card appears above others */
+.quiz-cards-grid > div:hover {
+  z-index: 10;
+  transition: z-index 0.01s step-start; /* Immediately change z-index on hover */
+}
+
+.quiz-card {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  position: relative;
+  will-change: transform; /* Optimize for animation */
+}
+
+.quiz-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.quiz-card-header {
+  padding: 1.25rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid var(--border-gray);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.quiz-card-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  transition: color 0.2s ease;
+}
+
+.quiz-card:hover .quiz-card-title {
+  color: var(--primary-blue);
+}
+
+.quiz-card-badge {
+  transition: transform 0.2s ease;
+}
+
+.quiz-card:hover .quiz-card-badge {
+  transform: scale(1.05);
+}
+
+.published-badge, .not-published-badge {
+  display: inline-block;
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 30px;
+}
+
+.published-badge {
+  background-color: var(--success-green);
+  color: white;
+}
+
+.not-published-badge {
+  background-color: var(--gray);
+  color: white;
+}
+
+.quiz-card-content {
+  padding: 1.25rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.quiz-card-description {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  min-height: 3em; /* Give some minimum height for consistency */
+}
+
+.quiz-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: auto;
+  margin-bottom: 0.5rem;
+}
+
+.quiz-card-course, .quiz-card-questions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Improved icons for course and questions */
+.quiz-card-course::before {
+  content: '📚';
+  font-size: 0.9rem;
+}
+
+.quiz-card-questions::before {
+  content: '📝';
+  font-size: 0.9rem;
+}
+
+.quiz-card-actions {
+  padding: 1rem 1.25rem;
+  background-color: #f8f9fa;
+  border-top: 1px solid var(--border-gray);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Primary action button (View Questions) */
+.view-questions-btn {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background-color: var(--primary-blue);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.view-questions-btn:hover {
+  background-color: var(--primary-blue-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Container for Edit and Delete buttons */
+.card-action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+/* Equal width for Edit and Delete buttons */
+.edit-btn, .delete-btn {
+  flex: 1;
+  padding: 0.5rem 0;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.edit-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
+.delete-btn {
+  background-color: var(--danger-red);
+  color: white;
+}
+
+.edit-btn:hover, .delete-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  opacity: 0.9;
+}
+
+/* Badge styling improvements */
+.published-badge, .not-published-badge {
+  display: inline-flex;
+  padding: 0.35em 0.75em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 30px;
+}
+
+.published-badge {
+  background-color: var(--success-green);
+  color: white;
+}
+
+.not-published-badge {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Clean up the card content spacing */
+.quiz-card-description {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  min-height: 3em; /* Give some minimum height for consistency */
+}
+
+.quiz-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: auto;
+  margin-bottom: 0.5rem;
+}
+
+.quiz-card-course, .quiz-card-questions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+/* Improved icons for course and questions */
+.quiz-card-course::before {
+  content: '📚';
+  font-size: 0.9rem;
+}
+
+.quiz-card-questions::before {
+  content: '📝';
+  font-size: 0.9rem;
+}
+
+/* Category Card Enhanced Styles */
+.categories-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* Increased gap */
+  margin-top: 1.5rem;
+  position: relative; /* Add position context */
+}
+
+.category-card {
+  margin-bottom: 0; /* Remove margin to use gap instead */
+  position: relative;
+  z-index: 1;
+  transition: z-index 0.01s step-end;
+}
+
+.category-card:hover {
+  z-index: 10;
+  transition: z-index 0.01s step-start;
+}
+
+.category-header {
+  padding: 1.25rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid var(--border-gray);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.category-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: var(--primary-blue);
+  transition: width 0.3s ease;
+}
+
+.category-card:hover .category-header::after {
+  width: 100%;
+}
+
+.category-header:hover {
+  background-color: #e9ecef;
+}
+
+.category-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  transition: color 0.2s ease;
+}
+
+.category-card:hover .category-title {
+  color: var(--primary-blue);
+}
+
+.expand-icon {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--text-muted);
+  transition: transform 0.3s ease;
+}
+
+.category-card:hover .expand-icon {
+  color: var(--primary-blue);
+  transform: rotate(90deg);
+}
+
+.category-description {
+  padding: 1rem 1.25rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-gray);
+  line-height: 1.5;
+}
+
+/* Question Card Enhanced Styles */
+.question-block {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-left: 4px solid transparent;
+}
+
+.question-block:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+  border-left-color: var(--primary-blue);
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.question-difficulty {
+  padding: 0.35em 0.65em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 30px;
+  transition: transform 0.2s ease;
+}
+
+.question-block:hover .question-difficulty {
+  transform: scale(1.05);
+}
+
+.difficulty-easy {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.difficulty-medium {
+  background-color: #fff3cd;
+  color: #664d03;
+}
+
+.difficulty-hard {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+/* Quiz Table Enhanced Styles */
+.quiz-table-container {
+  overflow-x: auto;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+.quiz-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.quiz-table th {
+  padding: 1rem;
+  text-align: left;
+  background-color: #f8f9fa;
+  font-weight: 500;
+  color: var(--text-dark);
+  border-bottom: 2px solid var(--border-gray);
+  position: relative;
+}
+
+.quiz-table th::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: var(--primary-blue);
+  transition: width 0.3s ease;
+}
+
+.quiz-table th:hover::after {
+  width: 100%;
+}
+
+.quiz-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-gray);
+  transition: background-color 0.2s ease;
+}
+
+.quiz-table tr:last-child td {
+  border-bottom: none;
+}
+
+.quiz-table tr:hover td {
+  background-color: #f8f9fa;
+}
+
+/* Animation Keyframes */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Card Animation Classes */
+.animate-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .quiz-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .quiz-card:hover {
+    transform: translateY(-3px);
+  }
+  
+  .question-block:hover {
+    transform: translateY(-3px);
+  }
+  
+  .card-action-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .edit-btn, .delete-btn, .view-questions-btn {
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+} 
