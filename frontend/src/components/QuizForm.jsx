@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/CommonStyles.css';
+import { categoryApi } from '../utils/api'; // new import
 
 /**
  * Form component for creating or editing quizzes
@@ -22,12 +23,29 @@ const QuizForm = ({
   error = null,
   resetError = () => { }
 }) => {
+  // State for categories
+  const [categories, setCategories] = useState([]);
+
+  // Fetch categories from API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await categoryApi.getAll();
+        setCategories(data);
+      } catch (err) {
+        console.error('Failed to fetch categories', err);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   // Form state
   const [quiz, setQuiz] = useState({
     name: initialData.name || '',
     description: initialData.description || '',
     courseCode: initialData.courseCode || '',
-    published: initialData.published || false
+    published: initialData.published || false,
+    category: initialData.category || ''
   });
 
   /**
@@ -133,6 +151,22 @@ const QuizForm = ({
           {error && error.includes('Duplicate course code') && (
             <p className="field-error">This course code is already in use</p>
           )}
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="quiz-category">Category</label>
+          <select
+            id="quiz-category"
+            name="category"
+            value={quiz.category}
+            onChange={handleChange}
+            disabled={isSubmitting}
+          >
+            <option value="">Select Category</option>
+            {categories.map(cat => (
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
+            ))}
+          </select>
         </div>
 
         <div className="form-group checkbox">

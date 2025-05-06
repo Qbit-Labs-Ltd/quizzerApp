@@ -7,7 +7,9 @@ import ConfirmationModal from './components/ConfirmationModal';
 import QuizCreator from './components/QuizCreator';
 import QuizQuestionsView from './components/QuizQuestionsView';
 import EditQuestionView from './components/EditQuestionView';
-import { quizApi, questionApi, answerApi } from './utils/api';
+import CategoryList from './components/CategoryList';
+import CategoryCreator from './components/CategoryCreator';
+import { quizApi, questionApi, answerApi, categoryApi } from './utils/api';
 import './styles/CommonStyles.css';
 
 /**
@@ -179,6 +181,8 @@ function App() {
             <li><Link to="/">Home</Link></li>
             <li><Link to="/quizzes">Quizzes</Link></li>
             <li><Link to="/quizzes/new">Create Quiz</Link></li>
+            <li><Link to="/categories">Categories</Link></li>
+            <li><Link to="/categories/new">Create Category</Link></li>
           </ul>
         </nav>
 
@@ -221,6 +225,9 @@ function App() {
               path="/questions/:id/edit"
               element={<EditQuestionView showToast={showToast} />}
             />
+            {/* New routes for categories */}
+            <Route path="/categories" element={<CategoryList showToast={showToast} />} />
+            <Route path="/categories/new" element={<CategoryCreator showToast={showToast} />} />
           </Routes>
         </main>
 

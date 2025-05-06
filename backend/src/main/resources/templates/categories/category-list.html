@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Category List</title>
+</head>
+
+<body>
+    <h1>All Categories</h1>
+
+    <!-- Lisää kategoria -painike -->
+    <a href="/categories/new">
+        <button type="button">Lisää kategoria</button>
+    </a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nimi</th>
+                <th>Toiminnot</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="category : ${categories}">
+                <td th:text="${category.id}"></td>
+                <td th:text="${category.name}"></td>
+                <td>
+                    <!-- Poista-nappi -->
+                    <form th:action="@{'/categories/' + ${category.id} + '/delete'}" method="post"
+                        style="display:inline;">
+                        <button type="submit"
+                            onclick="return confirm('Haluatko varmasti poistaa tämän kategorian?')">Poista</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

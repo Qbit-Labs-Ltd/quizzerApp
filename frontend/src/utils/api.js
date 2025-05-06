@@ -21,6 +21,12 @@ const api = axios.create({
  */
 const generateId = () => Math.floor(Math.random() * 10000);
 
+// Insert new mock categories for dev mode
+let mockCategories = [
+    { id: 1, name: 'Math' },
+    { id: 2, name: 'Science' }
+];
+
 /**
  * API utilities for quiz-related operations
  * Provides methods for CRUD operations on quizzes
@@ -262,6 +268,44 @@ export const answerApi = {
             return true;
         }
         await api.delete(`/answers/${id}`);
+        return true;
+    }
+};
+
+/**
+ * API utilities for category-related operations
+ * Provides methods for fetching, creating, and deleting categories
+ */
+export const categoryApi = {
+    getAll: async () => {
+        if (isDev) {
+            console.log('Using mock category data');
+            return mockCategories;
+        }
+        const response = await api.get('/categories');
+        return response.data;
+    },
+    create: async (categoryData) => {
+        if (isDev) {
+            console.log('Creating mock category', categoryData);
+            const newCategory = { id: generateId(), ...categoryData };
+            mockCategories.push(newCategory);
+            return newCategory;
+        }
+        const response = await api.post('/categories', categoryData);
+        return response.data;
+    },
+    delete: async (id) => {
+        if (isDev) {
+            console.log(`Deleting mock category id: ${id}`);
+            const index = mockCategories.findIndex(c => c.id === Number(id));
+            if (index !== -1) {
+                mockCategories.splice(index, 1);
+                return true;
+            }
+            throw new Error('Category not found');
+        }
+        await api.delete(`/categories/${id}`);
         return true;
     }
 };
