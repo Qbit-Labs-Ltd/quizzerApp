@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, Route, BrowserRouter as Router, Routes, useNavigate, useParams } from 'react-router-dom';
+import { NavLink, Route, BrowserRouter as Router, Routes, useNavigate, useParams, Link } from 'react-router-dom'; // Added Link import
 import ConfirmationModal from './components/ConfirmationModal';
 import EditQuestionView from './components/EditQuestionView';
 import QuizCreator from './components/QuizCreator';
 import QuizForm from './components/QuizForm';
 import QuizList from './components/QuizList';
 import QuizQuestionsView from './components/QuizQuestionsView';
-import EditQuestionView from './components/EditQuestionView';
 import QuizPage from './views/QuizPage';
 import ResultsPage from './views/ResultsPage'; // Import ResultsPage component
 import CategoryDetailPage from './views/CategoryDetailPage';
@@ -14,10 +13,12 @@ import { quizApi, questionApi, answerApi } from './utils/api';
 import './styles/CommonStyles.css';
 import './styles/NavStyles.css';
 import './styles/TitleStyles.css';
-import { answerApi, questionApi, quizApi } from './utils/api';
 import CategoryListPage from './views/CategoryListPage';
 import QuizListPage from './views/QuizListPage';
 import TakeQuizPage from './views/TakeQuizPage';
+import CategoryList from './components/CategoryList'; // Added CategoryList import
+import CategoryCreator from './components/CategoryCreator'; // Added CategoryCreator import
+import Toast from './components/Toast'; // Import Toast component
 
 /**
  * Main application component that handles routing and global state
