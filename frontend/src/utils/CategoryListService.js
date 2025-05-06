@@ -9,12 +9,14 @@ class CategoryListService {
    * Base API URL for category-related endpoints
    */
   constructor() {
+    // Use VITE_API_URL for consistent API access across components
     this.api = axios.create({
-      baseURL: `${import.meta.env.VITE_BACKEND_URL || ''}/api`,
+      baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
       headers: {
         'Content-Type': 'application/json',
       }
     });
+    console.log("CategoryListService initialized with baseURL:", this.api.defaults.baseURL);
   }
 
   /**
@@ -23,20 +25,14 @@ class CategoryListService {
    */
   async getAllCategories() {
     try {
+      console.log("Fetching categories from:", this.api.defaults.baseURL + '/categories');
       const response = await this.api.get('/categories');
+      console.log("Categories fetched:", response.data);
       return response.data;
     } catch (error) {
-      // If the categories endpoint doesn't exist or fails, return an empty array
       console.error('Error fetching categories:', error);
-      
-      // For development purposes, return some fallback categories if the endpoint doesn't exist
-      return [
-        { id: 1, name: 'Programming', description: 'Programming and coding related quizzes' },
-        { id: 2, name: 'Mathematics', description: 'Math concepts and problem solving' },
-        { id: 3, name: 'Science', description: 'Scientific theories and experiments' },
-        { id: 4, name: 'Languages', description: 'Language learning and linguistics' },
-        { id: 5, name: 'History', description: 'Historical events and figures' }
-      ];
+      // Propagate the error instead of silently returning mock data
+      throw error;
     }
   }
 
@@ -51,10 +47,26 @@ class CategoryListService {
       return response.data;
     } catch (error) {
       console.error(`Error fetching quizzes for category ${categoryId}:`, error);
-      // Return empty array if endpoint doesn't exist or fails
-      return [];
+      throw error;
+    }
+  }
+
+  /**
+   * Creates a new category
+   * @param {Object} categoryData - The data for the new category
+   * @returns {Promise<Object>} The created category object
+   */
+  async createCategory(categoryData) {
+    try {
+      console.log("Creating category with data:", categoryData);
+      const response = await this.api.post('/categories', categoryData);
+      console.log("Category created successfully:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating category:', error);
+      throw error;
     }
   }
 }
 
-export default new CategoryListService(); 
+export default new CategoryListService();

@@ -9,7 +9,7 @@ const isDev = false;
  * Configured with common settings for all API calls
  */
 const api = axios.create({
-    baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`,
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
     headers: {
         'Content-Type': 'application/json',
     }
@@ -303,6 +303,32 @@ export const answerApi = {
  * API utilities for category-related operations
  */
 export const categoryApi = {
+    /**
+     * Fetches all categories
+     * @returns {Promise<Array>} Array of category objects
+     */
+    getAll: async () => {
+        if (isDev) {
+            // Return mock data if in development mode
+            return mockCategories;
+        }
+        const response = await api.get('/categories');
+        return response.data;
+    },
+
+    /**
+     * Fetches a specific category by ID
+     * @param {number|string} id - Category ID
+     * @returns {Promise<Object>} Category object
+     */
+    getById: async (id) => {
+        if (isDev) {
+            return mockCategories.find(c => c.id == id);
+        }
+        const response = await api.get(`/categories/${id}`);
+        return response.data;
+    },
+
     /**
      * Fetches quizzes for a category, optionally only published
      * @param {number|string} categoryId - Category ID

@@ -30,7 +30,7 @@ import Toast from './components/Toast'; // Import Toast component
  */
 function App() {
   // State for toast notifications
-  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+  const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
   // State for delete confirmation modal
   const [deleteModal, setDeleteModal] = useState({ show: false, itemId: null, itemType: null });
   // State for quiz data
@@ -65,15 +65,20 @@ function App() {
    * @param {string} message - The message to display in the toast
    * @param {string} type - The type of toast (success, error, warning)
    */
-  const showToast = (message, type = 'success') => {
+  const showToast = (message, type = 'info') => {
     setToast({ show: true, message, type });
+
+    // Auto-hide the toast after 5 seconds
+    setTimeout(() => {
+      setToast(prev => ({ ...prev, show: false }));
+    }, 5000);
   };
 
   /**
    * Closes the currently displayed toast notification
    */
   const closeToast = () => {
-    setToast({ ...toast, show: false });
+    setToast(prev => ({ ...prev, show: false }));
   };
 
   /**
@@ -191,11 +196,6 @@ function App() {
             <li><Link to="/quizzes/new">Create Quiz</Link></li>
             <li><Link to="/categories">Categories</Link></li>
             <li><Link to="/categories/new">Create Category</Link></li>
-            <li><NavLink to="/" end>Home</NavLink></li>
-            <li><NavLink to="/quizzes" end>Manage Quizzes</NavLink></li>
-            <li><NavLink to="/quizzes/published" end>Available Quizzes</NavLink></li>
-            <li><NavLink to="/categories" end>Categories</NavLink></li>
-            <li><NavLink to="/quizzes/new" end>Create Quiz</NavLink></li>
           </ul>
         </nav>
 
@@ -253,7 +253,6 @@ function App() {
               element={<EditQuestionView showToast={showToast} />}
             />
             {/* New routes for categories */}
-            <Route path="/categories" element={<CategoryList showToast={showToast} />} />
             <Route path="/categories/new" element={<CategoryCreator showToast={showToast} />} />
             <Route
               path="/quizzes/:id/take"

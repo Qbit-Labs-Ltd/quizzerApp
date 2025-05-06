@@ -15,6 +15,7 @@ const CategoryListPage = () => {
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [categoryQuizzes, setCategoryQuizzes] = useState({});
   const [loadingQuizzes, setLoadingQuizzes] = useState({});
+  const [useMockData, setUseMockData] = useState(false);
   const navigate = useNavigate();
 
   // Fetch categories when component mounts
@@ -25,9 +26,11 @@ const CategoryListPage = () => {
         const data = await CategoryListService.getAllCategories();
         setCategories(data);
         setError(null);
+        console.log("Categories loaded successfully:", data);
       } catch (err) {
         console.error("Error fetching categories:", err);
-        setError('Failed to load categories');
+        setError('Failed to load categories. Please check your connection and try again.');
+        setCategories([]);
       } finally {
         setLoading(false);
       }
@@ -47,10 +50,10 @@ const CategoryListPage = () => {
     } else {
       // Expand the category and load its quizzes if not already loaded
       setExpandedCategory(categoryId);
-      
+
       if (!categoryQuizzes[categoryId]) {
         setLoadingQuizzes(prev => ({ ...prev, [categoryId]: true }));
-        
+
         try {
           const quizzes = await CategoryListService.getQuizzesByCategory(categoryId);
           setCategoryQuizzes(prev => ({ ...prev, [categoryId]: quizzes }));
@@ -92,12 +95,12 @@ const CategoryListPage = () => {
       <div className="page-title-container">
         <h1 className="page-title">Quiz Categories</h1>
       </div>
-      
+
       <div className="categories-list">
         {categories.map(category => (
           <div key={category.id} className="category-card">
-            <div 
-              className="category-header" 
+            <div
+              className="category-header"
               onClick={() => toggleCategory(category.id)}
             >
               <h2 className="category-title">{category.name}</h2>
@@ -105,11 +108,11 @@ const CategoryListPage = () => {
                 {expandedCategory === category.id ? '−' : '+'}
               </span>
             </div>
-            
+
             <div className="category-description">
               {category.description || 'No description available'}
             </div>
-            
+
             {expandedCategory === category.id && (
               <div className="category-quizzes">
                 {loadingQuizzes[category.id] ? (
@@ -118,8 +121,8 @@ const CategoryListPage = () => {
                   <div className="quiz-list-by-category">
                     <h3>Available Quizzes</h3>
                     {categoryQuizzes[category.id].map(quiz => (
-                      <div 
-                        key={quiz.id} 
+                      <div
+                        key={quiz.id}
                         className="quiz-item"
                         onClick={() => handleQuizClick(quiz.id)}
                       >
@@ -151,4 +154,4 @@ const CategoryListPage = () => {
   );
 };
 
-export default CategoryListPage; 
+export default CategoryListPage;

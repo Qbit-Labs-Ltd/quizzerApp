@@ -1,155 +1,230 @@
-/* Category List Page Styles */
+/* Category page container */
 .categories-container {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 1.5rem;
+  padding: 20px;
 }
 
+/* Category list styling */
 .categories-list {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
+  gap: 20px;
+  margin-top: 20px;
 }
 
+/* Individual category card */
 .category-card {
-  background-color: white;
+  background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
+.category-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Category header section */
 .category-header {
-  padding: 1.25rem;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid var(--border-gray);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 16px 20px;
+  background-color: #f5f7fa;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s;
 }
 
 .category-header:hover {
   background-color: #e9ecef;
 }
 
+/* Category title */
 .category-title {
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 500;
-  color: var(--primary-blue);
+  font-size: 1.4rem;
+  color: #2c3e50;
 }
 
+/* Expand/collapse icon */
 .expand-icon {
-  font-size: 1.5rem;
+  font-size: 24px;
   font-weight: bold;
-  color: var(--text-muted);
-  transition: transform 0.2s ease;
+  color: #4a90e2;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
 }
 
+.expand-icon:hover {
+  background-color: rgba(74, 144, 226, 0.1);
+}
+
+/* Category description */
 .category-description {
-  padding: 1rem 1.25rem;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-gray);
+  padding: 15px 20px;
+  color: #5c6b7a;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  border-bottom: 1px solid #ebeef2;
 }
 
+/* Category quizzes section */
 .category-quizzes {
-  padding: 1.25rem;
+  padding: 0 20px 20px;
 }
 
+/* Loading indicator for quizzes */
 .loading-quizzes {
+  padding: 15px 0;
   text-align: center;
-  padding: 1rem;
-  color: var(--text-muted);
+  color: #5c6b7a;
+  font-style: italic;
 }
 
-.no-quizzes-message {
-  text-align: center;
-  padding: 1.5rem;
-  color: var(--text-muted);
-  background-color: #f8f9fa;
-  border-radius: 6px;
-}
-
+/* Quiz list heading */
 .quiz-list-by-category h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: var(--text-dark);
+  margin: 15px 0;
+  color: #3d4852;
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
+/* Individual quiz item */
 .quiz-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  border: 1px solid var(--border-gray);
+  padding: 15px;
   border-radius: 6px;
-  margin-bottom: 0.75rem;
+  background-color: #f8fafc;
+  margin-bottom: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s;
 }
 
 .quiz-item:hover {
-  background-color: #f8f9fa;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  background-color: #edf2f7;
 }
 
-.quiz-item:last-child {
-  margin-bottom: 0;
-}
-
+/* Quiz item details */
 .quiz-item-details {
   flex: 1;
 }
 
 .quiz-item-details h4 {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 8px;
+  color: #2d3748;
   font-size: 1.1rem;
-  color: var(--text-dark);
 }
 
 .quiz-item-details p {
-  margin: 0 0 0.5rem 0;
-  color: var(--text-muted);
+  margin: 0 0 10px;
+  color: #4a5568;
   font-size: 0.9rem;
 }
 
+/* Quiz metadata */
 .quiz-item-meta {
   display: flex;
-  gap: 1rem;
+  gap: 15px;
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: #718096;
+}
+
+/* Take quiz button */
+.take-quiz-btn {
+  padding: 8px 16px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.take-quiz-btn:hover {
+  background-color: #3a7fcf;
 }
 
 .take-quiz-btn.small {
-  padding: 0.35rem 0.75rem;
   font-size: 0.9rem;
-  white-space: nowrap;
+  padding: 6px 12px;
 }
 
-/* Responsive styles */
+/* Message when no quizzes available */
+.no-quizzes-message {
+  padding: 15px;
+  text-align: center;
+  color: #718096;
+  font-style: italic;
+  background-color: #f8fafc;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+/* Empty state styling */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.empty-state h2 {
+  color: #2d3748;
+  margin-bottom: 10px;
+}
+
+.empty-state p {
+  color: #718096;
+}
+
+/* Loading indicator */
+.loading {
+  text-align: center;
+  padding: 40px 0;
+  color: #4a90e2;
+  font-size: 1.1rem;
+}
+
+/* Error message */
+.error-message {
+  padding: 15px;
+  background-color: #feebee;
+  color: #e53935;
+  border-radius: 6px;
+  margin: 20px 0;
+  border-left: 4px solid #e53935;
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
+  .categories-container {
+    padding: 15px;
+  }
+
   .quiz-item {
     flex-direction: column;
     align-items: flex-start;
   }
-  
-  .quiz-item-details {
-    margin-bottom: 1rem;
-    width: 100%;
+
+  .take-quiz-btn {
+    margin-top: 10px;
+    align-self: flex-end;
   }
-  
-  .take-quiz-btn.small {
-    width: 100%;
-  }
-  
+
   .quiz-item-meta {
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 5px;
   }
-} 
+}
