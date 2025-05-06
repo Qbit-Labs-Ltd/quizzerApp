@@ -36,8 +36,9 @@ We create a web-based quiz platform for Haaga-Helia teachers and students.
 
 ## Retrospectives
 
-- [Flinga board](https://edu.flinga.fi/s/EDNHYTF)
-
+- [Sprint 1 Flinga board](https://edu.flinga.fi/s/EDNHYTF)
+- [Sprint 2 Flinga board](https://edu.flinga.fi/s/EK7XZFV)
+  
 ## Sprint Backlogs:
 
 - [Sprint 1 Backlog](https://github.com/orgs/Qbit-Labs-Ltd/projects/1/views/1)
