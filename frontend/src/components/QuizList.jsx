@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/CommonStyles.css';
 import '../styles/TitleStyles.css';
@@ -17,6 +17,7 @@ import '../styles/TitleStyles.css';
  */
 const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
   const navigate = useNavigate();
+  const [isUpdating, setIsUpdating] = useState(false);
 
   // Show loading indicator when data is being fetched
   if (loading) return <div className="loading">Loading quizzes...</div>;
@@ -45,6 +46,48 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
    */
   const handleViewQuestions = (id) => {
     navigate(`/quizzes/${id}/questions`);
+  };
+
+  /**
+   * Handles save quiz functionality with optimistic updates
+   */
+  const handleSaveQuiz = async () => {
+    if (isUpdating) return; // Prevent multiple simultaneous updates
+
+    setIsUpdating(true);
+
+    try {
+      // Clone current data for optimistic update
+      const updatedQuiz = { ...quizData };
+
+      // Apply optimistic update to state (prevents flicker)
+      setQuizData(updatedQuiz);
+
+      // Make the actual API call
+      const result = await quizApi.update(quizId, updatedQuiz);
+
+      // Update with server response data
+      setQuizData(result);
+
+      // Show success message
+      setNotification({
+        type: 'success',
+        message: 'Quiz updated successfully!'
+      });
+    } catch (error) {
+      console.error('Error updating quiz:', error);
+
+      // Revert to original data if update fails
+      setQuizData(originalQuizData);
+
+      // Show error message
+      setNotification({
+        type: 'error',
+        message: `Failed to update quiz: ${error.message}`
+      });
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   // Create a Map to track seen IDs and ensure uniqueness

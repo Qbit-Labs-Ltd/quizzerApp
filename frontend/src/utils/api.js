@@ -16,6 +16,27 @@ const api = axios.create({
     }
 });
 
+// Add response interceptor
+api.interceptors.response.use(
+    response => response,
+    error => {
+        if (error.response && error.response.status === 500) {
+            console.error('Server error details:', {
+                status: error.response.status,
+                statusText: error.response.statusText,
+                data: error.response.data,
+                headers: error.response.headers,
+                config: {
+                    url: error.response.config.url,
+                    method: error.response.config.method,
+                    data: error.response.config.data
+                }
+            });
+        }
+        return Promise.reject(error);
+    }
+);
+
 /**
  * Generates a random ID for mock data objects
  * @returns {number} A random integer ID
@@ -91,21 +112,39 @@ export const quizApi = {
      * @returns {Promise<Object>} Updated quiz object
      */
     update: async (id, quizData) => {
-        if (isDev && useMockData) {
-            console.log(`Updating mock quiz id: ${id}`, quizData);
-            // Find and update the quiz in mockQuizzes
-            const quizIndex = mockQuizzes.findIndex(q => q.id === Number(id));
-            if (quizIndex !== -1) {
-                mockQuizzes[quizIndex] = {
-                    ...mockQuizzes[quizIndex],
-                    ...quizData
-                };
-                return mockQuizzes[quizIndex];
+        try {
+            // Format the data properly before sending
+            const formattedData = {
+                ...quizData,
+                // Ensure category is sent properly
+                category: typeof quizData.category === 'object'
+                    ? quizData.category.id || quizData.category
+                    : quizData.category
+            };
+
+            // Log the formatted data for debugging
+            console.log('Sending formatted quiz update:', formattedData);
+
+            // Try PUT first (RESTful approach)
+            try {
+                const response = await api.put(`/quizzes/${id}`, formattedData);
+                return response.data;
+            } catch (putError) {
+                // If PUT fails, try POST as fallback
+                console.log('PUT request failed, trying POST as fallback');
+                const response = await api.post(`/quizzes/${id}`, formattedData);
+                return response.data;
             }
-            throw new Error('Quiz not found');
+        } catch (error) {
+            console.error('Error updating quiz:', error);
+
+            // If backend returns validation errors, extract them
+            if (error.response && error.response.data && error.response.data.errors) {
+                throw new Error(`Validation failed: ${JSON.stringify(error.response.data.errors)}`);
+            }
+
+            throw error;
         }
-        const response = await api.put(`/quizzes/${id}`, quizData);
-        return response.data;
     },
 
     /**
@@ -115,23 +154,70 @@ export const quizApi = {
      */
     delete: async (id) => {
         if (isDev && useMockData) {
-            console.log(`Deleting mock quiz id: ${id}`);
-            const quizIndex = mockQuizzes.findIndex(q => q.id === Number(id));
-            if (quizIndex !== -1) {
-                mockQuizzes.splice(quizIndex, 1);
+            // Mock implementation (keep this as is)
+            console.log(`Deleting mock quiz with id: ${id}`);
+            const index = mockQuizzes.findIndex(q => q.id === Number(id));
+            if (index !== -1) {
+                // Remove all related questions
+                mockQuestions = mockQuestions.filter(q => q.quizId !== Number(id));
+                // Remove the quiz
+                mockQuizzes.splice(index, 1);
             }
-            // Also delete associated questions
-            const questionsToRemove = mockQuestions.filter(q => q.quizId === Number(id));
-            questionsToRemove.forEach(question => {
-                const qIndex = mockQuestions.findIndex(q => q.id === question.id);
-                if (qIndex !== -1) {
-                    mockQuestions.splice(qIndex, 1);
-                }
-            });
             return true;
         }
-        await api.delete(`/quizzes/${id}`);
-        return true;
+
+        try {
+            // Fetch questions for this quiz
+            let questions = [];
+            try {
+                const questionsResponse = await api.get(`/quizzes/${id}/questions`);
+                questions = questionsResponse.data || [];
+            } catch (error) {
+                console.warn('Could not fetch questions before quiz deletion:', error);
+                // Continue with deletion attempt even if we couldn't get questions
+            }
+
+            // If there are questions, ask for confirmation
+            if (questions.length > 0) {
+                const confirm = window.confirm(
+                    `This quiz has ${questions.length} questions. All these questions will be deleted. Continue?`
+                );
+
+                if (!confirm) {
+                    throw new Error('Delete cancelled by user');
+                }
+
+                // Delete all questions first - important to prevent foreign key constraint errors
+                console.log(`Deleting ${questions.length} questions before deleting quiz`);
+                for (const question of questions) {
+                    try {
+                        await api.delete(`/questions/${question.id}`);
+                    } catch (questionDeleteError) {
+                        console.error(`Failed to delete question ${question.id}:`, questionDeleteError);
+                        // Continue trying to delete other questions
+                    }
+                }
+            }
+
+            // Now try to delete the quiz
+            await api.delete(`/quizzes/${id}`);
+            return true;
+        } catch (error) {
+            console.error('Error deleting quiz:', error);
+
+            // More specific error message based on what might have happened
+            if (error.response) {
+                if (error.response.status === 500) {
+                    throw new Error('Server error when deleting quiz. The quiz may have constraints or dependencies that need to be resolved first.');
+                } else if (error.response.status === 404) {
+                    throw new Error('Quiz not found. It may have already been deleted.');
+                } else if (error.response.status === 403) {
+                    throw new Error('You do not have permission to delete this quiz.');
+                }
+            }
+
+            throw error;
+        }
     },
 
     /**
@@ -348,5 +434,3 @@ export const categoryApi = {
         return response.data;
     }
 };
-
-export default api;

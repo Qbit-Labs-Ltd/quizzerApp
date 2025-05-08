@@ -14,7 +14,8 @@ class QuizListService {
    */
   constructor() {
     this.api = axios.create({
-      baseURL: 'https://quizzer-app-git-quizzerapp.2.rahtiapp.fi/api',  // Or the correct API URL
+      //baseURL: 'https://quizzer-app-git-quizzerapp.2.rahtiapp.fi/api',  // Or the correct API URL
+      baseURL: 'http://localhost:8080/api',
       headers: {
         'Content-Type': 'application/json',
       }
@@ -57,12 +58,12 @@ class QuizListService {
     try {
       const response = await this.api.get(`/quizzes/${id}`);
       const quiz = response.data;
-      
+
       // Only return the quiz if it's published
       if (!quiz.published) {
         throw new Error('Quiz is not published');
       }
-      
+
       return quiz;
     } catch (error) {
       console.error('Error fetching published quiz:', error);
