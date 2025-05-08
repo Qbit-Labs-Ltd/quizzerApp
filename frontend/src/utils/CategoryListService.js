@@ -78,6 +78,40 @@ class CategoryListService {
       throw error;
     }
   }
+
+  /**
+   * Updates an existing category
+   * @param {number|string} id - Category ID
+   * @param {Object} categoryData - Updated category data
+   * @returns {Promise<Object>} Updated category object
+   */
+  async updateCategory(id, categoryData) {
+    try {
+      console.log(`Updating category ${id} with data:`, categoryData);
+      const response = await this.api.put(`/categories/${id}`, categoryData);
+      console.log("Category updated successfully:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating category:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Deletes a category
+   * @param {number|string} id - Category ID
+   * @returns {Promise<void>}
+   */
+  async deleteCategory(id) {
+    try {
+      console.log(`Deleting category ${id}`);
+      await this.api.delete(`/categories/${id}`);
+      console.log("Category deleted successfully");
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      throw error;
+    }
+  }
 }
 
 export default new CategoryListService();

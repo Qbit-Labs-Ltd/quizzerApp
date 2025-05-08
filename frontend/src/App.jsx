@@ -20,6 +20,7 @@ import CategoryList from './components/CategoryList'; // Added CategoryList impo
 import CategoryCreator from './components/CategoryCreator'; // Added CategoryCreator import
 import Toast from './components/Toast'; // Import Toast component
 import QuizListWrapper from './components/QuizListWrapper'; // Import QuizListWrapper
+import Modal from './components/Modal'; // Import the new generic modal
 
 /**
  * Main application component that handles routing and global state
@@ -39,6 +40,7 @@ function App() {
   // Loading and error states for quiz data fetching
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showCreateQuizModal, setShowCreateQuizModal] = useState(false);
 
   /**
    * Fetch quizzes when component mounts
@@ -208,7 +210,6 @@ function App() {
             <li><Link to="/quizzes">Manage Quizzes</Link></li>
             <li><Link to="/quizzes/published">Available Quizzes</Link></li>
             <li><Link to="/categories">Categories</Link></li>
-            <li><Link to="/create-quiz">Create Quiz</Link></li>
           </ul>
         </nav>
 
@@ -217,14 +218,39 @@ function App() {
           {error && <div className="error-message">{error}</div>}
 
           <Routes>
-            <Route path="/" element={<Navigate to="/categories" replace />} />
+            <Route path="/" element={<QuizListPage />} />
             <Route
               path="/quizzes"
-              element={<QuizListWrapper
-                quizzes={quizzes}
-                onDelete={(id) => showDeleteConfirmation(id, 'quiz')}
-                loading={loading}
-              />}
+              element={
+                <div>
+                  <button
+                    className="btn btn-primary"
+                    style={{ marginBottom: 24 }}
+                    onClick={() => setShowCreateQuizModal(true)}
+                  >
+                    Create Quiz
+                  </button>
+                  <Modal
+                    isOpen={showCreateQuizModal}
+                    onClose={() => setShowCreateQuizModal(false)}
+                    title="Create New Quiz"
+                  >
+                    <QuizCreator
+                      handleCreateQuiz={async (quizData) => {
+                        await handleCreateQuiz(quizData);
+                        setShowCreateQuizModal(false);
+                      }}
+                      showToast={showToast}
+                      onCancel={() => setShowCreateQuizModal(false)}
+                    />
+                  </Modal>
+                  <QuizListWrapper
+                    quizzes={quizzes}
+                    onDelete={(id) => showDeleteConfirmation(id, 'quiz')}
+                    loading={loading}
+                  />
+                </div>
+              }
             />
             <Route
               path="/quizzes/published"
@@ -233,20 +259,6 @@ function App() {
             <Route
               path="/categories"
               element={<CategoryListPage />}
-            />
-            <Route
-              path="/quizzes/new"
-              element={<QuizCreator
-                handleCreateQuiz={handleCreateQuiz}
-                showToast={showToast}
-              />}
-            />
-            <Route
-              path="/create-quiz"
-              element={<QuizCreator
-                handleCreateQuiz={handleCreateQuiz}
-                showToast={showToast}
-              />}
             />
             <Route
               path="/quizzes/:id/edit"

@@ -16,7 +16,8 @@ const CategoryListPage = () => {
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [categoryQuizzes, setCategoryQuizzes] = useState({});
   const [loadingQuizzes, setLoadingQuizzes] = useState({});
-  const [useMockData, setUseMockData] = useState(false);
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [editDescription, setEditDescription] = useState('');
   const navigate = useNavigate();
 
   // Fetch categories when component mounts
@@ -46,10 +47,8 @@ const CategoryListPage = () => {
    */
   const toggleCategory = async (categoryId) => {
     if (expandedCategory === categoryId) {
-      // Collapse the category if it's already expanded
       setExpandedCategory(null);
     } else {
-      // Expand the category and load its quizzes if not already loaded
       setExpandedCategory(categoryId);
 
       if (!categoryQuizzes[categoryId]) {
@@ -68,11 +67,66 @@ const CategoryListPage = () => {
   };
 
   /**
-   * Navigate to a quiz
-   * @param {number} quizId - ID of the quiz to navigate to
+   * Start editing a category's description
+   * @param {number} categoryId - ID of the category to edit
+   * @param {string} currentDescription - Current description of the category
    */
-  const handleQuizClick = (quizId) => {
-    navigate(`/quizzes/${quizId}/take`);
+  const handleStartEdit = (categoryId, currentDescription) => {
+    setEditingCategory(categoryId);
+    setEditDescription(currentDescription || '');
+  };
+
+  /**
+   * Save the edited category description
+   * @param {number} categoryId - ID of the category being edited
+   */
+  const handleSaveEdit = async (categoryId) => {
+    try {
+      const category = categories.find(cat => cat.id === categoryId);
+      if (!category) {
+        throw new Error('Category not found');
+      }
+
+      const updatedCategory = await CategoryListService.updateCategory(categoryId, {
+        name: category.name, // Include the existing name
+        description: editDescription
+      });
+
+      setCategories(categories.map(cat =>
+        cat.id === categoryId ? updatedCategory : cat
+      ));
+
+      setEditingCategory(null);
+      setEditDescription('');
+    } catch (err) {
+      console.error('Error updating category:', err);
+      setError(err.response?.data?.error || 'Failed to update category description');
+    }
+  };
+
+  /**
+   * Delete a category
+   * @param {number} categoryId - ID of the category to delete
+   */
+  const handleDeleteCategory = async (categoryId) => {
+    if (!window.confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      await CategoryListService.deleteCategory(categoryId);
+      setCategories(categories.filter(cat => cat.id !== categoryId));
+      if (expandedCategory === categoryId) {
+        setExpandedCategory(null);
+      }
+    } catch (err) {
+      console.error('Error deleting category:', err);
+      if (err.response?.status === 409) {
+        setError('Cannot delete category: It contains quizzes. Please remove or reassign the quizzes first.');
+      } else {
+        setError('Failed to delete category');
+      }
+    }
   };
 
   // Show loading indicator when data is being fetched
@@ -117,7 +171,57 @@ const CategoryListPage = () => {
             </div>
 
             <div className="category-description">
-              {category.description || 'No description available'}
+              {editingCategory === category.id ? (
+                <div className="edit-description">
+                  <textarea
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    placeholder="Enter category description"
+                    rows="3"
+                  />
+                  <div className="edit-actions">
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => handleSaveEdit(category.id)}
+                    >
+                      Save
+                    </button>
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => {
+                        setEditingCategory(null);
+                        setEditDescription('');
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="description-content">
+                  <p>{category.description || 'No description available'}</p>
+                  <div className="description-actions">
+                    <button
+                      className="btn btn-text"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartEdit(category.id, category.description);
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn btn-text danger"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteCategory(category.id);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {expandedCategory === category.id && (
@@ -131,7 +235,7 @@ const CategoryListPage = () => {
                       <div
                         key={quiz.id}
                         className="quiz-item"
-                        onClick={() => handleQuizClick(quiz.id)}
+                        onClick={() => navigate(`/quizzes/${quiz.id}/take`)}
                       >
                         <div className="quiz-item-details">
                           <h4>{quiz.name}</h4>

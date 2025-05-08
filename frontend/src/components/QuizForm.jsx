@@ -73,11 +73,14 @@ const QuizForm = ({
     // If user starts typing after an error, clear the error
     if (error) resetError();
 
-    // Update local form state
-    setFormState(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    // Update local form state using functional update to ensure we have the latest state
+    setFormState(prevState => {
+      const newState = {
+        ...prevState,
+        [name]: type === 'checkbox' ? checked : value
+      };
+      return newState;
+    });
   };
 
   // Form submission
