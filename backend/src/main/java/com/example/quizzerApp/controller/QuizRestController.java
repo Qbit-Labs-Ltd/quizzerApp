@@ -34,7 +34,8 @@ import jakarta.validation.Valid;
  * REST Controller for handling Quiz-related operations.
  * Provides endpoints for managing quizzes and their questions.
  */
-@CrossOrigin(origins = { "http://localhost:5173", "https://quizzerapp-1knb.onrender.com" })
+// @CrossOrigin(origins = { "http://localhost:5173",
+// "https://quizzerapp-1knb.onrender.com" })
 @RestController
 @RequestMapping("/api/quizzes")
 public class QuizRestController {

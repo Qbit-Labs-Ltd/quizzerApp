@@ -13,17 +13,18 @@ public class WebConfig implements WebMvcConfigurer {
 
     /**
      * Configures CORS mappings for the API endpoints.
-     * Allows requests from the frontend running on http://localhost:5173
+     * Allows requests from any origin with specific settings.
      * 
      * @param registry the CorsRegistry to configure
      */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:5173","https://quizzerapp-1knb.onrender.com")
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*") // Use allowedOriginPatterns instead of allowedOrigins
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
-                .exposedHeaders("*") // Add this to expose headers
-                .allowCredentials(true);
+                .exposedHeaders("*")
+                .allowCredentials(false) // Changed to false since we're using '*'
+                .maxAge(3600);
     }
 }

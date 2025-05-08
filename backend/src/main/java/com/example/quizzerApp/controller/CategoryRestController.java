@@ -27,7 +27,8 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/categories")
-@CrossOrigin(origins = { "http://localhost:5173", "https://quizzerapp-1knb.onrender.com" })
+// @CrossOrigin(origins = { "http://localhost:5173",
+// "https://quizzerapp-1knb.onrender.com" })
 @Tag(name = "Category", description = "The Category API. Contains all operations that can be performed on categories.")
 public class CategoryRestController {
 

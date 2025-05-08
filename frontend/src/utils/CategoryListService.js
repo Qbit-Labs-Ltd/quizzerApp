@@ -1,6 +1,17 @@
 import axios from 'axios';
 
 /**
+ * Mock data for categories
+ */
+const mockCategories = [
+  { id: 1, name: 'Programming', description: 'Programming and coding related quizzes' },
+  { id: 2, name: 'Mathematics', description: 'Math concepts and problem solving' },
+  { id: 3, name: 'Science', description: 'Scientific theories and experiments' },
+  { id: 4, name: 'Languages', description: 'Language learning and linguistics' },
+  { id: 5, name: 'History', description: 'Historical events and figures' }
+];
+
+/**
  * Service for fetching categories
  * Provides methods for retrieving category data
  */
@@ -25,14 +36,13 @@ class CategoryListService {
    */
   async getAllCategories() {
     try {
+      console.log("Fetching categories from:", this.api.defaults.baseURL + '/categories');
       const response = await this.api.get('/categories');
+      console.log("Categories fetched successfully:", response.data);
       return response.data;
     } catch (error) {
       console.error('Error fetching categories:', error);
-      // Find and modify any code like this:
-      if (import.meta.env.DEV) {
-        return mockCategories;
-      }
+      // Don't fall back to mock data - throw the error so the UI can handle it properly
       throw error;
     }
   }

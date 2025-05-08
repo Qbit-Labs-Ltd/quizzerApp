@@ -24,7 +24,8 @@ import com.example.quizzerApp.repository.QuizRepository;
  * REST Controller for handling Question-related operations.
  * Provides endpoints for retrieving, updating, and deleting questions.
  */
-@CrossOrigin(origins = { "http://localhost:5173", "https://quizzerapp-1knb.onrender.com" })
+// @CrossOrigin(origins = { "http://localhost:5173",
+// "https://quizzerapp-1knb.onrender.com" })
 @RestController
 @RequestMapping("/api/questions")
 public class QuestionRestController {

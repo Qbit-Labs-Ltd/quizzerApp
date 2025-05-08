@@ -21,7 +21,8 @@ import java.util.Map;
  * for managing quizzes, questions, and answer options.
  */
 @Controller
-@CrossOrigin(origins = { "http://localhost:5173", "https://quizzerapp-1knb.onrender.com" })
+// @CrossOrigin(origins = { "http://localhost:5173",
+// "https://quizzerapp-1knb.onrender.com" })
 public class QuizController {
 
     /**

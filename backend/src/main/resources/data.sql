@@ -1,21 +1,12 @@
 -- Create backend/src/main/resources/data.sql
 -- Initial Categories
-INSERT INTO category (name, description) 
-VALUES ('Programming', 'Programming and coding related quizzes')
-ON CONFLICT (name) DO NOTHING;
-
-INSERT INTO category (name, description) 
-VALUES ('Mathematics', 'Math concepts and problem solving')
-ON CONFLICT (name) DO NOTHING;
-
-INSERT INTO category (name, description) 
-VALUES ('Science', 'Scientific theories and experiments')
-ON CONFLICT (name) DO NOTHING;
-
-INSERT INTO category (name, description) 
-VALUES ('Languages', 'Language learning and linguistics')
-ON CONFLICT (name) DO NOTHING;
-
-INSERT INTO category (name, description) 
-VALUES ('History', 'Historical events and figures')
-ON CONFLICT (name) DO NOTHING;
+MERGE INTO category (name, description) KEY(name) VALUES 
+('Programming', 'Programming and coding related quizzes');
+MERGE INTO category (name, description) KEY(name) VALUES 
+('Mathematics', 'Math concepts and problem solving');
+MERGE INTO category (name, description) KEY(name) VALUES 
+('Science', 'Scientific theories and experiments');
+MERGE INTO category (name, description) KEY(name) VALUES 
+('Languages', 'Language learning and linguistics');
+MERGE INTO category (name, description) KEY(name) VALUES 
+('History', 'Historical events and figures');
