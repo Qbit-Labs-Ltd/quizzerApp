@@ -16,6 +16,14 @@ export const mockQuizzes = [
         published: false,
         questionCount: 0
     },
+    {
+        id: 5,
+        name: "Python Basics",
+        description: "Introduction to Python programming",
+        courseCode: "PY101",
+        published: true,
+        questionCount: 2
+    }
 ];
 
 export const mockQuestions = [
@@ -50,6 +58,28 @@ export const mockQuestions = [
             { id: 7, text: "useEffect", correct: true },
             { id: 8, text: "useState", correct: false },
             { id: 9, text: "useContext", correct: false }
+        ]
+    },
+    {
+        id: 4,
+        content: "What is Python?",
+        difficulty: "Easy",
+        quizId: 5,
+        answers: [
+            { id: 10, text: "A programming language", correct: true },
+            { id: 11, text: "A snake", correct: false },
+            { id: 12, text: "A database", correct: false }
+        ]
+    },
+    {
+        id: 5,
+        content: "What is the Python package manager called?",
+        difficulty: "Easy",
+        quizId: 5,
+        answers: [
+            { id: 13, text: "pip", correct: true },
+            { id: 14, text: "npm", correct: false },
+            { id: 15, text: "yarn", correct: false }
         ]
     }
 ];

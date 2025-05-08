@@ -19,6 +19,7 @@ import TakeQuizPage from './views/TakeQuizPage';
 import CategoryList from './components/CategoryList'; // Added CategoryList import
 import CategoryCreator from './components/CategoryCreator'; // Added CategoryCreator import
 import Toast from './components/Toast'; // Import Toast component
+import QuizListWrapper from './components/QuizListWrapper'; // Import QuizListWrapper
 
 /**
  * Main application component that handles routing and global state
@@ -177,12 +178,24 @@ function App() {
   const handleUpdateQuiz = async (id, quizData) => {
     try {
       const updatedQuiz = await quizApi.update(id, quizData);
-      setQuizzes(quizzes.map(quiz => quiz.id === id ? updatedQuiz : quiz));
-      showToast('Quiz updated successfully!');
+
+      // Update local state to avoid unnecessary API calls
+      setQuizzes(prevQuizzes =>
+        prevQuizzes.map(quiz =>
+          quiz.id === id ? { ...quiz, ...updatedQuiz } : quiz
+        )
+      );
+
+      // Dispatch event to notify that quizzes have been updated
+      window.dispatchEvent(new Event('quizzes-updated'));
+
+      // Show success notification
+      showToast('Quiz updated successfully!', 'success');
       return updatedQuiz;
-    } catch (err) {
-      showToast('Failed to update quiz', 'error');
-      throw err;
+    } catch (error) {
+      console.error('Error updating quiz:', error);
+      showToast(`Failed to update quiz: ${error.message}`, 'error');
+      throw error;
     }
   };
 
@@ -291,23 +304,6 @@ function App() {
         />
       </div>
     </Router>
-  );
-}
-
-/**
- * Wrapper component for QuizList that provides navigation capabilities
- * Ensures navigation functions are available to the QuizList component
- * @param {Object} props - Component props
- * @returns {JSX.Element}
- */
-function QuizListWrapper(props) {
-  const navigate = useNavigate();
-  return (
-    <QuizList
-      {...props}
-      onEdit={(id) => navigate(`/quizzes/${id}/edit`)}
-      onViewQuestions={(id) => navigate(`/quizzes/${id}/questions`)}
-    />
   );
 }
 

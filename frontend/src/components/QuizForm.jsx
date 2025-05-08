@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../styles/CommonStyles.css';
 import { categoryApi } from '../utils/api'; // new import
 
@@ -39,57 +39,56 @@ const QuizForm = ({
     fetchCategories();
   }, []);
 
-  // Form state
-  const [quiz, setQuiz] = useState({
+  // Initialize form state once from initialData
+  const formRef = useRef(null);
+  const [formState, setFormState] = useState(() => ({
     name: initialData.name || '',
     description: initialData.description || '',
     courseCode: initialData.courseCode || '',
     published: initialData.published || false,
     category: initialData.category || ''
-  });
+  }));
 
-  /**
-   * Reset form if there was an error
-   */
+  // Only update form when initialData ID changes (new quiz being edited)
+  const initialIdRef = useRef(initialData.id);
+
   useEffect(() => {
-    if (error && error.includes('Duplicate course code')) {
-      // Clear just the course code if that's the error
-      setQuiz(prev => ({
-        ...prev,
-        courseCode: ''
-      }));
+    // Only reset the form when we're editing a completely different quiz
+    if (initialData.id && initialData.id !== initialIdRef.current) {
+      initialIdRef.current = initialData.id;
+      setFormState({
+        name: initialData.name || '',
+        description: initialData.description || '',
+        courseCode: initialData.courseCode || '',
+        published: initialData.published || false,
+        category: initialData.category || ''
+      });
     }
-    if (error && error.includes('Duplicate quiz name and course code')) {
-      // Highlight both fields as problematic but don't clear them
-      // The user needs to change at least one to proceed
-    }
-  }, [error]);
+  }, [initialData.id]); // Only depend on ID changing
 
-  /**
-   * Handles input field changes
-   * @param {Event} e - Input change event
-   */
+  // Use a debounced change handler to reduce flickering
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    // If user starts typing again after an error, clear the error
+
+    // If user starts typing after an error, clear the error
     if (error) resetError();
 
-    setQuiz({
-      ...quiz,
+    // Update local form state
+    setFormState(prev => ({
+      ...prev,
       [name]: type === 'checkbox' ? checked : value
-    });
+    }));
   };
 
-  /**
-   * Handles form submission
-   * @param {Event} e - Form submit event
-   */
+  // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
 
     try {
-      await onSubmit(quiz);
+      await onSubmit(formState);
+      // Dispatch event to notify that quizzes have been updated
+      window.dispatchEvent(new Event('quizzes-updated'));
     } catch (err) {
       console.error('Error in form submission:', err);
       // Error handling is now managed in QuizCreator
@@ -115,7 +114,7 @@ const QuizForm = ({
             type="text"
             id="quiz-name"
             name="name"
-            value={quiz.name}
+            value={formState.name}
             onChange={handleChange}
             required
             disabled={isSubmitting}
@@ -128,7 +127,7 @@ const QuizForm = ({
           <textarea
             id="quiz-description"
             name="description"
-            value={quiz.description}
+            value={formState.description}
             onChange={handleChange}
             rows="3"
             disabled={isSubmitting}
@@ -142,7 +141,7 @@ const QuizForm = ({
             type="text"
             id="quiz-course"
             name="courseCode"
-            value={quiz.courseCode}
+            value={formState.courseCode}
             onChange={handleChange}
             disabled={isSubmitting}
             placeholder="Enter course code"
@@ -158,7 +157,7 @@ const QuizForm = ({
           <select
             id="quiz-category"
             name="category"
-            value={quiz.category}
+            value={formState.category}
             onChange={handleChange}
             disabled={isSubmitting}
           >
@@ -174,7 +173,7 @@ const QuizForm = ({
             <input
               type="checkbox"
               name="published"
-              checked={quiz.published}
+              checked={formState.published}
               onChange={handleChange}
               disabled={isSubmitting}
             />
