@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { mockQuestions, mockQuizzes } from '../../mockData';
+import { mockQuestions as importedMockQuestions, mockQuizzes as importedMockQuizzes } from '../../mockData';
+
+// Create local mutable copies of the imported mock data
+let mockQuizzes = [...importedMockQuizzes];
+let mockQuestions = [...importedMockQuestions];
 
 // Toggle between mock data (development) and real API (production)
 const isDev = import.meta.env.DEV; // Use Vite's built-in environment detection

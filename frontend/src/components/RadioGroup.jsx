@@ -11,13 +11,13 @@ import React from 'react';
  * @param {boolean} props.disabled - Whether the radio group is disabled
  * @returns {JSX.Element}
  */
-const RadioGroup = ({ 
+function RadioGroup({ 
   options, 
   name, 
   selectedValue, 
   onChange, 
   disabled = false 
-}) => {
+}) {
   if (!options || options.length === 0) {
     return <div className="empty-options">No options available</div>;
   }
@@ -44,6 +44,6 @@ const RadioGroup = ({
       ))}
     </div>
   );
-};
+}
 
 export default RadioGroup; 

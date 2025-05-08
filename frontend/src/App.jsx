@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, Route, BrowserRouter as Router, Routes, useNavigate, useParams, Link, Navigate } from 'react-router-dom'; // Added Navigate import
+import { Link, Route, BrowserRouter as Router, Routes, useNavigate, useParams } from 'react-router-dom'; // Added Navigate import
+import CategoryCreator from './components/CategoryCreator'; // Added CategoryCreator import
 import ConfirmationModal from './components/ConfirmationModal';
 import EditQuestionView from './components/EditQuestionView';
+import Modal from './components/Modal'; // Import the new generic modal
 import QuizCreator from './components/QuizCreator';
 import QuizForm from './components/QuizForm';
-import QuizList from './components/QuizList';
+import QuizListWrapper from './components/QuizListWrapper'; // Import QuizListWrapper
 import QuizQuestionsView from './components/QuizQuestionsView';
-import QuizPage from './views/QuizPage';
-import ResultsPage from './views/ResultsPage'; // Import ResultsPage component
-import CategoryDetailPage from './views/CategoryDetailPage';
-import { quizApi, questionApi, answerApi } from './utils/api';
+import ReviewForm from './components/ReviewForm'; // Import ReviewForm component
+import Toast from './components/Toast'; // Import Toast component
 import './styles/CommonStyles.css';
 import './styles/NavStyles.css';
 import './styles/TitleStyles.css';
+import { answerApi, questionApi, quizApi } from './utils/api';
+import CategoryDetailPage from './views/CategoryDetailPage';
 import CategoryListPage from './views/CategoryListPage';
 import QuizListPage from './views/QuizListPage';
+import QuizPage from './views/QuizPage';
+import ResultsPage from './views/ResultsPage'; // Import ResultsPage component
 import TakeQuizPage from './views/TakeQuizPage';
-import CategoryList from './components/CategoryList'; // Added CategoryList import
-import CategoryCreator from './components/CategoryCreator'; // Added CategoryCreator import
-import Toast from './components/Toast'; // Import Toast component
-import QuizListWrapper from './components/QuizListWrapper'; // Import QuizListWrapper
-import Modal from './components/Modal'; // Import the new generic modal
 
 /**
  * Main application component that handles routing and global state
@@ -296,6 +295,16 @@ function App() {
               path="/categories/:id"
               element={<CategoryDetailPage />}
             />
+            {/* Review routes */}
+            <Route
+              path="/quiz/:id/review"
+              element={<ReviewForm />}
+            />
+            {/* New route for editing reviews */}
+            <Route
+              path="/reviews/:id/edit"
+              element={<ReviewEditRedirect />}
+            />
           </Routes>
         </main>
 
@@ -385,6 +394,46 @@ function EditQuizView({ showToast, handleUpdateQuiz }) {
       />
     </div>
   );
+}
+
+/**
+ * Component that redirects from /reviews/:id/edit to the ReviewForm with the appropriate params
+ * Used to maintain compatibility with our existing ReviewForm implementation
+ */
+function ReviewEditRedirect() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const fetchReviewInfo = async () => {
+      try {
+        // In a real implementation, we would fetch the review here to get its quizId
+        // For now, we'll use a placeholder quizId from localStorage or redirect to a fallback
+        
+        // Mock implementation using localStorage (for demo purposes)
+        let quizId = localStorage.getItem(`review_${id}_quizId`);
+        
+        if (!quizId) {
+          // If we don't have the quizId stored, we can:
+          // 1. Fetch it from the API (ideal case)
+          // 2. Redirect to a fallback route (e.g., homepage)
+          console.warn('QuizId not found for review, redirecting to homepage');
+          navigate('/');
+          return;
+        }
+        
+        // Redirect to our existing ReviewForm with the correct query param
+        navigate(`/quiz/${quizId}/review?reviewId=${id}`);
+      } catch (error) {
+        console.error('Error in review edit redirect:', error);
+        navigate('/');
+      }
+    };
+    
+    fetchReviewInfo();
+  }, [id, navigate]);
+  
+  return <div className="loading">Redirecting...</div>;
 }
 
 export default App;
