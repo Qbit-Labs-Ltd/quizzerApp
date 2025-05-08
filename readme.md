@@ -44,6 +44,8 @@ We create a web-based quiz platform for Haaga-Helia teachers and students.
 - [Sprint 1 Backlog](https://github.com/orgs/Qbit-Labs-Ltd/projects/1/views/1)
 
 - [Sprint 2 Backlog](https://github.com/orgs/Qbit-Labs-Ltd/projects/3/views/1)
+  
+- [Sprint 3 Backlog](https://github.com/orgs/Qbit-Labs-Ltd/projects/6/views/1)
 
 ## Logo
 
