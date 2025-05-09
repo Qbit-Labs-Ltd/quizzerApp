@@ -222,13 +222,15 @@ function App() {
               path="/quizzes"
               element={
                 <div>
-                  <button
-                    className="btn btn-primary"
-                    style={{ marginBottom: 24 }}
-                    onClick={() => setShowCreateQuizModal(true)}
-                  >
-                    Create Quiz
-                  </button>
+                  <div className="page-title-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h1 className="page-title">Quizzes</h1>
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => setShowCreateQuizModal(true)}
+                    >
+                      Create Quiz
+                    </button>
+                  </div>
                   <Modal
                     isOpen={showCreateQuizModal}
                     onClose={() => setShowCreateQuizModal(false)}
@@ -403,16 +405,16 @@ function EditQuizView({ showToast, handleUpdateQuiz }) {
 function ReviewEditRedirect() {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const fetchReviewInfo = async () => {
       try {
         // In a real implementation, we would fetch the review here to get its quizId
         // For now, we'll use a placeholder quizId from localStorage or redirect to a fallback
-        
+
         // Mock implementation using localStorage (for demo purposes)
         let quizId = localStorage.getItem(`review_${id}_quizId`);
-        
+
         if (!quizId) {
           // If we don't have the quizId stored, we can:
           // 1. Fetch it from the API (ideal case)
@@ -421,7 +423,7 @@ function ReviewEditRedirect() {
           navigate('/');
           return;
         }
-        
+
         // Redirect to our existing ReviewForm with the correct query param
         navigate(`/quiz/${quizId}/review?reviewId=${id}`);
       } catch (error) {
@@ -429,10 +431,10 @@ function ReviewEditRedirect() {
         navigate('/');
       }
     };
-    
+
     fetchReviewInfo();
   }, [id, navigate]);
-  
+
   return <div className="loading">Redirecting...</div>;
 }
 

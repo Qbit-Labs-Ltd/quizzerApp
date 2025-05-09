@@ -106,11 +106,6 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
 
   return (
     <div className="quizzes-container">
-      <div className="page-title-container">
-        <h1 className="page-title">Quizzes</h1>
-        <button className="create-btn" onClick={createQuiz}>Add a quiz</button>
-      </div>
-
       <div className="quiz-cards-grid">
         {uniqueQuizzes.map(quiz => (
           <div key={`quiz-container-${quiz.id}`} className="quiz-card">
