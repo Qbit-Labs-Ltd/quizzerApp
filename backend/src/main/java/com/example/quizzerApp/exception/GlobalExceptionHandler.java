@@ -22,6 +22,16 @@ public class GlobalExceptionHandler {
      * @param ex The exception that was thrown
      * @return A ResponseEntity with error details
      */
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of(
+                        "error", "Not Found",
+                        "message", ex.getMessage(),
+                        "type", ex.getClass().getName()
+                ));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGlobalException(Exception ex) {
         // Log the exception
