@@ -8,6 +8,8 @@ import QuizList from './components/QuizList';
 import QuizQuestionsView from './components/QuizQuestionsView';
 import QuizPage from './views/QuizPage';
 import ResultsPage from './views/ResultsPage'; // Import ResultsPage component
+import { Suspense, lazy } from 'react';
+const QuizReviewsPage = lazy(() => import('./views/QuizReviewsPage'));
 import CategoryDetailPage from './views/CategoryDetailPage';
 import { quizApi, questionApi, answerApi } from './utils/api';
 import './styles/CommonStyles.css';
@@ -291,6 +293,14 @@ function App() {
             <Route
               path="/quiz/:id/results"
               element={<ResultsPage />}
+            />
+            <Route
+              path="/quiz/:id/reviews"
+              element={
+                <Suspense fallback={<div>Loading reviews page…</div>}>
+                  <QuizReviewsPage />
+                </Suspense>
+              }
             />
             <Route
               path="/categories/:id"
