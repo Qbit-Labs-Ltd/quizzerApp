@@ -11,8 +11,6 @@ import QuizQuestionsView from './components/QuizQuestionsView';
 import ReviewForm from './components/ReviewForm'; // Import ReviewForm component
 import Toast from './components/Toast'; // Import Toast component
 import './styles/CommonStyles.css';
-import './styles/NavStyles.css';
-import './styles/TitleStyles.css';
 import { answerApi, questionApi, quizApi } from './utils/api';
 import CategoryDetailPage from './views/CategoryDetailPage';
 import CategoryListPage from './views/CategoryListPage';

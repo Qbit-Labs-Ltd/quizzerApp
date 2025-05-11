@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import AnswerCard from '../components/AnswerCard';
 import FeedbackToast from '../components/FeedbackToast';
-import '../styles/AnswerComponents.css';
 import '../styles/CommonStyles.css';
-import '../styles/QuizStyles.css';
 import AnswerService from '../utils/AnswerService';
 import QuizListService from '../utils/QuizListService';
 
@@ -320,7 +318,7 @@ const TakeQuizPage = () => {
 
           {/* Write Review Button */}
           <div className="quiz-page-footer">
-            <Link 
+            <Link
               to={`/quiz/${id}/review`}
               className="btn btn-primary write-review-btn"
               aria-label="Write a review for this quiz"

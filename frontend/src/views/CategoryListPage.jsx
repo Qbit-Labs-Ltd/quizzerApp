@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/CommonStyles.css';
-import '../styles/CategoryStyles.css';
 import CategoryListService from '../utils/CategoryListService';
 
 /**

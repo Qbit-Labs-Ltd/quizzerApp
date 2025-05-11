@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import '../styles/QuestionsView.css';
+import '../styles/CommonStyles.css';
 import { questionApi, quizApi } from '../utils/api';
 import QuestionBlock from './QuestionBlock';
 import QuestionForm from './QuestionForm';
