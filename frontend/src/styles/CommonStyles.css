@@ -4171,7 +4171,7 @@ ul:has(li > span:last-child:contains("Correct"))>li:last-child {
 /* Responsive view mode toggle */
 .view-toggle {
     display: flex;
-    justify-content: center;
+    justify-content: left;
     margin-bottom: 1.5rem;
     gap: 0.5rem;
 }
