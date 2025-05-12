@@ -1,30 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { Link, Route, BrowserRouter as Router, Routes, useNavigate, useParams } from 'react-router-dom'; // Added Navigate import
-import CategoryCreator from './components/CategoryCreator'; // Added CategoryCreator import
+import { Link, Route, BrowserRouter as Router, Routes, useNavigate, useParams } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
+import CategoryCreator from './components/CategoryCreator';
 import ConfirmationModal from './components/ConfirmationModal';
 import EditQuestionView from './components/EditQuestionView';
-import Modal from './components/Modal'; // Import the new generic modal
+import Modal from './components/Modal';
 import QuizCreator from './components/QuizCreator';
 import QuizForm from './components/QuizForm';
-import QuizListWrapper from './components/QuizListWrapper'; // Import QuizListWrapper
+import QuizListWrapper from './components/QuizListWrapper';
 import QuizQuestionsView from './components/QuizQuestionsView';
-import ReviewForm from './components/ReviewForm'; // Import ReviewForm component
-import Toast from './components/Toast'; // Import Toast component
-import QuizPage from './views/QuizPage';
-import ResultsPage from './views/ResultsPage'; // Import ResultsPage component
-import { Suspense, lazy } from 'react';
-const QuizReviewsPage = lazy(() => import('./views/QuizReviewsPage'));
-import CategoryDetailPage from './views/CategoryDetailPage';
-import { quizApi, questionApi, answerApi } from './utils/api';
-import './styles/CommonStyles.css';
-import { answerApi, questionApi, quizApi } from './utils/api';
+import ReviewForm from './components/ReviewForm';
+import Toast from './components/Toast';
+
+// Views
 import CategoryDetailPage from './views/CategoryDetailPage';
 import CategoryListPage from './views/CategoryListPage';
 import QuizListPage from './views/QuizListPage';
 import QuizPage from './views/QuizPage';
-import ResultsPage from './views/ResultsPage'; // Import ResultsPage component
+import ResultsPage from './views/ResultsPage';
 import TakeQuizPage from './views/TakeQuizPage';
+const QuizReviewsPage = lazy(() => import('./views/QuizReviewsPage'));
 
+// API utilities
+import { quizApi, questionApi, answerApi } from './utils/api';
+import './styles/CommonStyles.css';
 /**
  * Main application component that handles routing and global state
  * Manages application-wide concerns such as:
