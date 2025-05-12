@@ -143,6 +143,7 @@ button.cancel-button {
 
 button.cancel-button:hover {
     background-color: #5c636a;
+    cursor: pointer;
 }
 
 /* Edit button style to match screenshots */
@@ -718,6 +719,7 @@ button.cancel-button:hover {
 
 .add-question-button:hover {
     background-color: var(--primary-blue-hover);
+    cursor: pointer;
 }
 
 .add-question-header {
