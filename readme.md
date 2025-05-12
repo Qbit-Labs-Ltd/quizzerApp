@@ -50,3 +50,19 @@ We create a web-based quiz platform for Haaga-Helia teachers and students.
 ## Logo
 
 ![App Logo](/applogo.png "App logo")
+
+## How to Run App
+
+To run the application, use the following commands:
+
+### Backend:
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+### Frontend:
+```bash
+cd frontend
+npm run dev
+```

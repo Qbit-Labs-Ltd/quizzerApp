@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/CommonStyles.css';
-import '../styles/TitleStyles.css';
 
 /**
  * Component that displays a list of quizzes in a card layout

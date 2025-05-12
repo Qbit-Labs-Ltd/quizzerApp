@@ -17,8 +17,6 @@ const QuizReviewsPage = lazy(() => import('./views/QuizReviewsPage'));
 import CategoryDetailPage from './views/CategoryDetailPage';
 import { quizApi, questionApi, answerApi } from './utils/api';
 import './styles/CommonStyles.css';
-import './styles/NavStyles.css';
-import './styles/TitleStyles.css';
 import { answerApi, questionApi, quizApi } from './utils/api';
 import CategoryDetailPage from './views/CategoryDetailPage';
 import CategoryListPage from './views/CategoryListPage';

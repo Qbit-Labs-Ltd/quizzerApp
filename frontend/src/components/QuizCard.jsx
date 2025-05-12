@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/CardStyles.css';
+import '../styles/CommonStyles.css';
 
 /**
  * Presentational component that renders a single quiz in a card.
