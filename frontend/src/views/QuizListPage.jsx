@@ -61,31 +61,35 @@ const QuizListPage = () => {
       <div className="page-title-container">
         <h1 className="page-title">Available Quizzes</h1>
       </div>
-      
+
       <div className="view-toggle">
-        <button 
-          className={viewMode === 'card' ? 'active' : ''} 
+        <button
+          className={viewMode === 'card' ? 'active' : ''}
           onClick={() => setViewMode('card')}
         >
           Card View
         </button>
-        <button 
-          className={viewMode === 'table' ? 'active' : ''} 
+        <button
+          className={viewMode === 'table' ? 'active' : ''}
           onClick={() => setViewMode('table')}
         >
           Table View
         </button>
       </div>
-      
+
       {viewMode === 'card' ? (
         <div className="quiz-cards-grid">
           {publishedQuizzes.map(quiz => (
             <div key={`quiz-container-${quiz.id}`}>
               <div className="quiz-card">
                 <div className="quiz-card-header">
-                  <h2 className="quiz-card-title">
-                    {quiz.name}
-                  </h2>
+                  <div className="quiz-card-title-gategory">
+                    <div className="quiz-card-title">
+                      {quiz.name}
+                    </div>
+                    <div className="quiz-card-category">Category: {quiz.categoryName || 'Uncategorized'}</div>
+                  </div>
+
                   <div className="quiz-card-badge">
                     <span className="published-badge">Published</span>
                   </div>
@@ -148,4 +152,4 @@ const QuizListPage = () => {
   );
 };
 
-export default QuizListPage; 
+export default QuizListPage;

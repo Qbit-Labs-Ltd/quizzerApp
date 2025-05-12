@@ -19,6 +19,7 @@ export default function QuizCard({ quiz, onEdit, onDelete, onViewQuestions }) {
     <div className="quiz-card">
       <div className="quiz-card-header">
         <h2 className="quiz-card-title" onClick={handleView}>{quiz.name}</h2>
+        <div className="quiz-card-category">Category: {quiz.categoryName || 'Uncategorized'}</div>
         <div className="quiz-card-badge">
           {quiz.published ? (
             <span className="published-badge">Published</span>

@@ -1302,18 +1302,18 @@ a.question-link:hover {
     justify-content: space-between;
     align-items: flex-start;
     border-bottom: 1px solid var(--border-gray);
+    background-color: #f8f9fa;
 }
 
 .quiz-card-title {
     font-size: 1.25rem;
     font-weight: 500;
-    margin: 0;
+    margin: 0 0 0.5rem 0;
     color: var(--primary-blue);
-    cursor: pointer;
 }
 
-.quiz-card-title:hover {
-    text-decoration: underline;
+.quiz-card-title-gategory {
+    display: grid;
 }
 
 .quiz-card-badge {
@@ -1830,19 +1830,8 @@ a.question-link:hover {
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
 }
 
-.quiz-card-header {
-    padding: 1.25rem;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid var(--border-gray);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
 .quiz-card-title {
     margin: 0 0 0.5rem 0;
-    font-size: 1.25rem;
-    font-weight: 500;
     color: var(--text-dark);
     transition: color 0.2s ease;
 }
@@ -2473,26 +2462,48 @@ a.question-link:hover {
     padding: 0 20px 20px;
 }
 
-/* Quiz item */
-.quiz-item {
+.quizzes-by-category {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    /* lisää väliä korttien väliin */
+}
+
+/* Quiz item */
+.category-quiz-item {
+    flex: 1 1 calc(33.333% - 13.33px);
+    /* 3 per rivi + väli */
+    max-width: calc(33.333% - 13.33px);
+    display: grid;
     align-items: center;
     padding: 15px;
-    border-radius: 6px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: #f8fafc;
     margin-bottom: 12px;
+    box-sizing: border-box;
     cursor: pointer;
+}
+
+.category-quiz-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease-in-out;
 }
 
 .quiz-item:hover {
     background-color: #edf2f7;
 }
 
-/* Quiz item details */
 .quiz-item-details {
-    flex: 1;
+    gap: 16px;
+    font-size: 0.85rem;
 }
+
+/* content: '📚'; */
+/* content: '📝'; */
+
+
 
 .quiz-item-details h4 {
     margin: 0 0 8px;
@@ -4250,12 +4261,6 @@ ul:has(li > span:last-child:contains("Correct"))>li:last-child {
 .quiz-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-.quiz-card-header {
-    padding: 1.25rem;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid var(--border-gray);
 }
 
 .quiz-card-title {

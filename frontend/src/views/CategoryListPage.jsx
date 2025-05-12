@@ -230,25 +230,24 @@ const CategoryListPage = () => {
                 ) : categoryQuizzes[category.id]?.length > 0 ? (
                   <div className="quiz-list-by-category">
                     <h3>Available Quizzes</h3>
-                    {categoryQuizzes[category.id].map(quiz => (
-                      <div
-                        key={quiz.id}
-                        className="quiz-item"
-                        onClick={() => navigate(`/quizzes/${quiz.id}/take`)}
-                      >
-                        <div className="quiz-item-details">
-                          <h4>{quiz.name}</h4>
-                          <p>{quiz.description || 'No description'}</p>
-                          <div className="quiz-item-meta">
-                            <span>Course: {quiz.courseCode}</span>
-                            <span>Questions: {quiz.questionCount}</span>
+                    <div className='quizzes-by-category'>
+                      {categoryQuizzes[category.id].map(quiz => (
+                        <div
+                          key={quiz.id}
+                          className="category-quiz-item"
+                          onClick={() => navigate(`/quizzes/${quiz.id}/take`)}>
+                          <div className="quiz-item-details">
+                            <h4>{quiz.name}</h4>
+                            <p>{quiz.description || 'No description'}</p>
+                            <p className='quiz-card-course'>Course: {quiz.courseCode}</p>
+                            <p className='quiz-card-questions'>Questions: {quiz.questionCount}</p>
                           </div>
+                          <button className="take-quiz-btn small">
+                            Open Quiz
+                          </button>
                         </div>
-                        <button className="take-quiz-btn small">
-                          Take Quiz
-                        </button>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 ) : (
                   <div className="no-quizzes-message">
