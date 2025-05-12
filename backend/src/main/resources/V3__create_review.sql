@@ -4,6 +4,7 @@ CREATE TABLE review (
     rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
     text TEXT,
     created_at TIMESTAMP,
+    updated_at TIMESTAMP,
     quiz_id BIGINT NOT NULL,
     CONSTRAINT fk_review_quiz FOREIGN KEY (quiz_id) REFERENCES quiz(id)
 );

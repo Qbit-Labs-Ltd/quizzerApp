@@ -1,9 +1,12 @@
 package com.example.quizzerApp.model;
 
+import com.example.quizzerApp.model.review.Review;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Entity representing a quiz in the application.
@@ -55,6 +58,14 @@ public class Quiz {
     @JoinColumn(name = "category_id")
     @JsonIgnoreProperties("quizzes")
     private Category category;
+
+    /**
+     * The reviews associated with this quiz.
+     * One-to-many relationship with Review entity.
+     */
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("quiz")
+    private Set<Review> reviews = new HashSet<>();
 
     /**
      * Default constructor.
@@ -188,5 +199,45 @@ public class Quiz {
      */
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    /**
+     * Retrieves the reviews associated with this quiz.
+     *
+     * @return The set of reviews
+     */
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+    /**
+     * Sets the reviews associated with this quiz.
+     *
+     * @param reviews The set of reviews to set
+     */
+    public void setReviews(Set<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    /**
+     * Adds a review to this quiz.
+     * Also sets the quiz reference in the review.
+     *
+     * @param review The review to add
+     */
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setQuiz(this);
+    }
+
+    /**
+     * Removes a review from this quiz.
+     * Also removes the quiz reference from the review.
+     *
+     * @param review The review to remove
+     */
+    public void removeReview(Review review) {
+        reviews.remove(review);
+        review.setQuiz(null);
     }
 }
