@@ -10,6 +10,12 @@ import QuizListWrapper from './components/QuizListWrapper'; // Import QuizListWr
 import QuizQuestionsView from './components/QuizQuestionsView';
 import ReviewForm from './components/ReviewForm'; // Import ReviewForm component
 import Toast from './components/Toast'; // Import Toast component
+import QuizPage from './views/QuizPage';
+import ResultsPage from './views/ResultsPage'; // Import ResultsPage component
+import { Suspense, lazy } from 'react';
+const QuizReviewsPage = lazy(() => import('./views/QuizReviewsPage'));
+import CategoryDetailPage from './views/CategoryDetailPage';
+import { quizApi, questionApi, answerApi } from './utils/api';
 import './styles/CommonStyles.css';
 import './styles/NavStyles.css';
 import './styles/TitleStyles.css';
@@ -292,6 +298,14 @@ function App() {
             <Route
               path="/quiz/:id/results"
               element={<ResultsPage />}
+            />
+            <Route
+              path="/quiz/:id/reviews"
+              element={
+                <Suspense fallback={<div>Loading reviews page…</div>}>
+                  <QuizReviewsPage />
+                </Suspense>
+              }
             />
             <Route
               path="/categories/:id"
