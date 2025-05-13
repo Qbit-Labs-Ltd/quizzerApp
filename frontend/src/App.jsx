@@ -82,26 +82,43 @@ function App() {
     onMutate: async ({ id, quizData }) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['quizzes'] });
+      await queryClient.cancelQueries({ queryKey: ['quiz', id] });
 
       // Snapshot the previous value
       const previousQuizzes = queryClient.getQueryData(['quizzes']);
+      const previousQuiz = queryClient.getQueryData(['quiz', id]);
 
       // Optimistically update to the new value
       queryClient.setQueryData(['quizzes'], (old) =>
         old.map(quiz => quiz.id === id ? { ...quiz, ...quizData } : quiz)
       );
+      queryClient.setQueryData(['quiz', id], (old) => ({
+        ...old,
+        ...quizData
+      }));
 
-      return { previousQuizzes };
+      return { previousQuizzes, previousQuiz };
     },
     onError: (err, variables, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
-      queryClient.setQueryData(['quizzes'], context.previousQuizzes);
+      if (context?.previousQuizzes) {
+        queryClient.setQueryData(['quizzes'], context.previousQuizzes);
+      }
+      if (context?.previousQuiz) {
+        queryClient.setQueryData(['quiz', variables.id], context.previousQuiz);
+      }
     },
-    onSettled: () => {
+    onSettled: (data, error, variables) => {
       // Always refetch after error or success to ensure cache is in sync
       queryClient.invalidateQueries({ queryKey: ['quizzes'] });
+      queryClient.invalidateQueries({ queryKey: ['quiz', variables.id] });
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
+      // Update the cache with the server response
+      queryClient.setQueryData(['quiz', variables.id], data);
+      queryClient.setQueryData(['quizzes'], (old) =>
+        old.map(quiz => quiz.id === variables.id ? data : quiz)
+      );
       showToast('Quiz updated successfully!', 'success');
     }
   });
@@ -256,7 +273,8 @@ function App() {
    */
   const handleUpdateQuiz = async (id, quizData) => {
     try {
-      updateQuizMutation.mutate({ id, quizData });
+      const result = await updateQuizMutation.mutateAsync({ id, quizData });
+      return result;
     } catch (error) {
       console.error('Error updating quiz:', error);
       showToast(`Failed to update quiz: ${error.message}`, 'error');
@@ -411,6 +429,7 @@ function App() {
 function EditQuizView({ showToast, handleUpdateQuiz }) {
   const navigate = useNavigate();
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
   // Use React Query to fetch quiz data
   const { data: quiz, isLoading } = useQuery({
@@ -429,10 +448,17 @@ function EditQuizView({ showToast, handleUpdateQuiz }) {
    */
   const handleUpdate = async (quizData) => {
     try {
-      await handleUpdateQuiz(id, quizData);
+      const updatedQuiz = await handleUpdateQuiz(id, quizData);
+      // Update the cache with the server response
+      queryClient.setQueryData(['quiz', id], updatedQuiz);
+      queryClient.setQueryData(['quizzes'], (old) =>
+        old.map(quiz => quiz.id === id ? updatedQuiz : quiz)
+      );
+      showToast('Quiz updated successfully!');
       navigate('/quizzes');
     } catch (err) {
       console.error("Error updating quiz:", err);
+      showToast('Failed to update quiz', 'error');
     }
   };
 
@@ -450,7 +476,14 @@ function EditQuizView({ showToast, handleUpdateQuiz }) {
     <div>
       <h1 className="page-title">Edit Quiz</h1>
       <QuizForm
-        initialData={quiz}
+        initialData={{
+          id: quiz.id,
+          name: quiz.name,
+          description: quiz.description,
+          courseCode: quiz.courseCode,
+          published: quiz.published,
+          category: quiz.categoryId || ''
+        }}
         onSubmit={handleUpdate}
         onCancel={handleCancel}
       />

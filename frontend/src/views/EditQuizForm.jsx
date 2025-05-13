@@ -25,28 +25,47 @@ const EditQuizForm = ({ existingQuiz, onSuccess }) => {
     onMutate: async (newQuizData) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['quizzes'] });
+      await queryClient.cancelQueries({ queryKey: ['quiz', existingQuiz.id] });
 
       // Snapshot the previous value
       const previousQuizzes = queryClient.getQueryData(['quizzes']);
+      const previousQuiz = queryClient.getQueryData(['quiz', existingQuiz.id]);
 
       // Optimistically update to the new value
       queryClient.setQueryData(['quizzes'], (old) =>
         old.map(quiz => quiz.id === existingQuiz.id ? { ...quiz, ...newQuizData } : quiz)
       );
+      queryClient.setQueryData(['quiz', existingQuiz.id], (old) => ({
+        ...old,
+        ...newQuizData
+      }));
 
       // Return a context object with the snapshotted value
-      return { previousQuizzes };
+      return { previousQuizzes, previousQuiz };
     },
     onError: (err, newQuizData, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
-      queryClient.setQueryData(['quizzes'], context.previousQuizzes);
+      if (context?.previousQuizzes) {
+        queryClient.setQueryData(['quizzes'], context.previousQuizzes);
+      }
+      if (context?.previousQuiz) {
+        queryClient.setQueryData(['quiz', existingQuiz.id], context.previousQuiz);
+      }
     },
     onSettled: () => {
       // Always refetch after error or success to ensure cache is in sync
       queryClient.invalidateQueries({ queryKey: ['quizzes'] });
+      queryClient.invalidateQueries({ queryKey: ['quiz', existingQuiz.id] });
     },
-    onSuccess: () => {
-      if (onSuccess) onSuccess();
+    onSuccess: (updatedQuiz) => {
+      // Update local state with the server response
+      setLocalFormData(updatedQuiz);
+      // Update the cache with the server response
+      queryClient.setQueryData(['quiz', existingQuiz.id], updatedQuiz);
+      queryClient.setQueryData(['quizzes'], (old) =>
+        old.map(quiz => quiz.id === existingQuiz.id ? updatedQuiz : quiz)
+      );
+      if (onSuccess) onSuccess(updatedQuiz);
     }
   });
 

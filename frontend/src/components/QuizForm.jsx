@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../styles/CommonStyles.css';
-import { categoryApi } from '../utils/api'; // new import
+import { categoryApi } from '../utils/api';
 
 /**
  * Form component for creating or editing quizzes
@@ -39,32 +39,27 @@ const QuizForm = ({
     fetchCategories();
   }, []);
 
-  // Initialize form state once from initialData
-  const formRef = useRef(null);
-  const [formState, setFormState] = useState(() => ({
+  // Initialize form state
+  const [formState, setFormState] = useState({
     name: initialData.name || '',
     description: initialData.description || '',
     courseCode: initialData.courseCode || '',
-    published: initialData.published || false,
+    published: initialData.published ?? false,
     category: initialData.category || ''
-  }));
+  });
 
-  // Only update form when initialData ID changes (new quiz being edited)
-  const initialIdRef = useRef(initialData.id);
-
+  // Update form state when initialData changes
   useEffect(() => {
-    // Only reset the form when we're editing a completely different quiz
-    if (initialData.id && initialData.id !== initialIdRef.current) {
-      initialIdRef.current = initialData.id;
+    if (initialData) {
       setFormState({
         name: initialData.name || '',
         description: initialData.description || '',
         courseCode: initialData.courseCode || '',
-        published: initialData.published || false,
+        published: initialData.published ?? false,
         category: initialData.category || ''
       });
     }
-  }, [initialData.id]); // Only depend on ID changing
+  }, [initialData]);
 
   // Use a debounced change handler to reduce flickering
   const handleChange = (e) => {
@@ -74,13 +69,10 @@ const QuizForm = ({
     if (error) resetError();
 
     // Update local form state using functional update to ensure we have the latest state
-    setFormState(prevState => {
-      const newState = {
-        ...prevState,
-        [name]: type === 'checkbox' ? checked : value
-      };
-      return newState;
-    });
+    setFormState(prevState => ({
+      ...prevState,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   };
 
   // Form submission
@@ -89,7 +81,17 @@ const QuizForm = ({
     if (isSubmitting) return;
 
     try {
-      await onSubmit(formState);
+      const result = await onSubmit(formState);
+      // If the submission returns updated data, update the form state
+      if (result) {
+        setFormState({
+          name: result.name || '',
+          description: result.description || '',
+          courseCode: result.courseCode || '',
+          published: result.published ?? false,
+          category: result.category || ''
+        });
+      }
       // Dispatch event to notify that quizzes have been updated
       window.dispatchEvent(new Event('quizzes-updated'));
     } catch (err) {
