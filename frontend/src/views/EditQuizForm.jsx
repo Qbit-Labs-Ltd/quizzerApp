@@ -1,67 +1,75 @@
 import React, { useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { quizApi } from '../utils/api';
 
-const EditQuizForm = ({ existingQuiz }) => {
-  const [quizData, setQuizData] = useState(existingQuiz);
+const EditQuizForm = ({ existingQuiz, onSuccess }) => {
   const [localFormData, setLocalFormData] = useState(existingQuiz);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (existingQuiz) {
-      setQuizData(existingQuiz);
       setLocalFormData(existingQuiz);
     }
   }, [existingQuiz]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setLocalFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
-  const handleSave = async () => {
-    setQuizData(localFormData);
-    try {
-      const result = await quizApi.update(existingQuiz.id, localFormData);
-      console.log('Quiz updated successfully:', result);
-    } catch (error) {
-      console.error('Error updating quiz:', error);
+  const updateMutation = useMutation({
+    mutationFn: (quizData) => quizApi.update(existingQuiz.id, quizData),
+    onMutate: async (newQuizData) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['quizzes'] });
+
+      // Snapshot the previous value
+      const previousQuizzes = queryClient.getQueryData(['quizzes']);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(['quizzes'], (old) =>
+        old.map(quiz => quiz.id === existingQuiz.id ? { ...quiz, ...newQuizData } : quiz)
+      );
+
+      // Return a context object with the snapshotted value
+      return { previousQuizzes };
+    },
+    onError: (err, newQuizData, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      queryClient.setQueryData(['quizzes'], context.previousQuizzes);
+    },
+    onSettled: () => {
+      // Always refetch after error or success to ensure cache is in sync
+      queryClient.invalidateQueries({ queryKey: ['quizzes'] });
+    },
+    onSuccess: () => {
+      if (onSuccess) onSuccess();
     }
-  };
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleSave();
-  };
-
-  /**
- * Handles quiz update submission
- * @param {Object} quizData - The updated quiz data
- */
-  const handleUpdate = async (quizData) => {
-    try {
-      await handleUpdateQuiz(id, quizData);
-
-      // Dispatch a custom event to notify components that quizzes have changed
-      window.dispatchEvent(new CustomEvent('quizzes-updated'));
-
-      navigate('/quizzes');
-    } catch (err) {
-      console.error("Error updating quiz:", err);
-    }
+    updateMutation.mutate(localFormData);
   };
 
   return (
     <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
       <input
-        name="title"
+        name="name"
         placeholder="Quiz Title"
-        value={localFormData.title || ''}
+        value={localFormData.name || ''}
         onChange={handleInputChange}
         style={{ flexGrow: 1, padding: '0.5rem' }}
       />
-      <button type="submit" style={{ padding: '0.5rem 1rem' }}>
-        Update Quiz
+      <button
+        type="submit"
+        style={{ padding: '0.5rem 1rem' }}
+        disabled={updateMutation.isPending}
+      >
+        {updateMutation.isPending ? 'Updating...' : 'Update Quiz'}
       </button>
     </form>
   );
