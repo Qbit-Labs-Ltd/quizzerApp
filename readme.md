@@ -34,6 +34,10 @@ We create a web-based quiz platform for Haaga-Helia teachers and students.
     Frontend: React
     Two separate web apps: one for teachers (dashboard) and one for students
 
+## Swagger Review
+
+- [Swagger Review Document](https://docs.google.com/document/d/1uplIyucbE9nlv_DSu_333Yy0IMWkm_kbE6ZeKCXs1_Y/edit?usp=sharing)
+
 ## Retrospectives
 
 - [Sprint 1 Flinga board](https://edu.flinga.fi/s/EDNHYTF)
