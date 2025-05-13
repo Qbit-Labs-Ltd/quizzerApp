@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: quizzer-postgres
+    environment:
+      POSTGRES_DB: quizzerdb
+      POSTGRES_USER: quizzer
+      POSTGRES_PASSWORD: quizzerpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

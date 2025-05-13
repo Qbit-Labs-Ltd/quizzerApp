@@ -50,7 +50,7 @@ const QuizForm = ({
 
   // Update form state when initialData changes
   useEffect(() => {
-    if (initialData) {
+    if (initialData && Object.keys(initialData).length > 0) {
       setFormState({
         name: initialData.name || '',
         description: initialData.description || '',
@@ -59,7 +59,7 @@ const QuizForm = ({
         category: initialData.category || ''
       });
     }
-  }, [initialData]);
+  }, [initialData.id]); // Only update when the ID changes
 
   // Use a debounced change handler to reduce flickering
   const handleChange = (e) => {
@@ -81,17 +81,7 @@ const QuizForm = ({
     if (isSubmitting) return;
 
     try {
-      const result = await onSubmit(formState);
-      // If the submission returns updated data, update the form state
-      if (result) {
-        setFormState({
-          name: result.name || '',
-          description: result.description || '',
-          courseCode: result.courseCode || '',
-          published: result.published ?? false,
-          category: result.category || ''
-        });
-      }
+      await onSubmit(formState);
       // Dispatch event to notify that quizzes have been updated
       window.dispatchEvent(new Event('quizzes-updated'));
     } catch (err) {

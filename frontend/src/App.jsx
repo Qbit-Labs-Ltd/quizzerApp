@@ -256,7 +256,8 @@ function App() {
         throw new Error('Duplicate quiz name and course code');
       }
 
-      createQuizMutation.mutate(quizData);
+      const result = await createQuizMutation.mutateAsync(quizData);
+      return result;
     } catch (err) {
       if (!err.message?.includes('Duplicate quiz name and course code')) {
         showToast('Failed to create quiz', 'error');
