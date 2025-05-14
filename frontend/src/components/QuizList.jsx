@@ -137,6 +137,12 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
                 >
                   View Questions
                 </button>
+                <button
+                  className="view-reviews-btn"
+                  onClick={() => navigate(`/quiz/${quiz.id}?tab=reviews`)}
+                >
+                  View Reviews
+                </button>
                 <div className="card-action-buttons">
                   <button
                     className="edit-btn"

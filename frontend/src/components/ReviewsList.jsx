@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getReviewsByQuizId } from '../services/review';
 import '../styles/CommonStyles.css';
 
 /**
  * Displays a list of reviews for a specific quiz
- * Includes a button to add a new review
  * 
  * @returns {JSX.Element}
  */
@@ -20,7 +19,9 @@ function ReviewsList() {
       try {
         setLoading(true);
         const data = await getReviewsByQuizId(Number(id));
-        setReviews(data);
+        // Handle both array and object response formats
+        const reviewsArray = Array.isArray(data) ? data : (data.reviews || []);
+        setReviews(reviewsArray);
         setError(null);
       } catch (err) {
         console.error('Error fetching reviews:', err);
@@ -37,8 +38,8 @@ function ReviewsList() {
   if (error) return <div className="error-message">{error}</div>;
 
   // Calculate average rating
-  const averageRating = reviews.length 
-    ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1) 
+  const averageRating = reviews.length
+    ? (reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length).toFixed(1)
     : 'No ratings';
 
   // Generate stars based on rating
@@ -64,14 +65,11 @@ function ReviewsList() {
             Average Rating: {averageRating}
           </span>
         </div>
-        <Link to={`/quiz/${id}/review`} className="btn btn-primary add-review-btn">
-          Add Your Review
-        </Link>
       </div>
 
       {reviews.length === 0 ? (
         <div className="no-reviews">
-          <p>No reviews yet. Be the first to review this quiz!</p>
+          <p>No reviews yet.</p>
         </div>
       ) : (
         <div className="reviews-grid">
@@ -82,47 +80,19 @@ function ReviewsList() {
                 <div className="review-date">
                   {new Date(review.createdAt).toLocaleDateString()}
                 </div>
-                <Link 
-                  to={`/reviews/${review.id}/edit`} 
-                  className="edit-icon"
-                  aria-label={`Edit review by ${review.nickname}`}
-                >
-                  ✏️
-                </Link>
               </div>
               <div className="review-rating">
                 {renderStars(review.rating)}
               </div>
-              {review.comment && (
+              {review.text && (
                 <div className="review-comment">
-                  {review.comment}
+                  {review.text}
                 </div>
               )}
             </div>
           ))}
         </div>
       )}
-
-      <style jsx="true">{`
-        .review-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 10px;
-        }
-        
-        .edit-icon {
-          font-size: 1rem;
-          color: #6c757d;
-          text-decoration: none;
-          cursor: pointer;
-          transition: color 0.2s;
-        }
-        
-        .edit-icon:hover {
-          color: #495057;
-        }
-      `}</style>
     </div>
   );
 }

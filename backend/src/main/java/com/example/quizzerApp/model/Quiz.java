@@ -226,8 +226,10 @@ public class Quiz {
      * @param review The review to add
      */
     public void addReview(Review review) {
-        reviews.add(review);
-        review.setQuiz(this);
+        if (review != null) {
+            reviews.add(review);
+            review.setQuiz(this);
+        }
     }
 
     /**
@@ -237,7 +239,9 @@ public class Quiz {
      * @param review The review to remove
      */
     public void removeReview(Review review) {
-        reviews.remove(review);
-        review.setQuiz(null);
+        if (review != null) {
+            reviews.remove(review);
+            review.setQuiz(null);
+        }
     }
 }

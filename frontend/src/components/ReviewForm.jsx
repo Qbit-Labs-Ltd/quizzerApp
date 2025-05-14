@@ -18,17 +18,17 @@ function ReviewForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+
   // Parse query parameters to determine if we're in edit mode
   const queryParams = new URLSearchParams(location.search);
   const reviewId = queryParams.get('reviewId');
   const isEditMode = !!reviewId;
-  
+
   // Form state
   const [formState, setFormState] = useState({
     nickname: '',
     rating: 0,
-    comment: ''
+    text: ''
   });
 
   // Rating options for the RadioGroup
@@ -39,23 +39,23 @@ function ReviewForm() {
     { id: 4, label: '4 ★', value: 4 },
     { id: 5, label: '5 ★', value: 5 }
   ];
-  
+
   // Fetch review data if in edit mode
   useEffect(() => {
     const fetchReview = async () => {
       if (!isEditMode) return;
-      
+
       try {
         setLoading(true);
         setError(null);
-        
+
         const reviewData = await getReviewById(reviewId);
-        
+
         // Pre-fill form with review data
         setFormState({
           nickname: reviewData.nickname || '',
           rating: reviewData.rating || 0,
-          comment: reviewData.comment || ''
+          text: reviewData.text || ''
         });
       } catch (err) {
         console.error('Error fetching review:', err);
@@ -64,7 +64,7 @@ function ReviewForm() {
         setLoading(false);
       }
     };
-    
+
     fetchReview();
   }, [reviewId, isEditMode]);
 
@@ -106,27 +106,30 @@ function ReviewForm() {
     try {
       setIsSubmitting(true);
       setError(null);
-      
+
       if (isEditMode) {
         // Update existing review
         await updateReview(reviewId, {
           quizId: Number(id),
           nickname: formState.nickname,
           rating: formState.rating,
-          comment: formState.comment
+          text: formState.text
         });
+        // On success, navigate back to quiz page with reviews tab
+        navigate(`/quiz/${id}?tab=reviews`);
       } else {
         // Create new review
         await createReview({
           quizId: Number(id),
           nickname: formState.nickname,
           rating: formState.rating,
-          comment: formState.comment
+          text: formState.text
         });
+        // Show thank you popup
+        alert('Thank you for submitting your review!');
+        // Navigate to available quizzes page
+        navigate('/quizzes');
       }
-
-      // On success, navigate back to quiz page with reviews tab
-      navigate(`/quiz/${id}?tab=reviews`);
     } catch (err) {
       console.error(`Error ${isEditMode ? 'updating' : 'submitting'} review:`, err);
       setError(`Failed to ${isEditMode ? 'update' : 'submit'} review. Please try again.`);
@@ -139,7 +142,7 @@ function ReviewForm() {
   const handleCancel = () => {
     navigate(`/quiz/${id}?tab=reviews`);
   };
-  
+
   // Show loading indicator
   if (loading) {
     return <div className="loading">Loading review data...</div>;
@@ -148,7 +151,7 @@ function ReviewForm() {
   return (
     <div className="review-form-container">
       <h2>{isEditMode ? 'Edit Review' : 'Submit a Review'}</h2>
-      
+
       {error && (
         <div className="error-message">{error}</div>
       )}
@@ -180,11 +183,11 @@ function ReviewForm() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="review-comment">Comments</label>
+          <label htmlFor="review-text">Comments</label>
           <textarea
-            id="review-comment"
-            name="comment"
-            value={formState.comment}
+            id="review-text"
+            name="text"
+            value={formState.text}
             onChange={handleChange}
             rows="4"
             disabled={isSubmitting}
@@ -206,8 +209,8 @@ function ReviewForm() {
             className="submit-button"
             disabled={isSubmitting}
           >
-            {isSubmitting 
-              ? (isEditMode ? 'Updating...' : 'Submitting...') 
+            {isSubmitting
+              ? (isEditMode ? 'Updating...' : 'Submitting...')
               : (isEditMode ? 'Update Review' : 'Submit Review')}
           </button>
         </div>
