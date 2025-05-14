@@ -137,9 +137,20 @@ const CategoryListPage = () => {
   // Show empty state when no categories are available
   if (!categories || categories.length === 0) {
     return (
-      <div className="empty-state">
-        <h2>No categories available</h2>
-        <p>Categories will appear here once they're added to the system.</p>
+      <div className="categories-container">
+        <div className="page-title-container">
+          <h1 className="page-title">Quiz Categories</h1>
+          <button
+            className="btn btn-primary create-btn"
+            onClick={() => navigate('/categories/new')}
+          >
+            Create Category
+          </button>
+        </div>
+        <div className="empty-state">
+          <h2>No categories available</h2>
+          <p>Get started by creating your first category to organize your quizzes.</p>
+        </div>
       </div>
     );
   }

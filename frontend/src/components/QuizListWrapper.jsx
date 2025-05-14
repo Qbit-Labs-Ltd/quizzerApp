@@ -1,55 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { quizApi } from '../utils/api';
 import QuizList from './QuizList';
 
-const QuizListWrapper = (props) => {
+const QuizListWrapper = ({ onDelete, ...props }) => {
     const navigate = useNavigate();
-    const [refreshTrigger, setRefreshTrigger] = useState(0);
-    const [quizzes, setQuizzes] = useState(props.quizzes || []);
-    const [loading, setLoading] = useState(false);
+    const queryClient = useQueryClient();
 
-    // Fetch quizzes when refresh trigger changes
-    useEffect(() => {
-        const fetchQuizzes = async () => {
-            try {
-                setLoading(true);
-                const data = await quizApi.getAll();
-                setQuizzes(data);
-            } catch (err) {
-                console.error('Failed to fetch quizzes:', err);
-            } finally {
-                setLoading(false);
-            }
+    // Use React Query to fetch quizzes with proper cache handling
+    const { data: quizzes = [], isLoading } = useQuery({
+        queryKey: ['quizzes'],
+        queryFn: () => quizApi.getAll(),
+        staleTime: 0, // Consider data stale immediately
+        refetchOnWindowFocus: true, // Refetch when window regains focus
+        refetchOnMount: true, // Refetch when component mounts
+        refetchOnReconnect: true // Refetch when reconnecting
+    });
+
+    // Listen for quiz updates
+    React.useEffect(() => {
+        const handleQuizUpdate = () => {
+            queryClient.invalidateQueries({ queryKey: ['quizzes'] });
         };
 
-        fetchQuizzes();
-    }, [refreshTrigger]);
-
-    // Listen for the custom quizzes-updated event
-    useEffect(() => {
-        const handleQuizzesUpdated = () => {
-            // Increment the refresh trigger to force a refresh
-            setRefreshTrigger(prev => prev + 1);
-        };
-
-        // Add event listener
-        window.addEventListener('quizzes-updated', handleQuizzesUpdated);
-
-        // Clean up
+        window.addEventListener('quizzes-updated', handleQuizUpdate);
         return () => {
-            window.removeEventListener('quizzes-updated', handleQuizzesUpdated);
+            window.removeEventListener('quizzes-updated', handleQuizUpdate);
         };
-    }, []);
+    }, [queryClient]);
 
     return (
         <QuizList
             {...props}
             quizzes={quizzes}
-            loading={loading}
-            refreshTrigger={refreshTrigger}
+            loading={isLoading}
             onEdit={(id) => navigate(`/quizzes/${id}/edit`)}
             onViewQuestions={(id) => navigate(`/quizzes/${id}/questions`)}
+            onDelete={onDelete}
         />
     );
 };
