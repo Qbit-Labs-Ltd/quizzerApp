@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/CommonStyles.css';
 import CategoryListService from '../utils/CategoryListService';
+import '../styles/CommonStyles.css';
+import '../styles/Category.css';
 
 /**
  * Component that displays a list of categories with their quizzes

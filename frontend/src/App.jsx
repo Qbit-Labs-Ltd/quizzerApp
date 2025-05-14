@@ -24,7 +24,14 @@ const QuizReviewsPage = lazy(() => import('./views/QuizReviewsPage'));
 
 // API utilities
 import { quizApi, questionApi, answerApi } from './utils/api';
+
 import './styles/CommonStyles.css';
+import './styles/Quizzes.css';
+import './styles/Review.css';
+import './styles/Category.css';
+import './styles/Feedback.css';
+import './styles/Answer.css';
+import './styles/Question.css';
 /**
  * Main application component that handles routing and global state
  * Manages application-wide concerns such as:

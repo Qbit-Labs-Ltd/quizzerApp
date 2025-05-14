@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import QuestionBlock from '../components/QuestionBlock';
 import ReviewsList from '../components/ReviewsList';
-import '../styles/CommonStyles.css';
 import { questionApi, quizApi } from '../utils/api';
+import '../styles/CommonStyles.css';
+import '../styles/Quizzes.css';
+import '../styles/Review.css';
 
 /**
  * Student-facing page that shows a quiz with all its questions.
@@ -17,7 +19,7 @@ export default function QuizPage() {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   // Determine active tab from query params or default to 'quiz'
   const queryParams = new URLSearchParams(location.search);
   const activeTab = queryParams.get('tab') || 'quiz';
@@ -50,24 +52,24 @@ export default function QuizPage() {
     <div className="quiz-page" aria-labelledby="quiz-title">
       <h1 id="quiz-title" className="quiz-title">{quiz.name}</h1>
       {quiz.description && <p className="quiz-description">{quiz.description}</p>}
-      
+
       {/* Tab navigation */}
       <div className="tabs-container">
         <div className="tabs-header">
-          <Link 
-            to={`/quiz/${id}`} 
+          <Link
+            to={`/quiz/${id}`}
             className={`tab ${activeTab === 'quiz' ? 'active' : ''}`}
           >
             Quiz Content
           </Link>
-          <Link 
-            to={`/quiz/${id}?tab=reviews`} 
+          <Link
+            to={`/quiz/${id}?tab=reviews`}
             className={`tab ${activeTab === 'reviews' ? 'active' : ''}`}
           >
             Reviews
           </Link>
         </div>
-        
+
         {/* Tab content */}
         <div className="tab-content">
           {activeTab === 'quiz' ? (
@@ -83,10 +85,10 @@ export default function QuizPage() {
           )}
         </div>
       </div>
-      
+
       {/* Page footer with WriteReviewButton */}
       <div className="quiz-page-footer">
-        <Link 
+        <Link
           to={`/quiz/${id}/review`}
           className="btn btn-primary write-review-btn"
           aria-label="Write a review for this quiz"

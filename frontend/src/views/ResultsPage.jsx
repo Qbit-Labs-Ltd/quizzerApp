@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { quizApi } from '../utils/api';
 import '../styles/CommonStyles.css';
+import '../styles/Quizzes.css';
+import '../styles/Review.css';
 
 /**
  * Results page shows per-question statistics for a quiz.

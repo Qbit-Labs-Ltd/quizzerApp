@@ -3,6 +3,7 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { categoryApi } from '../utils/api';
 import QuizCard from '../components/QuizCard';
 import '../styles/CommonStyles.css';
+import '../styles/Category.css';
 
 /**
  * Displays all quizzes that belong to a category (published by default).
