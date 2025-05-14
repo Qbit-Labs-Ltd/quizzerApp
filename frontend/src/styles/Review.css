@@ -1,0 +1,139 @@
+/* Review System Styles */
+.review-form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.review-form-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.review-form .form-group {
+    margin-bottom: 20px;
+}
+
+/* Reviews list styling */
+.reviews-list-container {
+    width: 100%;
+}
+
+.reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.reviews-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.reviews-summary {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.average-rating {
+    font-weight: 600;
+}
+
+.add-review-btn {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+}
+
+.add-review-btn:hover {
+    background-color: #3a7bc8;
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.review-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.reviewer-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.review-date {
+    color: #777;
+    font-size: 0.9rem;
+}
+
+.review-rating {
+    margin-bottom: 10px;
+}
+
+.star {
+    color: #ddd;
+    margin-right: 2px;
+    font-size: 1.2rem;
+}
+
+.star.filled {
+    color: #ffc107;
+}
+
+.review-comment {
+    color: #444;
+    line-height: 1.5;
+}
+
+.no-reviews {
+    text-align: center;
+    padding: 30px;
+    color: #777;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .reviews-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .review-card {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .review-form-container {
+        padding: 15px;
+    }
+
+    .reviews-grid {
+        grid-template-columns: 1fr;
+    }
+}
