@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { questionApi } from '../utils/api';
 import '../styles/CommonStyles.css';
+import '../styles/Question.css';
 
 const AddQuestionFlow = ({ quizId, onQuestionAdded }) => {
   const [isExpanded, setIsExpanded] = useState(false);

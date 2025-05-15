@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/CommonStyles.css';
 import { questionApi } from '../utils/api';
 import QuestionForm from './QuestionForm';
 import QuizForm from './QuizForm';
+import '../styles/CommonStyles.css';
+import '../styles/Quizzes.css';
 
 /**
  * Multi-step component for creating a new quiz and its questions
@@ -12,9 +13,10 @@ import QuizForm from './QuizForm';
  * @param {Object} props - Component props
  * @param {Function} props.handleCreateQuiz - Function to handle quiz creation API call
  * @param {Function} props.showToast - Function to display toast notifications
+ * @param {Function} props.onCancel - Function to handle cancel action
  * @returns {JSX.Element}
  */
-const QuizCreator = ({ handleCreateQuiz, showToast }) => {
+const QuizCreator = ({ handleCreateQuiz, showToast, onCancel }) => {
     const navigate = useNavigate();
 
     // State management
@@ -136,7 +138,7 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
      */
     const handleCancel = () => {
         if (step === 'quiz') {
-            navigate('/quizzes');
+            onCancel(); // Use the provided onCancel prop
         } else if (step === 'questions') {
             if (confirm('Are you sure you want to cancel? Your quiz will remain but you can add questions later.')) {
                 navigate('/quizzes');
@@ -148,9 +150,6 @@ const QuizCreator = ({ handleCreateQuiz, showToast }) => {
     if (step === 'quiz') {
         return (
             <div className="quiz-creator">
-                <div className="page-title-container">
-                    <h1 className="page-title">Create New Quiz</h1>
-                </div>
                 <QuizForm
                     onSubmit={handleQuizSubmit}
                     onCancel={handleCancel}

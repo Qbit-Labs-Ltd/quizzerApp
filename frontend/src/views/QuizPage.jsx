@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import QuestionBlock from '../components/QuestionBlock';
 import ReviewsList from '../components/ReviewsList';
-import '../styles/CommonStyles.css';
 import { questionApi, quizApi } from '../utils/api';
+import '../styles/CommonStyles.css';
+import '../styles/Quizzes.css';
+import '../styles/Review.css';
 
 /**
  * Student-facing page that shows a quiz with all its questions.
@@ -83,6 +85,50 @@ export default function QuizPage() {
           )}
         </div>
       </div>
+
+      {/* Page footer with WriteReviewButton */}
+      <div className="quiz-page-footer">
+        <Link
+          to={`/quiz/${id}/review`}
+          className="btn btn-primary write-review-btn"
+          aria-label="Write a review for this quiz"
+        >
+          Write a Review
+        </Link>
+      </div>
+
+      <style jsx="true">{`
+        .quiz-page-footer {
+          margin-top: 30px;
+          display: flex;
+          justify-content: center;
+          padding: 20px 0;
+          border-top: 1px solid #e0e0e0;
+        }
+        
+        .write-review-btn {
+          background-color: #4a90e2;
+          color: white;
+          font-weight: 500;
+          padding: 10px 20px;
+          border-radius: 4px;
+          text-decoration: none;
+          display: inline-flex;
+          align-items: center;
+          transition: background-color 0.2s;
+        }
+        
+        .write-review-btn:hover {
+          background-color: #3a7bc8;
+          text-decoration: none;
+          color: white;
+        }
+        
+        .write-review-btn::before {
+          content: "★";
+          margin-right: 8px;
+        }
+      `}</style>
     </div>
   );
 }

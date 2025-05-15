@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import AnswerCard from '../components/AnswerCard';
 import FeedbackToast from '../components/FeedbackToast';
-import '../styles/CommonStyles.css';
 import AnswerService from '../utils/AnswerService';
 import QuizListService from '../utils/QuizListService';
+import '../styles/CommonStyles.css';
+import '../styles/Quizzes.css';
+import '../styles/Answer.css';
+import '../styles/Feedback.css';
 
 /**
  * Component for taking a quiz

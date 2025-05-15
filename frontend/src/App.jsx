@@ -24,7 +24,14 @@ const QuizReviewsPage = lazy(() => import('./views/QuizReviewsPage'));
 
 // API utilities
 import { quizApi, questionApi, answerApi } from './utils/api';
+
 import './styles/CommonStyles.css';
+import './styles/Quizzes.css';
+import './styles/Review.css';
+import './styles/Category.css';
+import './styles/Feedback.css';
+import './styles/Answer.css';
+import './styles/Question.css';
 /**
  * Main application component that handles routing and global state
  * Manages application-wide concerns such as:
@@ -46,6 +53,9 @@ function App() {
   const [error, setError] = useState(null);
   const [showCreateQuizModal, setShowCreateQuizModal] = useState(false);
   const queryClient = useQueryClient();
+
+  const [showEditQuizModal, setShowEditQuizModal] = useState(false);
+  const [selectedQuizId, setSelectedQuizId] = useState(null);
 
   // Mutation for creating quizzes
   const createQuizMutation = useMutation({

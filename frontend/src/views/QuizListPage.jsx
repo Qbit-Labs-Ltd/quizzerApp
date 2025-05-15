@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/CommonStyles.css';
 import QuizListService from '../utils/QuizListService';
+import '../styles/CommonStyles.css';
+import '../styles/Quizzes.css';
 
 /**
  * Component that displays a list of published quizzes
@@ -80,37 +81,45 @@ const QuizListPage = () => {
       {viewMode === 'card' ? (
         <div className="quiz-cards-grid">
           {publishedQuizzes.map(quiz => (
-            <div key={`quiz-container-${quiz.id}`}>
-              <div className="quiz-card">
-                <div className="quiz-card-header">
-                  <div className="quiz-card-title-gategory">
-                    <div className="quiz-card-title">
-                      {quiz.name}
-                    </div>
-                    <div className="quiz-card-category">Category: {quiz.categoryName || 'Uncategorized'}</div>
-                  </div>
+            <div key={`quiz-container-${quiz.id}`} className="quiz-card">
+              <div className="quiz-card-header">
+                <h2 className="quiz-card-title">{quiz.name}</h2>
+                <div className="quiz-card-badge">
+                  <span className="published-badge">Published</span>
+                </div>
+              </div>
 
-                  <div className="quiz-card-badge">
-                    <span className="published-badge">Published</span>
+              <div className="quiz-card-content">
+                <p className="quiz-card-description">{quiz.description || "No description"}</p>
+                <div className="quiz-card-details">
+                  <div className="detail-item">
+                    <span className="detail-label">Course</span>
+                    <span className="detail-value">{quiz.courseCode}</span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">Category</span>
+                    <span className="detail-value">{quiz.categoryName || "None"}</span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">Questions</span>
+                    <span className="detail-value">{quiz.questionCount}</span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">Added</span>
+                    <span className="detail-value">
+                      {new Date(quiz.dateAdded || Date.now()).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
+              </div>
 
-                <div className="quiz-card-content">
-                  <p className="quiz-card-description">{quiz.description || "No description"}</p>
-                  <div className="quiz-card-details">
-                    <span className="quiz-card-course">Course: {quiz.courseCode}</span>
-                    <span className="quiz-card-questions">Questions: {quiz.questionCount}</span>
-                  </div>
-                </div>
-
-                <div className="quiz-card-actions">
-                  <button
-                    className="take-quiz-btn primary"
-                    onClick={() => handleTakeQuiz(quiz.id)}
-                  >
-                    Take Quiz
-                  </button>
-                </div>
+              <div className="quiz-card-actions">
+                <button
+                  className="take-quiz-btn"
+                  onClick={() => handleTakeQuiz(quiz.id)}
+                >
+                  Take Quiz
+                </button>
               </div>
             </div>
           ))}
