@@ -177,6 +177,7 @@ function ReviewForm() {
             onChange={handleRatingChange}
             disabled={isSubmitting}
           />
+          <div className="rating-explanation"></div>
         </div>
 
         <div className="form-group">
