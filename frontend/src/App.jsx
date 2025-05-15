@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Link, Route, BrowserRouter as Router, Routes, useNavigate, useParams } from 'react-router-dom';
-import { Suspense, lazy } from 'react';
 import CategoryCreator from './components/CategoryCreator';
 import ConfirmationModal from './components/ConfirmationModal';
 import EditQuestionView from './components/EditQuestionView';
@@ -11,7 +11,6 @@ import QuizListWrapper from './components/QuizListWrapper';
 import QuizQuestionsView from './components/QuizQuestionsView';
 import ReviewForm from './components/ReviewForm';
 import Toast from './components/Toast';
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 
 // Views
 import CategoryDetailPage from './views/CategoryDetailPage';
@@ -22,9 +21,12 @@ import ResultsPage from './views/ResultsPage';
 import TakeQuizPage from './views/TakeQuizPage';
 const QuizReviewsPage = lazy(() => import('./views/QuizReviewsPage'));
 
+// Bonus feature components
+const QuizSummaryPage = lazy(() => import('./bonus').then(module => ({ default: module.QuizSummaryPage })));
+
 // API utilities
-import { quizApi, questionApi, answerApi } from './utils/api';
 import './styles/CommonStyles.css';
+import { answerApi, questionApi, quizApi } from './utils/api';
 /**
  * Main application component that handles routing and global state
  * Manages application-wide concerns such as:
@@ -379,6 +381,15 @@ function App() {
               element={
                 <Suspense fallback={<div>Loading reviews page…</div>}>
                   <QuizReviewsPage />
+                </Suspense>
+              }
+            />
+            {/* New route for quiz summary (bonus feature) */}
+            <Route
+              path="/quiz/:id/summary"
+              element={
+                <Suspense fallback={<div>Loading quiz summary…</div>}>
+                  <QuizSummaryPage />
                 </Suspense>
               }
             />

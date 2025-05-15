@@ -1,0 +1,350 @@
+/* Bonus feature styles - Quiz Summary */
+
+/* Container and layout */
+.quiz-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.quiz-results {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.result-summary {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  padding: 36px;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.result-summary:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Typography */
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 16px 0;
+  position: relative;
+  display: inline-block;
+}
+
+.page-title:after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #4a90e2, #67a5ff);
+  border-radius: 2px;
+}
+
+.result-summary h2 {
+  font-size: 26px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+}
+
+.course-code {
+  color: #7f8c8d;
+  margin-bottom: 28px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Score display */
+.score-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.score-number {
+  font-size: 82px;
+  font-weight: 700;
+  color: #4a90e2;
+  background: linear-gradient(135deg, #4a90e2, #67a5ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  position: relative;
+  display: inline-block;
+}
+
+.score-number:after {
+  content: '%';
+  position: absolute;
+  top: 15px;
+  right: -30px;
+  font-size: 32px;
+  font-weight: 500;
+}
+
+.score-display p {
+  font-size: 18px;
+  color: #34495e;
+  margin: 0;
+  font-weight: 500;
+}
+
+.score-breakdown {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  padding: 24px 0;
+  border-top: 1px solid #ecf0f1;
+  margin-top: 16px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 24px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.score-item:hover {
+  background-color: #f1f5f9;
+  transform: translateY(-3px);
+}
+
+.score-label {
+  font-size: 15px;
+  color: #7f8c8d;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.score-value {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.score-correct .score-value {
+  color: #2ecc71;
+}
+
+.score-wrong .score-value {
+  color: #e74c3c;
+}
+
+.score-total .score-value {
+  color: #3498db;
+}
+
+/* Buttons and actions */
+.result-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.back-button, 
+.retake-button, 
+.write-review-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.back-button {
+  background-color: #f7f7f7;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.back-button:hover {
+  background-color: #eaeaea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.retake-button {
+  background-color: #4a90e2;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.retake-button:hover {
+  background-color: #3a7bc8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.25);
+}
+
+.retake-button:before {
+  content: "↺";
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+/* Footer and review button */
+.quiz-page-footer {
+  margin-top: 36px;
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+  border-top: 1px solid #ecf0f1;
+}
+
+.write-review-btn {
+  background-color: #4a90e2;
+  color: white;
+  font-weight: 600;
+  padding: 14px 28px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.25);
+}
+
+.write-review-btn:hover {
+  background-color: #3a7bc8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(74, 144, 226, 0.35);
+  text-decoration: none;
+  color: white;
+}
+
+.write-review-btn::before {
+  content: "★";
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+/* Info banner styles */
+.note-banner {
+  padding: 16px 24px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border-left: 5px solid;
+  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.note-banner:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.note-banner p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Different banner types */
+.info-banner {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  border-left-color: #2196f3;
+}
+
+/* Status indicators */
+.loading, .error-message, .empty-state {
+  text-align: center;
+  padding: 48px;
+  margin: 28px 0;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.loading {
+  color: #4a90e2;
+  position: relative;
+}
+
+.loading:after {
+  content: "...";
+  animation: loadingDots 1.5s infinite;
+}
+
+@keyframes loadingDots {
+  0%, 20% { content: "." }
+  40% { content: ".." }
+  60%, 100% { content: "..." }
+}
+
+.error-message {
+  color: #e74c3c;
+  border-left: 5px solid #e74c3c;
+}
+
+.empty-state h2 {
+  color: #2c3e50;
+  margin-bottom: 16px;
+}
+
+.empty-state p {
+  color: #7f8c8d;
+  margin-bottom: 24px;
+  font-size: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .result-summary {
+    padding: 24px;
+  }
+  
+  .score-number {
+    font-size: 64px;
+  }
+  
+  .score-number:after {
+    font-size: 24px;
+    right: -24px;
+  }
+  
+  .score-breakdown {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .score-item {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .result-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .back-button, .retake-button {
+    width: 100%;
+  }
+} 
