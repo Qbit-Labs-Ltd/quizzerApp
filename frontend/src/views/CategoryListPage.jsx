@@ -176,9 +176,9 @@ const CategoryListPage = () => {
               onClick={() => toggleCategory(category.id)}
             >
               <h2 className="category-title">{category.name}</h2>
-              <span className="expand-icon">
+              <div className="expand-icon">
                 {expandedCategory === category.id ? '−' : '+'}
-              </span>
+              </div>
             </div>
 
             <div className="category-description">
@@ -213,7 +213,7 @@ const CategoryListPage = () => {
                   <p>{category.description || 'No description available'}</p>
                   <div className="description-actions">
                     <button
-                      className="btn btn-text"
+                      className="edit-btn"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleStartEdit(category.id, category.description);
@@ -222,7 +222,7 @@ const CategoryListPage = () => {
                       Edit
                     </button>
                     <button
-                      className="btn btn-text danger"
+                      className="delete-btn"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDeleteCategory(category.id);
@@ -248,15 +248,30 @@ const CategoryListPage = () => {
                           key={quiz.id}
                           className="category-quiz-item"
                           onClick={() => navigate(`/quizzes/${quiz.id}/take`)}>
-                          <div className="quiz-item-details">
+                          <div className="quiz-item-header">
                             <h4>{quiz.name}</h4>
-                            <p>{quiz.description || 'No description'}</p>
-                            <p className='quiz-card-course'>Course: {quiz.courseCode}</p>
-                            <p className='quiz-card-questions'>Questions: {quiz.questionCount}</p>
+                            <div className="quiz-card-badge">
+                              {quiz.published ? (
+                                <span className="published-badge">Published</span>
+                              ) : (
+                                <span className="not-published-badge">Not published</span>
+                              )}
+                            </div>
                           </div>
-                          <button className="take-quiz-btn small">
-                            Open Quiz
-                          </button>
+                          <div className="quiz-item-content">
+                            <p className='quiz-item-description'>
+                              {quiz.description || 'No description'}
+                            </p>
+                            <div className='quiz-item-details'>
+                              <p>Course: {quiz.courseCode}</p>
+                              <p>Questions: {quiz.questionCount}</p>
+                            </div>
+                          </div>
+                          <div className='quiz-item-actions'>
+                            <button className="take-quiz-btn">
+                              Open Quiz
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>

@@ -444,14 +444,14 @@ button.cancel-button:hover,
     color: var(--danger-red);
 }
 
-/* .empty-state {
+.empty-state {
     text-align: center;
     padding: 40px 20px;
     background-color: #f8fafc;
     border-radius: 8px;
     margin-top: 20px;
     border: 1px dashed #ddd;
-} */
+}
 
 .empty-state h2 {
     color: #2d3748;
