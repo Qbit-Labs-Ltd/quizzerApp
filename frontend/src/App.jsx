@@ -54,6 +54,9 @@ function App() {
   const [showCreateQuizModal, setShowCreateQuizModal] = useState(false);
   const queryClient = useQueryClient();
 
+  const [showEditQuizModal, setShowEditQuizModal] = useState(false);
+  const [selectedQuizId, setSelectedQuizId] = useState(null);
+
   // Mutation for creating quizzes
   const createQuizMutation = useMutation({
     mutationFn: quizApi.create,

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Modal from './Modal';
+import EditQuizView from '../views/EditQuizView';
 import '../styles/CommonStyles.css';
 
 /**
@@ -12,11 +14,14 @@ import '../styles/CommonStyles.css';
  * @param {Function} props.onDelete - Function called when delete button is clicked
  * @param {Function} props.onViewQuestions - Function called when view questions is clicked
  * @param {boolean} props.loading - Whether quizzes are loading
+ * @param {Function} props.showToast - Function to show toast notifications
  * @returns {JSX.Element}
  */
-const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
+const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading, showToast }) => {
   const navigate = useNavigate();
   const [isUpdating, setIsUpdating] = useState(false);
+  const [selectedQuizId, setSelectedQuizId] = useState(null);
+  const [showEditQuizModal, setShowEditQuizModal] = useState(false);
 
   // Show loading indicator when data is being fetched
   if (loading) return <div className="loading">Loading quizzes...</div>;
@@ -36,7 +41,8 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
    * @param {number} id - ID of the quiz to edit
    */
   const handleEdit = (id) => {
-    navigate(`/quizzes/${id}/edit`);
+    setSelectedQuizId(id);
+    setShowEditQuizModal(true);
   };
 
   /**
@@ -89,6 +95,16 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
     }
   };
 
+  const handleUpdateQuiz = async (quizId, quizData) => {
+    try {
+      const updated = await onEdit(quizId, quizData);
+      showToast('Quiz updated successfully!');
+      return updated;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   // Create a Map to track seen IDs and ensure uniqueness
   const seenIds = new Map();
   const uniqueQuizzes = quizzes.filter(quiz => {
@@ -124,10 +140,24 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
             <div className="quiz-card-content">
               <p className="quiz-card-description">{quiz.description || "No description"}</p>
               <div className="quiz-card-details">
-                <span className="quiz-card-course">Course: {quiz.courseCode}</span>
-                <span className="quiz-card-category">Category: {quiz.categoryName || "None"}</span>
-                <span className="quiz-card-date">Added: {new Date(quiz.dateAdded || Date.now()).toLocaleDateString()}</span>
-                <span className="quiz-card-questions">Questions: {quiz.questionCount}</span>
+                <div className="detail-item">
+                  <span className="detail-label">Course</span>
+                  <span className="detail-value">{quiz.courseCode}</span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">Category</span>
+                  <span className="detail-value">{quiz.categoryName || "None"}</span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">Added</span>
+                  <span className="detail-value">
+                    {new Date(quiz.dateAdded || Date.now()).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">Questions</span>
+                  <span className="detail-value">{quiz.questionCount}</span>
+                </div>
               </div>
 
               <div className="quiz-card-actions">
@@ -158,6 +188,23 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading }) => {
           </div>
         ))}
       </div>
+
+      <Modal
+        isOpen={showEditQuizModal}
+        onClose={() => setShowEditQuizModal(false)}
+        title="Edit Quiz"
+      >
+        {selectedQuizId && (
+          <EditQuizView
+            quizId={selectedQuizId}
+            showToast={showToast}
+            handleUpdateQuiz={handleUpdateQuiz}
+            onCancel={() => setShowEditQuizModal(false)}
+            onSuccess={() => setShowEditQuizModal(false)}
+            isOpen={showEditQuizModal}
+          />
+        )}
+      </Modal>
     </div>
   );
 };

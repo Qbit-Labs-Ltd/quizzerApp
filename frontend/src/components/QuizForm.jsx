@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/CommonStyles.css';
 import { categoryApi } from '../utils/api';
+import '../styles/CommonStyles.css';
+import '../styles/Quizzes.css';
 
 /**
  * Form component for creating or editing quizzes

@@ -19,7 +19,7 @@ export default function QuizCard({ quiz, onEdit, onDelete, onViewQuestions }) {
     <div className="quiz-card">
       <div className="quiz-card-header">
         <h2 className="quiz-card-title" onClick={handleView}>{quiz.name}</h2>
-        <div className="quiz-card-category">Category: {quiz.categoryName || 'Uncategorized'}</div>
+        Test Tes
         <div className="quiz-card-badge">
           {quiz.published ? (
             <span className="published-badge">Published</span>
@@ -32,7 +32,7 @@ export default function QuizCard({ quiz, onEdit, onDelete, onViewQuestions }) {
       <div className="quiz-card-content">
         <p className="quiz-card-description">{quiz.description || 'No description'}</p>
         <div className="quiz-card-details">
-          <span className="quiz-card-course">Course: {quiz.courseCode}</span>
+          <span className="quiz-card-course">Course: <br /> {quiz.courseCode}</span>
           <span className="quiz-card-date">Added: {new Date(quiz.dateAdded || Date.now()).toLocaleDateString()}</span>
         </div>
       </div>
@@ -44,7 +44,7 @@ export default function QuizCard({ quiz, onEdit, onDelete, onViewQuestions }) {
           )}
           <div className="card-action-buttons">
             {onEdit && <button className="edit-btn" onClick={() => onEdit(quiz.id)}>Edit</button>}
-            {onDelete && <button className="delete-btn danger" onClick={() => onDelete(quiz.id)}>Delete</button>}
+            {onDelete && <button className="delete-btn" onClick={() => onDelete(quiz.id)}>Delete</button>}
           </div>
         </div>
       )}
