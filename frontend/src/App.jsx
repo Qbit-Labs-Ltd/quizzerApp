@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Link, Route, BrowserRouter as Router, Routes, useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Route, BrowserRouter as Router, Routes, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import CategoryCreator from './components/CategoryCreator';
 import ConfirmationModal from './components/ConfirmationModal';
@@ -11,7 +11,16 @@ import QuizListWrapper from './components/QuizListWrapper';
 import QuizQuestionsView from './components/QuizQuestionsView';
 import ReviewForm from './components/ReviewForm';
 import Toast from './components/Toast';
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+// Auth components
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import { AuthProvider } from './contexts/AuthContext';
+import AppNavigation from './components/AppNavigation';
+import TeacherDashboard from './views/TeacherDashboard';
+// import StudentDashboard from './views/StudentDashboard'; // Unused - uncomment when needed
 
 // Views
 import CategoryDetailPage from './views/CategoryDetailPage';
@@ -62,7 +71,7 @@ function App() {
 
       return { previousQuizzes };
     },
-    onError: (err, newQuizData, context) => {
+    onError: (_, __, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       queryClient.setQueryData(['quizzes'], context.previousQuizzes);
     },
@@ -99,7 +108,7 @@ function App() {
 
       return { previousQuizzes, previousQuiz };
     },
-    onError: (err, variables, context) => {
+    onError: (_, variables, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousQuizzes) {
         queryClient.setQueryData(['quizzes'], context.previousQuizzes);
@@ -108,7 +117,7 @@ function App() {
         queryClient.setQueryData(['quiz', variables.id], context.previousQuiz);
       }
     },
-    onSettled: (data, error, variables) => {
+    onSettled: (_, __, variables) => {
       // Always refetch after error or success to ensure cache is in sync
       queryClient.invalidateQueries({ queryKey: ['quizzes'] });
       queryClient.invalidateQueries({ queryKey: ['quiz', variables.id] });
@@ -140,7 +149,7 @@ function App() {
 
       return { previousQuizzes };
     },
-    onError: (err, id, context) => {
+    onError: (_, __, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
       queryClient.setQueryData(['quizzes'], context.previousQuizzes);
       showToast(`Failed to delete quiz`, 'error');
@@ -271,8 +280,7 @@ function App() {
    * @param {number} id - The ID of the quiz to update
    * @param {Object} quizData - The updated quiz data
    * @returns {Promise<Object>} The updated quiz
-   */
-  const handleUpdateQuiz = async (id, quizData) => {
+   */  const handleUpdateQuiz = async (id, quizData) => {
     try {
       const result = await updateQuizMutation.mutateAsync({ id, quizData });
       return result;
@@ -282,143 +290,111 @@ function App() {
       throw error;
     }
   };
-
+  
   return (
-    <Router>
-      <div className="app">
-        <nav className="app-nav">
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/quizzes">Manage Quizzes</Link></li>
-            <li><Link to="/quizzes/published">Available Quizzes</Link></li>
-            <li><Link to="/categories">Categories</Link></li>
-          </ul>
-        </nav>
+    <AuthProvider>
+      <Router>
+        <div className="app">
+          <nav className="app-nav">
+            <div className="brand">
+              <h1>QuizzerApp</h1>
+            </div>
+            <AppNavigation />
+          </nav>
 
-        <main className="app-content">
-          {loading && <div className="loading">Loading...</div>}
-          {error && <div className="error-message">{error}</div>}
-
-          <Routes>
-            <Route path="/" element={<QuizListPage />} />
-            <Route
-              path="/quizzes"
-              element={
-                <div>
-                  <div className="page-title-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h1 className="page-title">Quizzes</h1>
-                    <button
-                      className="btn btn-primary"
-                      onClick={() => setShowCreateQuizModal(true)}
+          <main className="app-content">
+            {loading && <div className="loading">Loading...</div>}
+            {error && <div className="error-message">{error}</div>}            <Routes>
+              {/* Auth routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              
+              {/* Home route redirects to login if not authenticated */}
+              <Route path="/" element={<Navigate to="/login" />} />
+              
+              {/* Teacher routes */}
+              <Route element={<ProtectedRoute requiredRole="TEACHER" />}>
+                <Route path="/teacher" element={<TeacherDashboard />} />
+                <Route path="/quizzes" element={
+                  <div>
+                    <div className="page-title-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <h1 className="page-title">Quizzes</h1>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => setShowCreateQuizModal(true)}
+                      >
+                        Create Quiz
+                      </button>
+                    </div>
+                    <Modal
+                      isOpen={showCreateQuizModal}
+                      onClose={() => setShowCreateQuizModal(false)}
+                      title="Create New Quiz"
                     >
-                      Create Quiz
-                    </button>
-                  </div>
-                  <Modal
-                    isOpen={showCreateQuizModal}
-                    onClose={() => setShowCreateQuizModal(false)}
-                    title="Create New Quiz"
-                  >
-                    <QuizCreator
-                      handleCreateQuiz={async (quizData) => {
-                        await handleCreateQuiz(quizData);
-                        setShowCreateQuizModal(false);
-                      }}
-                      showToast={showToast}
-                      onCancel={() => setShowCreateQuizModal(false)}
+                      <QuizCreator
+                        handleCreateQuiz={async (quizData) => {
+                          await handleCreateQuiz(quizData);
+                          setShowCreateQuizModal(false);
+                        }}
+                        showToast={showToast}
+                        onCancel={() => setShowCreateQuizModal(false)}
+                      />
+                    </Modal>
+                    <QuizListWrapper
+                      onDelete={(id) => showDeleteConfirmation(id, 'quiz')}
                     />
-                  </Modal>
-                  <QuizListWrapper
-                    onDelete={(id) => showDeleteConfirmation(id, 'quiz')}
-                  />
-                </div>
-              }
-            />
-            <Route
-              path="/quizzes/published"
-              element={<QuizListPage />}
-            />
-            <Route
-              path="/categories"
-              element={<CategoryListPage />}
-            />
-            <Route
-              path="/quizzes/:id/edit"
-              element={<EditQuizView
-                showToast={showToast}
-                handleUpdateQuiz={handleUpdateQuiz}
-              />}
-            />
-            <Route
-              path="/quizzes/:id/questions"
-              element={<QuizQuestionsView
-                showToast={showToast}
-                showDeleteConfirmation={showDeleteConfirmation}
-              />}
-            />
-            <Route
-              path="/questions/:id/edit"
-              element={<EditQuestionView showToast={showToast} />}
-            />
-            {/* New routes for categories */}
-            <Route path="/categories/new" element={<CategoryCreator showToast={showToast} />} />
-            <Route
-              path="/quizzes/:id/take"
-              element={<TakeQuizPage />}
-            />
-            <Route
-              path="/quiz/:id"
-              element={<QuizPage />}
-            />
-            <Route
-              path="/quiz/:id/results"
-              element={<ResultsPage />}
-            />
-            <Route
-              path="/quiz/:id/reviews"
-              element={
-                <Suspense fallback={<div>Loading reviews page…</div>}>
-                  <QuizReviewsPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/categories/:id"
-              element={<CategoryDetailPage />}
-            />
-            {/* Review routes */}
-            <Route
-              path="/quiz/:id/review"
-              element={<ReviewForm />}
-            />
-            {/* New route for editing reviews */}
-            <Route
-              path="/reviews/:id/edit"
-              element={<ReviewEditRedirect />}
-            />
-          </Routes>
-        </main>
+                  </div>
+                } />
+                <Route path="/categories" element={<CategoryListPage />} />
+                <Route path="/categories/new" element={<CategoryCreator showToast={showToast} />} />
+              </Route>
 
-        {toast.show && (
-          <Toast
-            message={toast.message}
-            type={toast.type}
-            onClose={closeToast}
+              {/* Student routes */}
+              <Route element={<ProtectedRoute requiredRole="STUDENT" />}>
+                <Route path="/quizzes/published" element={<QuizListPage />} />
+              </Route>
+
+              {/* Shared/Common Routes */}
+              <Route element={<ProtectedRoute />}>                <Route path="/quizzes/:id/edit" element={<EditQuizView showToast={showToast} handleUpdateQuiz={handleUpdateQuiz} />} />
+                <Route path="/quizzes/:id/questions" element={<QuizQuestionsView showToast={showToast} showDeleteConfirmation={showDeleteConfirmation} />} />
+                <Route path="/questions/:id/edit" element={<EditQuestionView showToast={showToast} />} />
+                <Route path="/quizzes/:id/take" element={<TakeQuizPage />} />
+                <Route path="/quiz/:id" element={<QuizPage />} />
+                <Route path="/quiz/:id/results" element={<ResultsPage />} />                <Route
+                  path="/quiz/:id/reviews"
+                  element={
+                    <Suspense fallback={<div>Loading reviews page...</div>}>
+                      <QuizReviewsPage />
+                    </Suspense>
+                  }
+                />
+                <Route path="/categories/:id" element={<CategoryDetailPage />} />
+                <Route path="/quiz/:id/review" element={<ReviewForm />} />
+                <Route path="/reviews/:id/edit" element={<ReviewEditRedirect />} />
+              </Route>
+              </Routes>
+          </main>
+
+          {toast.show && (
+            <Toast
+              message={toast.message}
+              type={toast.type}
+              onClose={closeToast}
+            />
+          )}
+
+          <ConfirmationModal
+            isOpen={deleteModal.show}
+            title={`Delete ${deleteModal.itemType || 'Item'}`}
+            message={`Are you sure you want to delete this ${deleteModal.itemType || 'item'}? This action cannot be undone.`}
+            onConfirm={confirmDelete}
+            onCancel={cancelDelete}
           />
-        )}
-
-        <ConfirmationModal
-          isOpen={deleteModal.show}
-          title={`Delete ${deleteModal.itemType || 'Item'}`}
-          message={`Are you sure you want to delete this ${deleteModal.itemType || 'item'}? This action cannot be undone.`}
-          onConfirm={confirmDelete}
-          onCancel={cancelDelete}
-        />
-      </div>
-    </Router>
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
-
 /**
  * Component for editing an existing quiz
  * Handles fetching quiz data, updating, and navigation
@@ -428,6 +404,9 @@ function App() {
  * @returns {JSX.Element}
  */
 function EditQuizView({ showToast, handleUpdateQuiz }) {
+  const { useNavigate, useParams } = require('react-router-dom');
+  const { useQuery } = require('@tanstack/react-query');
+  
   const navigate = useNavigate();
   const { id } = useParams();
   const queryClient = useQueryClient();
@@ -472,7 +451,6 @@ function EditQuizView({ showToast, handleUpdateQuiz }) {
 
   if (isLoading) return <div className="loading">Loading quiz...</div>;
   if (!quiz) return <div className="error-message">Quiz not found</div>;
-
   return (
     <div>
       <h1 className="page-title">Edit Quiz</h1>
@@ -493,10 +471,10 @@ function EditQuizView({ showToast, handleUpdateQuiz }) {
 }
 
 /**
- * Component that redirects from /reviews/:id/edit to the ReviewForm with the appropriate params
  * Used to maintain compatibility with our existing ReviewForm implementation
  */
 function ReviewEditRedirect() {
+  const { useParams, useNavigate } = require('react-router-dom');
   const { id } = useParams();
   const navigate = useNavigate();
 

@@ -13,17 +13,32 @@ const useMockData = import.meta.env.VITE_USE_MOCK_DATA === 'true';
  * Base axios instance for API requests
  * Configured with common settings for all API calls
  */
-const api = axios.create({
+export const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
     headers: {
         'Content-Type': 'application/json',
     }
 });
 
+// Add request interceptor for authentication
+api.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
 // Add response interceptor
 api.interceptors.response.use(
     response => response,
     error => {
+        // Handle server errors
         if (error.response && error.response.status === 500) {
             console.error('Server error details:', {
                 status: error.response.status,
@@ -37,6 +52,18 @@ api.interceptors.response.use(
                 }
             });
         }
+        
+        // Handle authentication errors
+        if (error.response && error.response.status === 401) {
+            // Token expired or invalid
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            // Redirect to login if not already there
+            if (!window.location.pathname.includes('/login')) {
+                window.location.href = '/login';
+            }
+        }
+        
         return Promise.reject(error);
     }
 );

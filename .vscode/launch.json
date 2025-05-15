@@ -9,6 +9,16 @@
             "projectName": "quizzerApp",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-QuizReviewServiceApplication<quizzerApp>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.quizreview.QuizReviewServiceApplication",
+            "projectName": "quizzerApp",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
