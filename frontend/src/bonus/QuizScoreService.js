@@ -1,8 +1,5 @@
 import axios from 'axios';
-import { mockQuestions } from '../../mockData';
-
-// Toggle between mock data (development) and real API (production)
-const isDev = true; // Set to true to use mock data
+import { questionApi } from '../utils/api';
 
 /**
  * Service for fetching quiz score/results data
@@ -22,81 +19,61 @@ class QuizScoreService {
   }
 
   /**
-   * Retrieves the user's personal score for a specific quiz
+   * Retrieves the user's personal score for a specific quiz using actual answers
    * @param {number|string} quizId - Quiz ID
-   * @param {string} sessionId - Session ID (optional for now, will be mocked)
    * @returns {Promise<Object>} Score object with correct and wrong counts
    */
-  async getMyScore(quizId, sessionId = 'mock-session') {
+  async getMyScore(quizId) {
     try {
-      // If isDev is false, call the real API
-      if (!isDev) {
-        const response = await this.api.get(`/quizzes/${quizId}/my-score?session=${sessionId}`);
-        return response.data;
+      // Get user answers from session storage
+      const userAnswersKey = `quiz_${quizId}_answers`;
+      const userAnswersJson = sessionStorage.getItem(userAnswersKey);
+
+      if (!userAnswersJson) {
+        throw new Error('No saved answers found for this quiz');
       }
-      
-      // Otherwise, use mock data
-      console.log('Using mock data for quiz score:', quizId);
-      
-      // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Get the actual questions for this quiz from mockData
-      const quizQuestions = mockQuestions.filter(q => q.quizId === Number(quizId));
-      const totalQuestions = quizQuestions.length;
-      
-      // For quiz ID 1 (JavaScript Fundamentals) 
-      if (Number(quizId) === 1) {
-        // Special handling for quiz 1 which has inconsistencies in the data
-        // Hard-coding to match actual experience
-        if (sessionId === 'perfect-score') {
-          // Perfect score mock
-          return {
-            quizId: Number(quizId),
-            sessionId: sessionId,
-            correctCount: 2, // User got all 2 questions right
-            wrongCount: 0,
-            totalQuestions: 2, // Only 2 questions are shown to user
-            percentage: 100
-          };
+
+      const userAnswers = JSON.parse(userAnswersJson);
+
+      // Get all questions for this quiz
+      const questions = await questionApi.getByQuizId(quizId);
+
+      if (!questions || questions.length === 0) {
+        throw new Error('Failed to load quiz questions');
+      }
+
+      // Calculate score by comparing user answers to correct answers
+      let correctCount = 0;
+      let wrongCount = 0;
+
+      questions.forEach(question => {
+        // Find the correct answer for this question
+        const correctAnswerId = question.answers.find(a => a.correct)?.id;
+
+        // Find user's answer for this question
+        const userAnswer = userAnswers.find(a => a.questionId === question.id);
+
+        if (userAnswer && userAnswer.selectedAnswerId === correctAnswerId) {
+          correctCount++;
         } else {
-          // Default response for quiz 1
-          return {
-            quizId: Number(quizId),
-            sessionId: sessionId,
-            correctCount: 2, // User got 2 questions right
-            wrongCount: 0,   // 0 wrong
-            totalQuestions: 2, // Only 2 questions shown to user
-            percentage: 100  // 100% correct
-          };
+          wrongCount++;
         }
-      }
-      
-      // For quiz ID 5 (Python Basics)
-      else if (Number(quizId) === 5) {
-        // This quiz actually has 2 questions
-        return {
-          quizId: Number(quizId),
-          sessionId: sessionId,
-          correctCount: 2, // User got both right
-          wrongCount: 0,
-          totalQuestions: 2,
-          percentage: 100
-        };
-      }
-      
-      // Default response for any other quiz
-      // Create a perfect score result based on actual question count
+      });
+
+      const totalQuestions = questions.length;
+      const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+
       return {
         quizId: Number(quizId),
-        sessionId: sessionId,
-        correctCount: totalQuestions, // User got all questions right
-        wrongCount: 0,
-        totalQuestions: totalQuestions || 2, // Fallback to 2 if no questions found
-        percentage: 100
+        correctCount,
+        wrongCount,
+        totalQuestions,
+        percentage,
+        // Add user answer data for reference
+        userAnswers
       };
     } catch (error) {
-      console.error('Error fetching quiz score:', error);
+      console.error('Error calculating quiz score:', error);
       throw error;
     }
   }

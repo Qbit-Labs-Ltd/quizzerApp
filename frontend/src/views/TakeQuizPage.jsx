@@ -170,7 +170,6 @@ const TakeQuizPage = () => {
       setCurrentQuestionFeedback(null);
     }
   };
-
   /**
    * Submit the quiz answers
    */
@@ -184,13 +183,17 @@ const TakeQuizPage = () => {
         selectedAnswerId: Number(selectedAnswerId)
       }));
 
+      // Store user answers in session storage for the summary page
+      const userAnswersKey = `quiz_${id}_answers`;
+      sessionStorage.setItem(userAnswersKey, JSON.stringify(answers));
+
       // Submit the answers
       const quizResults = await answerService.submitAnswers(id, answers);
 
       // Update state with results
       setResults(quizResults);
       setQuizCompleted(true);
-      
+
       // Navigate to the summary page - New bonus feature
       navigate(`/quiz/${id}/summary`);
 

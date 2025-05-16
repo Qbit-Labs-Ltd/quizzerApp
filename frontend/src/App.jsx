@@ -22,6 +22,9 @@ import ResultsPage from './views/ResultsPage';
 import TakeQuizPage from './views/TakeQuizPage';
 const QuizReviewsPage = lazy(() => import('./views/QuizReviewsPage'));
 
+// Bonus feature components
+const QuizSummaryPage = lazy(() => import('./bonus').then(module => ({ default: module.QuizSummaryPage })));
+
 // API utilities
 import { quizApi, questionApi, answerApi } from './utils/api';
 
@@ -376,12 +379,19 @@ function App() {
             <Route
               path="/quiz/:id/results"
               element={<ResultsPage />}
-            />
-            <Route
+            />            <Route
               path="/quiz/:id/reviews"
               element={
                 <Suspense fallback={<div>Loading reviews page…</div>}>
                   <QuizReviewsPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/quiz/:id/summary"
+              element={
+                <Suspense fallback={<div>Loading summary page...</div>}>
+                  <QuizSummaryPage />
                 </Suspense>
               }
             />
