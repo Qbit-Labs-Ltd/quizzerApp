@@ -190,6 +190,9 @@ const TakeQuizPage = () => {
       // Update state with results
       setResults(quizResults);
       setQuizCompleted(true);
+      
+      // Navigate to the summary page - New bonus feature
+      navigate(`/quiz/${id}/summary`);
 
     } catch (err) {
       console.error("Error submitting quiz:", err);
