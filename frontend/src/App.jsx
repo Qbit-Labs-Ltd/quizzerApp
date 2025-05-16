@@ -16,6 +16,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 // Views
 import CategoryDetailPage from './views/CategoryDetailPage';
 import CategoryListPage from './views/CategoryListPage';
+import FavoritesPage from './bonus/FavoritesPage';
 import QuizListPage from './views/QuizListPage';
 import QuizPage from './views/QuizPage';
 import ResultsPage from './views/ResultsPage';
@@ -305,6 +306,7 @@ function App() {
             <li><Link to="/quizzes">Manage Quizzes</Link></li>
             <li><Link to="/quizzes/published">Available Quizzes</Link></li>
             <li><Link to="/categories">Categories</Link></li>
+            <li><Link to="/favorites">Favorites</Link></li>
           </ul>
         </nav>
 
@@ -398,6 +400,10 @@ function App() {
             <Route
               path="/categories/:id"
               element={<CategoryDetailPage />}
+            />
+            <Route
+              path="/favorites"
+              element={<FavoritesPage />}
             />
             {/* Review routes */}
             <Route

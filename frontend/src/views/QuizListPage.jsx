@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import QuizListService from '../utils/QuizListService';
 import '../styles/CommonStyles.css';
 import '../styles/Quizzes.css';
+import useFavorites from '../bonus/useFavorites';
 
 /**
  * Component that displays a list of published quizzes
@@ -16,6 +17,7 @@ const QuizListPage = () => {
   const [error, setError] = useState(null);
   const [viewMode, setViewMode] = useState('card'); // 'card' or 'table'
   const navigate = useNavigate();
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
 
   // Fetch published quizzes when component mounts
   useEffect(() => {
@@ -88,7 +90,15 @@ const QuizListPage = () => {
                   <span className="published-badge">Published</span>
                 </div>
               </div>
-
+              
+              <div className="quiz-card-favorite">
+                <button
+                  className="favorite-btn"
+                  onClick={() => toggleFavorite(quiz.id)}
+                >
+                  {isFavorite(quiz.id) ? '♥' : '♡'}
+                </button>
+              </div>
               <div className="quiz-card-content">
                 <p className="quiz-card-description">{quiz.description || "No description"}</p>
                 <div className="quiz-card-details">
@@ -133,6 +143,7 @@ const QuizListPage = () => {
                 <th>Course Code</th>
                 <th>Description</th>
                 <th>Questions</th>
+                <th>Favorite</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -143,6 +154,14 @@ const QuizListPage = () => {
                   <td>{quiz.courseCode}</td>
                   <td>{quiz.description || "No description"}</td>
                   <td>{quiz.questionCount}</td>
+                  <td>
+                    <button
+                      className="favorite-btn"
+                      onClick={() => toggleFavorite(quiz.id)}
+                    >
+                      {isFavorite(quiz.id) ? '♥' : '♡'}
+                    </button>
+                  </td>
                   <td>
                     <button
                       className="take-quiz-btn primary small"
