@@ -94,11 +94,10 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading, showToa
       setIsUpdating(false);
     }
   };
-
   const handleUpdateQuiz = async (quizId, quizData) => {
     try {
       const updated = await onEdit(quizId, quizData);
-      showToast('Quiz updated successfully!');
+      // Success message will be shown by the EditQuizView component
       return updated;
     } catch (error) {
       throw error;

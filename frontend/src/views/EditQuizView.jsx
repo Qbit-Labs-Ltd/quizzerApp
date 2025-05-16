@@ -20,19 +20,23 @@ const EditQuizView = ({
             showToast('Failed to load quiz', 'error');
             onCancel();
         }
-    });
-
-    const handleUpdate = async (quizData) => {
+    }); const handleUpdate = async (quizData) => {
         try {
             const updatedQuiz = await handleUpdateQuiz(quizId, quizData);
             queryClient.setQueryData(['quiz', quizId], updatedQuiz);
             queryClient.setQueryData(['quizzes'], (old) =>
                 old?.map(q => q.id === quizId ? updatedQuiz : q)
             );
+            // Show success message and trigger success callback but don't redirect
+            if (typeof showToast === 'function') {
+                showToast('Quiz updated successfully!');
+            }
             onSuccess();
         } catch (err) {
             console.error("Error updating quiz:", err);
-            showToast('Failed to update quiz', 'error');
+            if (typeof showToast === 'function') {
+                showToast('Failed to update quiz', 'error');
+            }
         }
     };
 

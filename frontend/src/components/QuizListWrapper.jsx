@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { quizApi } from '../utils/api';
 import QuizList from './QuizList';
 
-const QuizListWrapper = ({ onDelete, ...props }) => {
+const QuizListWrapper = ({ onDelete, showToast, ...props }) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
@@ -28,16 +28,26 @@ const QuizListWrapper = ({ onDelete, ...props }) => {
         return () => {
             window.removeEventListener('quizzes-updated', handleQuizUpdate);
         };
-    }, [queryClient]);
-
-    return (
+    }, [queryClient]);    // Handle quiz edit directly with a modal instead of navigation
+    const handleEdit = async (id, quizData) => {
+        try {
+            const updatedQuiz = await quizApi.update(id, quizData);
+            // Update the cache with the server response
+            queryClient.invalidateQueries({ queryKey: ['quizzes'] });
+            return updatedQuiz;
+        } catch (error) {
+            console.error("Error updating quiz:", error);
+            throw error;
+        }
+    }; return (
         <QuizList
             {...props}
             quizzes={quizzes}
             loading={isLoading}
-            onEdit={(id) => navigate(`/quizzes/${id}/edit`)}
+            onEdit={handleEdit}
             onViewQuestions={(id) => navigate(`/quizzes/${id}/questions`)}
             onDelete={onDelete}
+            showToast={showToast}
         />
     );
 };

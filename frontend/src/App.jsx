@@ -336,10 +336,10 @@ function App() {
                       }}
                       showToast={showToast}
                       onCancel={() => setShowCreateQuizModal(false)}
-                    />
-                  </Modal>
+                    />                  </Modal>
                   <QuizListWrapper
                     onDelete={(id) => showDeleteConfirmation(id, 'quiz')}
+                    showToast={showToast}
                   />
                 </div>
               }
@@ -351,14 +351,7 @@ function App() {
             <Route
               path="/categories"
               element={<CategoryListPage />}
-            />
-            <Route
-              path="/quizzes/:id/edit"
-              element={<EditQuizView
-                showToast={showToast}
-                handleUpdateQuiz={handleUpdateQuiz}
-              />}
-            />
+            />            {/* Edit quiz is handled through modal now, so this route is removed */}
             <Route
               path="/quizzes/:id/questions"
               element={<QuizQuestionsView
@@ -461,23 +454,21 @@ function EditQuizView({ showToast, handleUpdateQuiz }) {
     try {
       const updatedQuiz = await handleUpdateQuiz(id, quizData);
       // Update the cache with the server response
-      queryClient.setQueryData(['quiz', id], updatedQuiz);
-      queryClient.setQueryData(['quizzes'], (old) =>
+      queryClient.setQueryData(['quiz', id], updatedQuiz); queryClient.setQueryData(['quizzes'], (old) =>
         old.map(quiz => quiz.id === id ? updatedQuiz : quiz)
       );
       showToast('Quiz updated successfully!');
-      navigate('/quizzes');
+      // No navigation - we stay on the current page
     } catch (err) {
       console.error("Error updating quiz:", err);
       showToast('Failed to update quiz', 'error');
     }
   };
-
   /**
    * Handles cancellation of quiz editing
    */
   const handleCancel = () => {
-    navigate('/quizzes');
+    // No navigation - we stay on the current page
   };
 
   if (isLoading) return <div className="loading">Loading quiz...</div>;
