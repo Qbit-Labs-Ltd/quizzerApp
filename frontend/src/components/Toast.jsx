@@ -24,7 +24,7 @@ const Toast = ({ message, type = 'success', onClose, duration = 3000 }) => {
   }, [duration, onClose]);
 
   return (
-    <div className={`toast toast-${type}`}>
+    <div className={`toast ${type}`}>
       <div className="toast-content">
         {/* Display appropriate icon based on toast type */}
         {type === 'success' && <span className="toast-icon">✅</span>}
@@ -33,7 +33,7 @@ const Toast = ({ message, type = 'success', onClose, duration = 3000 }) => {
         <p>{message}</p>
       </div>
       {/* Close button */}
-      <button className="toast-close" onClick={onClose}>×</button>
+      <button className="toast-close" onClick={onClose}>&times;</button>
     </div>
   );
 };

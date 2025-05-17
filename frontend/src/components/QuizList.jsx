@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Modal from './Modal';
 import EditQuizView from '../views/EditQuizView';
+import '../styles/Quizzes.css';
 import '../styles/CommonStyles.css';
 
 /**
@@ -22,6 +23,17 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading, showToa
   const [isUpdating, setIsUpdating] = useState(false);
   const [selectedQuizId, setSelectedQuizId] = useState(null);
   const [showEditQuizModal, setShowEditQuizModal] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.kebab-menu-container')) {
+        setActiveDropdown(null);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   // Show loading indicator when data is being fetched
   if (loading) return <div className="loading">Loading quizzes...</div>;
@@ -118,20 +130,52 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading, showToa
     navigate('/quizzes/new');
   };
 
+  const toggleDropdown = (quizId, event) => {
+    event.stopPropagation();
+    setActiveDropdown(activeDropdown === quizId ? null : quizId);
+  };
+
   return (
     <div className="quizzes-container">
       <div className="quiz-cards-grid">
         {uniqueQuizzes.map(quiz => (
           <div key={`quiz-container-${quiz.id}`} className="quiz-card">
             <div className="quiz-card-header">
-              <h2 className="quiz-card-title" onClick={() => handleViewQuestions(quiz.id)}>
-                {quiz.name}
-              </h2>
-              <div className="quiz-card-badge">
-                {quiz.published ? (
-                  <span className="published-badge">Published</span>
-                ) : (
-                  <span className="not-published-badge">Not published</span>
+              <div className="quiz-card-header-content">
+                <h2 className="quiz-card-title" onClick={() => handleViewQuestions(quiz.id)}>
+                  {quiz.name}
+                </h2>
+                <div className="quiz-card-badge">
+                  {quiz.published ? (
+                    <span className="published-badge">Published</span>
+                  ) : (
+                    <span className="not-published-badge">Not published</span>
+                  )}
+                </div>
+              </div>
+              <div className="kebab-menu-container">
+                <button
+                  className="kebab-menu-btn"
+                  onClick={(e) => toggleDropdown(quiz.id, e)}
+                >
+                  <span className="kebab-dot"></span>
+                  <span className="kebab-dot"></span>
+                  <span className="kebab-dot"></span>
+                </button>
+                {activeDropdown === quiz.id && (
+                  <div className="dropdown-menu">
+                    <button className="dropdown-item" onClick={() => handleEdit(quiz.id)}>
+                      Edit
+                    </button>
+                    {onDelete && (
+                      <button
+                        className="dropdown-item delete"
+                        onClick={() => onDelete(quiz.id)}
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
@@ -172,22 +216,6 @@ const QuizList = ({ quizzes, onEdit, onDelete, onViewQuestions, loading, showToa
                 >
                   View Reviews
                 </button>
-                <div className="card-action-buttons">
-                  <button
-                    className="edit-btn"
-                    onClick={() => handleEdit(quiz.id)}
-                  >
-                    Edit
-                  </button>
-                  {onDelete && (
-                    <button
-                      className="delete-btn"
-                      onClick={() => onDelete(quiz.id)}
-                    >
-                      Delete
-                    </button>
-                  )}
-                </div>
               </div>
             </div>
           </div>

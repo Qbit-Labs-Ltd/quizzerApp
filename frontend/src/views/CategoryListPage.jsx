@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CategoryListService from '../utils/CategoryListService';
+import CategoryCreator from '../components/CategoryCreator';
+import Modal from '../components/Modal';
+import Toast from '../components/Toast';  // Add this import
+import EditCategoryModal from '../components/EditCategoryModal';
 import '../styles/CommonStyles.css';
 import '../styles/Category.css';
 
@@ -18,6 +22,10 @@ const CategoryListPage = () => {
   const [loadingQuizzes, setLoadingQuizzes] = useState({});
   const [editingCategory, setEditingCategory] = useState(null);
   const [editDescription, setEditDescription] = useState('');
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [toast, setToast] = useState({ message: '', type: '' });
+  const [editModalCategory, setEditModalCategory] = useState(null);
   const navigate = useNavigate();
 
   // Fetch categories when component mounts
@@ -39,6 +47,16 @@ const CategoryListPage = () => {
     };
 
     fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.kebab-menu-container')) {
+        setActiveDropdown(null);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
   /**
@@ -71,9 +89,10 @@ const CategoryListPage = () => {
    * @param {number} categoryId - ID of the category to edit
    * @param {string} currentDescription - Current description of the category
    */
-  const handleStartEdit = (categoryId, currentDescription) => {
-    setEditingCategory(categoryId);
-    setEditDescription(currentDescription || '');
+  const handleStartEdit = (categoryId) => {
+    const category = categories.find(cat => cat.id === categoryId);
+    setEditModalCategory(category);
+    setActiveDropdown(null);
   };
 
   /**
@@ -129,6 +148,30 @@ const CategoryListPage = () => {
     }
   };
 
+  const toggleDropdown = (categoryId, event) => {
+    event.stopPropagation();
+    setActiveDropdown(activeDropdown === categoryId ? null : categoryId);
+  };
+
+  const handleCreateSuccess = (newCategory) => {
+    setCategories(prev => [...prev, newCategory]);
+    showToast('Category created successfully!', 'success');
+  };
+
+  const showToast = (message, type = 'info') => {
+    setToast({ message, type });
+    setTimeout(() => setToast({ message: '', type: '' }), 3000);
+  };
+
+  const handleEditSuccess = (updatedCategory) => {
+    setCategories(prevCategories =>
+      prevCategories.map(cat =>
+        cat.id === updatedCategory.id ? updatedCategory : cat
+      )
+    );
+    showToast('Category updated successfully!', 'success');
+  };
+
   // Show loading indicator when data is being fetched
   if (loading) return <div className="loading">Loading categories...</div>;
 
@@ -162,7 +205,7 @@ const CategoryListPage = () => {
         <h1 className="page-title">Quiz Categories</h1>
         <button
           className="btn btn-primary create-btn"
-          onClick={() => navigate('/categories/new')}
+          onClick={() => setShowCreateModal(true)}
         >
           Create Category
         </button>
@@ -171,13 +214,46 @@ const CategoryListPage = () => {
       <div className="categories-list">
         {categories.map(category => (
           <div key={category.id} className="category-card">
-            <div
-              className="category-header"
-              onClick={() => toggleCategory(category.id)}
-            >
-              <h2 className="category-title">{category.name}</h2>
-              <div className="expand-icon">
-                {expandedCategory === category.id ? '−' : '+'}
+            <div className="category-header">
+              <div className="category-header-content" onClick={() => toggleCategory(category.id)}>
+                <h2 className="category-title">{category.name}</h2>
+                <div className="header-actions">
+                  <div className="expand-icon">
+                    {expandedCategory === category.id ? '−' : '+'}
+                  </div>
+                </div>
+              </div>
+              <div className="kebab-menu-container">
+                <button
+                  className="kebab-menu-btn"
+                  onClick={(e) => toggleDropdown(category.id, e)}
+                >
+                  <span className="kebab-dot"></span>
+                  <span className="kebab-dot"></span>
+                  <span className="kebab-dot"></span>
+                </button>
+                {activeDropdown === category.id && (
+                  <div className="dropdown-menu">
+                    <button
+                      className="dropdown-item"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartEdit(category.id, category.description);
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="dropdown-item delete"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteCategory(category.id);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -211,26 +287,6 @@ const CategoryListPage = () => {
               ) : (
                 <div className="description-content">
                   <p>{category.description || 'No description available'}</p>
-                  <div className="description-actions">
-                    <button
-                      className="edit-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleStartEdit(category.id, category.description);
-                      }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="delete-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteCategory(category.id);
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </div>
                 </div>
               )}
             </div>
@@ -286,6 +342,42 @@ const CategoryListPage = () => {
           </div>
         ))}
       </div>
+
+      <Modal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        title="Create Category"
+      >
+        <CategoryCreator
+          showToast={showToast}
+          onClose={() => setShowCreateModal(false)}
+          onSuccess={handleCreateSuccess}
+        />
+      </Modal>
+
+      {/* Replace the old edit form with this modal */}
+      <Modal
+        isOpen={!!editModalCategory}
+        onClose={() => setEditModalCategory(null)}
+        title="Edit Category"
+      >
+        {editModalCategory && (
+          <EditCategoryModal
+            category={editModalCategory}
+            onClose={() => setEditModalCategory(null)}
+            onSuccess={handleEditSuccess}
+            showToast={showToast}
+          />
+        )}
+      </Modal>
+
+      {toast.message && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast({ message: '', type: '' })}
+        />
+      )}
     </div>
   );
 };
