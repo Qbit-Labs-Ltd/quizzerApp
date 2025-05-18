@@ -177,7 +177,7 @@ const QuizForm = ({
           </label>
         </div>
 
-        <div className="form-actions">
+        <div className="modal-actions">
           <button
             type="button"
             onClick={onCancel}

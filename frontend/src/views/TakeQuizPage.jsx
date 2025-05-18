@@ -335,39 +335,6 @@ const TakeQuizPage = () => {
               Write a Review
             </Link>
           </div>
-
-          <style jsx="true">{`
-            .quiz-page-footer {
-              margin-top: 30px;
-              display: flex;
-              justify-content: center;
-              padding: 20px 0;
-              border-top: 1px solid #e0e0e0;
-            }
-            
-            .write-review-btn {
-              background-color: #4a90e2;
-              color: white;
-              font-weight: 500;
-              padding: 10px 20px;
-              border-radius: 4px;
-              text-decoration: none;
-              display: inline-flex;
-              align-items: center;
-              transition: background-color 0.2s;
-            }
-            
-            .write-review-btn:hover {
-              background-color: #3a7bc8;
-              text-decoration: none;
-              color: white;
-            }
-            
-            .write-review-btn::before {
-              content: "★";
-              margin-right: 8px;
-            }
-          `}</style>
         </div>
       </div>
     );

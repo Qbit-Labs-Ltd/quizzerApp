@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../styles/CommonStyles.css';
+import '../styles/Question.css';
 
 /**
  * Component for displaying a question with its details and answer options

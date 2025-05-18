@@ -6,6 +6,8 @@
     margin-bottom: 1.5rem;
     overflow: hidden;
     transition: box-shadow 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 .question-block:hover {
@@ -19,6 +21,8 @@
     padding: 1.25rem;
     background-color: #f8f9fa;
     border-bottom: 1px solid var(--border-gray);
+    position: relative;
+    background: linear-gradient(to right, #f8f9fa, #ffffff);
 }
 
 .question-content {
@@ -28,6 +32,8 @@
     font-size: 1.1rem;
     font-weight: 500;
     color: var(--text-dark);
+    line-height: 1.4;
+    padding: 0.5rem 0;
 }
 
 .question-icon {
@@ -40,7 +46,7 @@
     gap: 0.5rem;
 }
 
-/* Question Difficulty Badges */
+/* Enhanced Difficulty Badges */
 .difficulty-badge {
     display: inline-block;
     padding: 0.35rem 0.75rem;
@@ -48,20 +54,26 @@
     font-weight: 500;
     border-radius: 30px;
     margin-right: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .normal {
-    background-color: #ffc107;
+    background: linear-gradient(135deg, #ffd65b, #ffc107);
+    border: 1px solid #e6ac00;
     color: #212529;
 }
 
 .easy {
-    background-color: #d1e7dd;
+    background: linear-gradient(135deg, #d1e7dd, #a3cfbb);
+    border: 1px solid #8bc5a3;
     color: #0f5132;
 }
 
 .hard {
-    background-color: #f8d7da;
+    background: linear-gradient(135deg, #f8d7da, #e7a8ae);
+    border: 1px solid #dd868d;
     color: #842029;
 }
 
@@ -94,6 +106,14 @@
     padding: 1.5rem;
     position: relative;
     overflow: hidden;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.review-question:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .review-question.correct {
@@ -110,7 +130,7 @@
     margin-bottom: 0.5rem;
 }
 
-/* Question Progress Indicator */
+/* Enhanced Progress Bar */
 .question-progress-bar {
     width: 100%;
     height: 6px;
@@ -118,14 +138,17 @@
     border-radius: 3px;
     margin-bottom: 2rem;
     overflow: hidden;
+    background: linear-gradient(to right, #eef0f2, #e9ecef);
 }
 
 .progress-indicator {
     height: 100%;
-    background-color: var(--primary-blue);
+    background: linear-gradient(to right, var(--primary-blue), #4d94ff);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     transition: width 0.3s ease;
 }
 
+/* Enhanced Question Indicators */
 .questions-indicator {
     display: flex;
     flex-wrap: wrap;
@@ -141,17 +164,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f8f9fa;
+    background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-gray);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
+.question-indicator:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
 .question-indicator.answered {
-    background-color: var(--primary-blue);
-    color: white;
-    border-color: var(--primary-blue);
+    background: linear-gradient(135deg, var(--primary-blue), #4d94ff);
+    box-shadow: 0 2px 6px rgba(13, 110, 253, 0.3);
 }
 
 .question-indicator.current {
@@ -159,24 +187,37 @@
     box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
 }
 
-/* Delete Question Button */
+/* Enhanced Delete Button */
 .delete-question-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.delete-question-btn.hover-warning {
-    background-color: #d33a2c;
-    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.3);
+.delete-question-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+}
+
+.delete-question-btn:hover::after {
+    transform: translateY(0);
 }
 
 .delete-icon {
     font-size: 1rem;
 }
 
-/* Question Sorting */
+/* Enhanced Question Sorter */
 .question-sorter {
     display: flex;
     align-items: center;
@@ -185,6 +226,8 @@
     padding: 0.5rem 1rem;
     border-radius: 6px;
     margin-bottom: 1.5rem;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .question-sorter label {
@@ -201,6 +244,82 @@
     font-size: 0.9rem;
     cursor: pointer;
     min-width: 150px;
+    transition: all 0.2s ease;
+    background-image: linear-gradient(to bottom, #ffffff, #f8f9fa);
+}
+
+.question-sorter select:hover {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+/* Answer Options Styling */
+.answer-options {
+    padding: 1.25rem;
+    background-color: #fdfdfd;
+}
+
+.answer-options h4 {
+    color: var(--text-dark);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.answers-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.answers-list li {
+    position: relative;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    border: 1px solid var(--border-gray);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    transition: all 0.2s ease;
+}
+
+.answers-list li:hover {
+    transform: translateX(4px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.answers-list li.correct-answer {
+    background: linear-gradient(to right, #d1e7dd20, #ffffff);
+    border-left: 3px solid var(--success-green);
+}
+
+.correct-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    background: var(--success-green);
+    color: white;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-left: 0.75rem;
+    font-weight: 500;
+}
+
+/* Question Title Area Enhancement */
+.question-title-area {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.expand-icon {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
 }
 
 /* Media Queries */
@@ -238,5 +357,15 @@
         width: 32px;
         height: 32px;
         font-size: 0.9rem;
+    }
+
+    .answers-list li {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .correct-badge {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.75rem;
     }
 }

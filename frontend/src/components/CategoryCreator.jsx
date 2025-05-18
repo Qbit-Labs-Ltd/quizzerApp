@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import CategoryListService from '../utils/CategoryListService';
 import '../styles/CommonStyles.css';
-// import '../styles/FormStyles.css';
 
 /**
  * Component for creating new categories
  * 
  * @param {Object} props - Component props
  * @param {Function} props.showToast - Function to show toast notifications
+ * @param {Function} props.onClose - Function to close the modal
+ * @param {Function} props.onSuccess - Function to call on successful category creation
  * @returns {JSX.Element}
  */
-const CategoryCreator = ({ showToast }) => {
+const CategoryCreator = ({ onClose, showToast, onSuccess }) => {
     const [categoryData, setCategoryData] = useState({
         name: '',
         description: ''
     });
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const navigate = useNavigate();
 
     /**
      * Handle input field changes
@@ -74,17 +73,12 @@ const CategoryCreator = ({ showToast }) => {
         try {
             const createdCategory = await CategoryListService.createCategory(categoryData);
             showToast('Category created successfully!', 'success');
-            navigate('/categories');
+            onSuccess(createdCategory);
+            onClose();
         } catch (error) {
             console.error('Error creating category:', error);
-
-            // Handle specific error cases
-            if (error.response && error.response.status === 400) {
-                if (error.response.data && error.response.data.error) {
-                    showToast(error.response.data.error, 'error');
-                } else {
-                    showToast('Invalid category data. Please check your inputs.', 'error');
-                }
+            if (error.response?.data?.error) {
+                showToast(error.response.data.error, 'error');
             } else {
                 showToast('Failed to create category. Please try again later.', 'error');
             }
@@ -94,65 +88,64 @@ const CategoryCreator = ({ showToast }) => {
     };
 
     return (
-        <div className="form-container">
-            <div className="page-title-container">
-                <h1 className="page-title">Create New Category</h1>
+        <>
+            <div>
+                <form onSubmit={handleSubmit} className="form">
+                    <div className="form-group">
+                        <label htmlFor="name" className="form-label">
+                            Category Name <span className="required">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={categoryData.name}
+                            onChange={handleChange}
+                            className={`form-input ${errors.name ? 'input-error' : ''}`}
+                            placeholder="Enter category name"
+                            disabled={isSubmitting}
+                        />
+                        {errors.name && <div className="error-message">{errors.name}</div>}
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="description" className="form-label">
+                            Description
+                        </label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            value={categoryData.description}
+                            onChange={handleChange}
+                            className={`form-textarea ${errors.description ? 'input-error' : ''}`}
+                            placeholder="Enter category description (optional)"
+                            rows={4}
+                            disabled={isSubmitting}
+                        />
+                        {errors.description && <div className="error-message">{errors.description}</div>}
+                    </div>
+                </form>
             </div>
 
-            <form onSubmit={handleSubmit} className="form">
-                <div className="form-group">
-                    <label htmlFor="name" className="form-label">
-                        Category Name <span className="required">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={categoryData.name}
-                        onChange={handleChange}
-                        className={`form-input ${errors.name ? 'input-error' : ''}`}
-                        placeholder="Enter category name (e.g., Programming)"
-                        disabled={isSubmitting}
-                    />
-                    {errors.name && <div className="error-message">{errors.name}</div>}
-                </div>
-
-                <div className="form-group">
-                    <label htmlFor="description" className="form-label">
-                        Description
-                    </label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        value={categoryData.description}
-                        onChange={handleChange}
-                        className={`form-textarea ${errors.description ? 'input-error' : ''}`}
-                        placeholder="Enter category description (optional)"
-                        rows={4}
-                        disabled={isSubmitting}
-                    />
-                    {errors.description && <div className="error-message">{errors.description}</div>}
-                </div>
-
-                <div className="form-actions">
-                    <button
-                        type="button"
-                        className="btn btn-secondary"
-                        onClick={() => navigate('/categories')}
-                        disabled={isSubmitting}
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        className="btn btn-primary"
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting ? 'Creating...' : 'Create Category'}
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div className="modal-actions">
+                <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={onClose}
+                    disabled={isSubmitting}
+                >
+                    Cancel
+                </button>
+                <button
+                    type="submit"
+                    className="btn btn-primary"
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Creating...' : 'Create Category'}
+                </button>
+            </div>
+        </>
     );
 };
 

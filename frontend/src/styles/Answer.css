@@ -24,7 +24,6 @@
 
 .answer-options>ul>li {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     padding: 0;
     border-bottom: 1px solid #dee2e6;
