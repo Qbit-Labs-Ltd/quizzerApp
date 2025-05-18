@@ -26,14 +26,26 @@ export default function QuizCard({ quiz, onEdit, onDelete, onViewQuestions }) {
             <span className="not-published-badge">Not published</span>
           )}
         </div>
-      </div>
-
-      <div className="quiz-card-content">
+      </div>      <div className="quiz-card-content">
         <p className="quiz-card-description">{quiz.description || 'No description'}</p>
         <div className="quiz-card-details">
           <span className="quiz-card-course">Course: <br /> {quiz.courseCode}</span>
           <span className="quiz-card-date">Added: {new Date(quiz.dateAdded || Date.now()).toLocaleDateString()}</span>
         </div>
+      </div>
+
+      {/* Always show these buttons for published quizzes */}
+      <div className="quiz-card-actions">
+        {quiz.published && (<button
+          className="view-reviews-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/quiz/${quiz.id}/reviews`);
+          }}
+        >
+          View Reviews
+        </button>
+        )}
       </div>
 
       {(onEdit || onDelete) && (

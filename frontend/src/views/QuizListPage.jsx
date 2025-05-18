@@ -111,15 +111,24 @@ const QuizListPage = () => {
                     </span>
                   </div>
                 </div>
-              </div>
-
-              <div className="quiz-card-actions">
-                <button
-                  className="take-quiz-btn"
-                  onClick={() => handleTakeQuiz(quiz.id)}
-                >
-                  Take Quiz
-                </button>
+              </div>              <div className="quiz-card-actions">
+                <div className="quiz-card-action-row">
+                  <button
+                    className="take-quiz-btn"
+                    onClick={() => handleTakeQuiz(quiz.id)}
+                  >
+                    Take Quiz
+                  </button>
+                  <button
+                    className="view-reviews-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/quiz/${quiz.id}/reviews`);
+                    }}
+                  >
+                    View Reviews
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -129,11 +138,10 @@ const QuizListPage = () => {
           <table className="quiz-table">
             <thead>
               <tr>
-                <th>Quiz Name</th>
-                <th>Course Code</th>
+                <th>Quiz Name</th>                <th>Course Code</th>
                 <th>Description</th>
                 <th>Questions</th>
-                <th>Action</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -143,13 +151,20 @@ const QuizListPage = () => {
                   <td>{quiz.courseCode}</td>
                   <td>{quiz.description || "No description"}</td>
                   <td>{quiz.questionCount}</td>
-                  <td>
+                  <td>                    <div className="table-actions">
                     <button
                       className="take-quiz-btn primary small"
                       onClick={() => handleTakeQuiz(quiz.id)}
                     >
                       Take Quiz
                     </button>
+                    <button
+                      className="view-reviews-btn small"
+                      onClick={() => navigate(`/quiz/${quiz.id}/reviews`)}
+                    >
+                      Reviews
+                    </button>
+                  </div>
                   </td>
                 </tr>
               ))}

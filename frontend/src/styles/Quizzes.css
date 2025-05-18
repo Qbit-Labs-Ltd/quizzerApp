@@ -519,6 +519,54 @@
     color: #1e293b;
 }
 
+/* Quiz reviews button */
+.view-reviews-btn {
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.view-reviews-btn::before {
+    content: "★";
+    margin-right: 6px;
+}
+
+.view-reviews-btn:hover {
+    background: #3a7bc8;
+}
+
+.view-reviews-btn.small {
+    padding: 4px 8px;
+    font-size: 0.9em;
+}
+
+/* Review content styling */
+.review-content {
+    white-space: pre-line;
+    margin-top: 8px;
+}
+
+.quiz-card-action-row {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.table-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 /* Table View Styles */
 .quiz-table-container {
     overflow-x: auto;

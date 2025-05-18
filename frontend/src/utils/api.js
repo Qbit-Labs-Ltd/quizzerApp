@@ -42,6 +42,37 @@ api.interceptors.response.use(
 );
 
 /**
+ * Helper function for making API calls with proper error handling
+ * @param {Function} apiCall - The API call function to execute
+ * @param {Object} options - Options for the API call
+ * @param {boolean} options.throwError - Whether to throw errors (true) or return null on error (false)
+ * @param {Function} options.onError - Optional callback to execute on error
+ * @returns {Promise<any>} - The API response data or null if error and !throwError
+ */
+export const safeApiCall = async (apiCall, options = {}) => {
+    const { throwError = true, onError = null } = options;
+
+    try {
+        const response = await apiCall();
+        return response;
+    } catch (error) {
+        console.error('API call failed:', error);
+
+        // Execute onError callback if provided
+        if (onError && typeof onError === 'function') {
+            onError(error);
+        }
+
+        // Either throw or return null based on options
+        if (throwError) {
+            throw error;
+        }
+
+        return null;
+    }
+};
+
+/**
  * Generates a random ID for mock data objects
  * @returns {number} A random integer ID
  */

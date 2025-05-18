@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { createReview, getReviewById, updateReview } from '../services/review';
+import { createReview, getReviewById, updateReview, updateReviewSimple } from '../services/review';
 import '../styles/CommonStyles.css';
 import RadioGroup from './RadioGroup';
 
@@ -30,7 +30,6 @@ function ReviewForm() {
     rating: 0,
     text: ''
   });
-
   // Rating options for the RadioGroup
   const ratingOptions = [
     { id: 1, label: '1 ★', value: 1 },
@@ -43,13 +42,63 @@ function ReviewForm() {
   // Fetch review data if in edit mode
   useEffect(() => {
     const fetchReview = async () => {
-      if (!isEditMode) return;
+      if (!isEditMode || !reviewId) return;
 
       try {
         setLoading(true);
         setError(null);
 
-        const reviewData = await getReviewById(reviewId);
+        console.log('Fetching review with ID:', reviewId);
+
+        // First check if we can find the quiz ID in localStorage
+        const quizIdFromStorage = localStorage.getItem(`review_${reviewId}_quizId`);
+
+        // Store quiz ID from URL if not already stored (for future operations)
+        if (!quizIdFromStorage && id) {
+          console.log(`Quiz ID from URL (${id}) not found in storage, storing it now`);
+          localStorage.setItem(`review_${reviewId}_quizId`, id);
+        } else if (quizIdFromStorage) {
+          console.log(`Found quiz ID ${quizIdFromStorage} for review ${reviewId}`);
+          // Make sure it matches the URL param for consistency
+          if (quizIdFromStorage !== id) {
+            console.warn(`Quiz ID mismatch: ${quizIdFromStorage} in storage vs ${id} in URL`);
+
+            // Update localStorage with the more reliable ID (from URL)
+            if (id) {
+              console.log(`Updating stored quiz ID from ${quizIdFromStorage} to ${id}`);
+              localStorage.setItem(`review_${reviewId}_quizId`, id);
+            }
+          }
+        }
+
+        // Track recent quizzes for potential searching (limited to 10)
+        try {
+          const recentQuizzes = JSON.parse(localStorage.getItem('recentQuizzes') || '[]');
+          if (!recentQuizzes.includes(id)) {
+            recentQuizzes.unshift(id); // Add to front
+            if (recentQuizzes.length > 10) {
+              recentQuizzes.pop(); // Remove oldest if more than 10
+            }
+            localStorage.setItem('recentQuizzes', JSON.stringify(recentQuizzes));
+          }
+        } catch (e) {
+          console.error('Error updating recent quizzes:', e);
+        }
+
+        // Try to get the review data with improved error handling
+        let reviewData;
+        try {
+          reviewData = await getReviewById(reviewId);
+        } catch (fetchError) {
+          console.error('Error from getReviewById:', fetchError);
+          throw new Error(`Error fetching review: ${fetchError.message}`);
+        }
+
+        if (!reviewData) {
+          throw new Error('Could not load review data - empty response');
+        }
+
+        console.log('Loaded review data:', reviewData);
 
         // Pre-fill form with review data
         setFormState({
@@ -58,15 +107,17 @@ function ReviewForm() {
           text: reviewData.text || ''
         });
       } catch (err) {
-        console.error('Error fetching review:', err);
-        setError('Failed to load review data. Please try again.');
+        console.error('Error in review data fetch process:', err);
+        setError(
+          `Failed to load review data. ${err.message || 'The review may have been deleted or is not accessible.'}`
+        );
       } finally {
         setLoading(false);
       }
     };
 
     fetchReview();
-  }, [reviewId, isEditMode]);
+  }, [reviewId, isEditMode, id]);
 
   // Update form state on input change
   const handleChange = (e) => {
@@ -96,39 +147,106 @@ function ReviewForm() {
     if (!formState.nickname.trim()) {
       setError('Please enter a nickname');
       return;
-    }
-
-    if (!formState.rating) {
+    } if (!formState.rating) {
       setError('Please select a rating');
       return;
     }
-
     try {
       setIsSubmitting(true);
       setError(null);
 
-      if (isEditMode) {
+      if (isEditMode && reviewId) {
+        console.log('Updating review:', reviewId);
         // Update existing review
-        await updateReview(reviewId, {
-          quizId: Number(id),
-          nickname: formState.nickname,
-          rating: formState.rating,
-          text: formState.text
-        });
-        // On success, navigate back to quiz page with reviews tab
-        navigate(`/quiz/${id}?tab=reviews`);
+        try {
+          console.log('Submitting review update with data:', formState);
+
+          // Try the simplified API approach that only sends rating and text fields
+          try {
+            console.log('Using simplified update (rating + text only)');
+            const updatedReview = await updateReviewSimple(reviewId, formState.rating, formState.text);
+            console.log('Review updated successfully with simplified API:', updatedReview);
+
+            // Show success message
+            alert('Review updated successfully!');
+            // Navigate back to reviews page
+            navigate(`/quiz/${id}/reviews`);
+            return; // Exit early on success
+          } catch (simpleError) {
+            console.log('Simplified update failed:', simpleError);
+            // Fall back to standard approach if simplified fails
+          }
+
+          // Standard approach with full review data
+          const updatedReview = await updateReview(reviewId, {
+            quizId: Number(id),
+            nickname: formState.nickname, // We keep this for our frontend validation
+            rating: formState.rating,
+            text: formState.text // The service will rename this to 'comment' if needed by backend
+          });
+
+          console.log('Review updated successfully:', updatedReview);
+
+          // Show success message
+          alert('Review updated successfully!');
+
+          // On success, navigate back to reviews page
+          navigate(`/quiz/${id}/reviews`);
+        } catch (updateError) {
+          console.error('Error updating review:', updateError);
+          // Extract more detailed error information
+          const errorResponse = updateError.response?.data;
+          const errorDetails = errorResponse?.message || errorResponse?.error || '';
+
+          // Debug logging to help troubleshoot the backend response
+          console.error('Error details:', {
+            status: updateError.response?.status,
+            statusText: updateError.response?.statusText,
+            data: errorResponse,
+            message: updateError.message
+          });
+          // If there's a specific error about unrecognized fields, give a more helpful message
+          if (errorDetails.includes("Unrecognized field")) {
+            const fieldMatch = errorDetails.match(/Unrecognized field "([^"]+)"/);
+            const field = fieldMatch ? fieldMatch[1] : "unknown";
+            console.log(`Attempting retry without the problematic field: ${field}`);            // Try using the simplified update function with minimal fields that matches backend expectations
+            // Call the simplified function that only sends rating and text
+            updateReviewSimple(reviewId, formState.rating, formState.text).then(updatedReview => {
+              console.log('Review update successful on retry:', updatedReview);
+              alert('Review updated successfully!');
+              navigate(`/quiz/${id}/reviews`);
+            }).catch(retryError => {
+              console.error('Retry also failed:', retryError);
+              setError(`Update failed: ${retryError.message || 'Unknown error'}. Please try again later.`);
+            });
+          } else {
+            setError(`Failed to update review: ${errorDetails || updateError.message || 'Unknown error'}. Please try again.`);
+          }
+          // Stay on the page so the user can try again
+        }
       } else {
-        // Create new review
-        await createReview({
-          quizId: Number(id),
-          nickname: formState.nickname,
-          rating: formState.rating,
-          text: formState.text
-        });
-        // Show thank you popup
-        alert('Thank you for submitting your review!');
-        // Navigate to available quizzes page
-        navigate('/quizzes');
+        console.log('Creating new review');
+        try {
+          // Create new review
+          const newReview = await createReview({
+            quizId: Number(id),
+            nickname: formState.nickname,
+            rating: formState.rating,
+            text: formState.text
+          });
+
+          console.log('New review created:', newReview);
+
+          // Show thank you popup
+          alert('Thank you for submitting your review!');
+
+          // Navigate to reviews page
+          navigate(`/quiz/${id}/reviews`);
+        } catch (createError) {
+          console.error('Error creating review:', createError);
+          setError(createError.message || 'Failed to submit review. Please try again.');
+          // Stay on the page so the user can try again
+        }
       }
     } catch (err) {
       console.error(`Error ${isEditMode ? 'updating' : 'submitting'} review:`, err);
